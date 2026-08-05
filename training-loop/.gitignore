@@ -1,0 +1,19 @@
+# venvs
+.venv/
+venv/
+
+# model artifacts -- too large for git, keep out of the repo
+*/out/
+**/checkpoint-*/
+data/raw/
+
+# results are fine to commit (small JSON), but don't commit downloaded weights
+*.safetensors
+*.bin
+*.pt
+
+# local env
+.env
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,71 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, sans-serif">
+  <rect x="0" y="0" width="1000" height="640" fill="#F5F5F3"/>
+
+  <!-- Title -->
+  <text x="500" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#1A1A18" font-family="'Space Grotesk', Inter, sans-serif">BankBench-MY — Meta-Overview</text>
+  <text x="500" y="60" text-anchor="middle" font-size="12.5" fill="#6B6B68">Sinar/BankBench · one shared eval core, four applied surfaces</text>
+
+  <!-- Shared core spine -->
+  <rect x="200" y="90" width="600" height="46" rx="8" fill="#1A1A18"/>
+  <text x="500" y="118" text-anchor="middle" font-size="13" font-weight="600" fill="#F5F5F3" font-family="'JetBrains Mono', monospace">bankbench_my/  —  shared scenarios + Inspect AI eval + scorer</text>
+
+  <!-- connectors down to each quadrant -->
+  <line x1="290" y1="136" x2="230" y2="180" stroke="#AFAFAB" stroke-width="1.5"/>
+  <line x1="500" y1="136" x2="500" y2="180" stroke="#AFAFAB" stroke-width="1.5"/>
+  <line x1="710" y1="136" x2="770" y2="180" stroke="#AFAFAB" stroke-width="1.5"/>
+  <line x1="290" y1="136" x2="230" y2="400" stroke="#AFAFAB" stroke-width="1.5"/>
+
+  <!-- Quadrant 1: BankBench itself (top-left) -->
+  <g>
+    <rect x="60" y="180" width="270" height="150" rx="10" fill="#fff" stroke="#D4D4D0"/>
+    <rect x="60" y="180" width="6" height="150" fill="#3A3A38"/>
+    <text x="84" y="212" font-size="14" font-weight="700" fill="#1A1A18" font-family="'Space Grotesk', Inter, sans-serif">BankBench itself</text>
+    <text x="84" y="232" font-size="10.5" fill="#6B6B68" font-family="'JetBrains Mono', monospace">bankbench_my/ + mybanksim/</text>
+    <text x="84" y="256" font-size="11" fill="#3A3A38">The core: 20-60 adversarial banking-</text>
+    <text x="84" y="272" font-size="11" fill="#3A3A38">agent scenarios (EN/BM/Manglish),</text>
+    <text x="84" y="288" font-size="11" fill="#3A3A38">Inspect AI task + scorer, and the</text>
+    <text x="84" y="304" font-size="11" fill="#3A3A38">Cloudflare Worker sandbox that runs</text>
+    <text x="84" y="320" font-size="11" fill="#3A3A38">them live against real models</text>
+  </g>
+
+  <!-- Quadrant 2: BankBench + Scorecard (top-right) -->
+  <g>
+    <rect x="365" y="180" width="270" height="150" rx="10" fill="#fff" stroke="#D4D4D0"/>
+    <rect x="365" y="180" width="6" height="150" fill="#4E7A51"/>
+    <text x="389" y="212" font-size="14" font-weight="700" fill="#1A1A18" font-family="'Space Grotesk', Inter, sans-serif">+ Scorecard</text>
+    <text x="389" y="232" font-size="10.5" fill="#6B6B68" font-family="'JetBrains Mono', monospace">standard_scorecard/ · dashboard/</text>
+    <text x="389" y="256" font-size="11" fill="#3A3A38">A/B/C/D graded, versioned model</text>
+    <text x="389" y="272" font-size="11" fill="#3A3A38">comparisons — AI Standards Lab</text>
+    <text x="389" y="288" font-size="11" fill="#3A3A38">benchmark-lifecycle framing: drift,</text>
+    <text x="389" y="304" font-size="11" fill="#3A3A38">deprecation, saturation, N-per-cell</text>
+    <text x="389" y="320" font-size="11" fill="#3A3A38">confidence, cross-model comparison</text>
+  </g>
+
+  <!-- Quadrant 3: BankBench + Model (top far-right) -->
+  <g>
+    <rect x="670" y="180" width="270" height="150" rx="10" fill="#fff" stroke="#D4D4D0"/>
+    <rect x="670" y="180" width="6" height="150" fill="#2C5A2F"/>
+    <text x="694" y="212" font-size="14" font-weight="700" fill="#1A1A18" font-family="'Space Grotesk', Inter, sans-serif">+ Model</text>
+    <text x="694" y="232" font-size="10.5" fill="#6B6B68" font-family="'JetBrains Mono', monospace">training-loop/  ← this folder</text>
+    <text x="694" y="256" font-size="11" fill="#3A3A38">The eval set becomes training data:</text>
+    <text x="694" y="272" font-size="11" fill="#3A3A38">from-scratch pretrain (nanoGPT),</text>
+    <text x="694" y="288" font-size="11" fill="#3A3A38">LoRA fine-tune + re-eval, Tinker,</text>
+    <text x="694" y="304" font-size="11" fill="#3A3A38">OLMo provenance audit, deployed</text>
+    <text x="694" y="320" font-size="11" fill="#3A3A38">as a self-hosted eval target</text>
+  </g>
+
+  <!-- Quadrant 4: BankBench + Public Education (bottom, wide) -->
+  <g>
+    <rect x="60" y="400" width="880" height="130" rx="10" fill="#fff" stroke="#D4D4D0"/>
+    <rect x="60" y="400" width="6" height="130" fill="#9B5B1A"/>
+    <text x="84" y="430" font-size="14" font-weight="700" fill="#1A1A18" font-family="'Space Grotesk', Inter, sans-serif">+ Public Education</text>
+    <text x="84" y="450" font-size="10.5" fill="#6B6B68" font-family="'JetBrains Mono', monospace">docs/consumer-explainer/ · docs/rmit-gap-brief.md</text>
+    <text x="84" y="474" font-size="11" fill="#3A3A38">Turning the technical findings above into material a non-specialist can use:</text>
+    <text x="84" y="492" font-size="11" fill="#3A3A38">plain-language explainers for consumers, a regulator-facing RMiT/OpenFinance gap brief,</text>
+    <text x="84" y="510" font-size="11" fill="#3A3A38">and teaching material (e.g. the IIUM CFS conference talk) that reframes BankBench-MY's</text>
+    <text x="84" y="524" font-size="11" fill="#3A3A38">eval methodology as an education/outreach deliverable, not only an internal research artifact.</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="500" y="600" text-anchor="middle" font-size="10.5" fill="#AFAFAB" font-family="'JetBrains Mono', monospace">CetaLabs · Nurshafira Noh · Sinar fellowship · github.com/Sinar/BankBench</text>
+</svg>
