@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BankBench-MY — Sinar/BankBench</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A multilingual safety evaluation for banking-agent LLMs, and the applied work built on top of it.">
+<style>
+  :root {
+    --g0: #F5F5F3; --g1: #EAEAE7; --g2: #D4D4D0; --g3: #AFAFAB; --g4: #6B6B68;
+    --ink: #3A3A38; --deep: #1A1A18;
+    --sig: #4E7A51; --siglo: #D6E6D7; --sighi: #2C5A2F;
+    --warn: #9B5B1A; --warnlo: #F5E6D5;
+    --err: #8B2A2A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--g0); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  h1, h2, h3, .brand, nav a { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  code, .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+  a { color: var(--sig); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    border-bottom: 1px solid var(--g2); background: #fff;
+    position: sticky; top: 0; z-index: 10;
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sig); display: inline-block; margin-right: 8px; }
+  .brand { font-weight: 700; font-size: 17px; color: var(--deep); text-decoration: none; display: flex; align-items: center; }
+  .navlinks { display: flex; gap: 22px; font-size: 13.5px; }
+  .navlinks a { color: var(--g4); text-decoration: none; }
+  .navlinks a:hover { color: var(--sig); }
+
+  header.hero { padding: 64px 0 48px; text-align: center; }
+  header.hero h1 { font-size: 34px; margin: 0 0 12px; color: var(--deep); }
+  header.hero p.sub { max-width: 640px; margin: 0 auto 28px; color: var(--g4); font-size: 15.5px; line-height: 1.6; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 20px; border-radius: 7px; font-size: 14px;
+    font-weight: 600; text-decoration: none; font-family: 'Space Grotesk', sans-serif;
+  }
+  .btn.primary { background: var(--sig); color: #fff; }
+  .btn.primary:hover { background: var(--sighi); }
+  .btn.secondary { background: #fff; color: var(--ink); border: 1px solid var(--g2); }
+  .btn.secondary:hover { border-color: var(--sig); color: var(--sig); }
+
+  section { padding: 40px 0; }
+  section.alt { background: #fff; border-top: 1px solid var(--g2); border-bottom: 1px solid var(--g2); }
+  h2 { font-size: 20px; color: var(--deep); margin: 0 0 6px; }
+  p.lede { color: var(--g4); font-size: 14px; margin: 0 0 24px; max-width: 720px; }
+
+  .diagram-frame {
+    background: #fff; border: 1px solid var(--g2); border-radius: 10px;
+    padding: 16px; overflow-x: auto;
+  }
+  .diagram-frame img { width: 100%; min-width: 720px; display: block; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+  .card {
+    background: #fff; border: 1px solid var(--g2); border-radius: 10px; padding: 18px;
+    position: relative; display: flex; flex-direction: column;
+  }
+  .card.ghosted { background: var(--g1); opacity: 0.6; filter: grayscale(0.5); }
+  .badge {
+    display: inline-block; font-size: 10.5px; padding: 2px 8px; border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 10px; align-self: flex-start;
+  }
+  .badge.live { background: var(--siglo); color: var(--sighi); }
+  .badge.progress { background: var(--warnlo); color: var(--warn); }
+  .badge.soon { background: var(--g2); color: var(--g4); }
+  .card h3 { font-size: 15.5px; margin: 0 0 8px; color: var(--deep); }
+  .card p { font-size: 13px; color: var(--g4); line-height: 1.55; margin: 0 0 14px; flex-grow: 1; }
+  .card a.card-link { font-size: 13px; font-weight: 600; text-decoration: none; }
+  .card.ghosted a.card-link { color: var(--g3); pointer-events: none; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; padding: 6px 12px;
+    border-radius: 999px; border: 1px solid var(--sig); background: var(--siglo); color: var(--sighi);
+  }
+  .chip.alt2 { border-color: var(--warn); background: var(--warnlo); color: var(--warn); }
+
+  footer { padding: 36px 0 60px; text-align: center; font-size: 12px; color: var(--g3); }
+  footer a { color: var(--g4); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot"></span>BANKBENCH-MY</a>
+    <div class="navlinks">
+      <a href="#surfaces">Surfaces</a>
+      <a href="#domains">Related domains</a>
+      <a href="training-loop-dashboard.html">Training Loop</a>
+      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>BankBench-MY</h1>
+    <p class="sub">A multilingual (EN / Bahasa Malaysia / Manglish) safety evaluation for banking-agent LLMs — does a banking chatbot leak OTPs and account data, process unauthorised transfers, or follow phishing links when conversation register shifts mid-conversation? Built on Inspect AI, developed under the Sinar fellowship. <strong>Status: ongoing work</strong> — some surfaces below are live, some are still in progress.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://bankbench-sandbox.shalomshafa.workers.dev" target="_blank" rel="noopener">Try the sandbox</a>
+      <a class="btn secondary" href="training-loop-dashboard.html">See training-loop progress</a>
+      <a class="btn secondary" href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">View source</a>
+    </div>
+  </div>
+</header>
+
+<section id="surfaces">
+  <div class="wrap">
+    <h2>One eval core, four applied surfaces</h2>
+    <p class="lede">BankBench-MY's scenarios and scorer are the shared core. Everything else is a different way of putting that core to work — some finished, some still in progress.</p>
+
+    <div class="diagram-frame">
+      <img src="assets/bankbench-meta-overview.svg" alt="BankBench-MY meta-overview diagram — one shared eval core with four applied surfaces (BankBench itself, plus Scorecard, plus Model, plus Public Education) and a row of related domain fields below">
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <span class="badge live">live — sandbox</span>
+        <h3>BankBench itself</h3>
+        <p>The core: adversarial banking-agent scenarios in EN/BM/Manglish, an Inspect AI task + scorer, and a live agentic sandbox you can run them against.</p>
+        <a class="card-link" href="https://bankbench-sandbox.shalomshafa.workers.dev" target="_blank" rel="noopener">Try it live →</a>
+      </div>
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <h3>+ Scorecard</h3>
+        <p>A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation) instead of a one-off leaderboard number.</p>
+        <a class="card-link" href="#">Not yet migrated</a>
+      </div>
+      <div class="card">
+        <span class="badge progress">in progress</span>
+        <h3>+ Model</h3>
+        <p>The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it. Track live status on the training-loop dashboard.</p>
+        <a class="card-link" href="training-loop-dashboard.html">View progress →</a>
+      </div>
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <h3>+ Public Education</h3>
+        <p>Plain-language explainers for consumers and a regulator-facing gap brief, built from the same findings above.</p>
+        <a class="card-link" href="#">Not yet written</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="domains">
+  <div class="wrap">
+    <h2>Related domains this work also draws on</h2>
+    <p class="lede">Fields, not project names — each maps to ongoing work adjacent to BankBench-MY, most of it not yet public.</p>
+    <div class="chips">
+      <span class="chip">Mechanistic Interpretability</span>
+      <span class="chip">Adversarial Sandbox &amp; Honeypot Red-teaming</span>
+      <span class="chip">Multi-Agent Collusion &amp; Cross-Language Pressure Testing</span>
+      <span class="chip alt2">Meta-Evaluation &amp; Benchmark Tooling</span>
+      <span class="chip alt2">AI Governance &amp; Standards Mapping</span>
+      <span class="chip alt2">AI Safety Engineering Curriculum &amp; Education</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Sinar/BankBench · CC BY-SA 4.0 · <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">github.com/Sinar/BankBench</a> · built under the Sinar fellowship
+  </div>
+</footer>
+
+</body>
+</html>

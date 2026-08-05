@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Training Loop Sprint — Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --g0: #F5F5F3; --g1: #EAEAE7; --g2: #D4D4D0; --g3: #AFAFAB; --g4: #6B6B68;
+    --ink: #3A3A38; --deep: #1A1A18;
+    --sig: #4E7A51; --siglo: #D6E6D7; --sighi: #2C5A2F;
+    --warn: #9B5B1A; --warnlo: #F5E6D5;
+    --err: #8B2A2A; --errlo: #F2DCDC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--g0); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 32px 24px 80px;
+  }
+  h1, h2, .brand, .tab-label {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+  }
+  code, .mono, .metric, .grade, pre {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sig); display: inline-block; }
+  .brand { font-weight: 700; font-size: 22px; letter-spacing: 0.02em; color: var(--deep); }
+  .subtitle { color: var(--g4); font-size: 14px; margin: 0 0 28px; }
+  .budget-bar {
+    background: var(--g1); border: 1px solid var(--g2); border-radius: 8px;
+    padding: 12px 16px; margin-bottom: 28px; display: flex; justify-content: space-between;
+    align-items: center; font-size: 13px;
+  }
+  .budget-bar .metric { color: var(--sighi); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    background: #fff; border: 1px solid var(--g2); border-radius: 10px; padding: 18px;
+    position: relative; overflow: hidden;
+  }
+  .card.ghosted {
+    background: var(--g1); opacity: 0.55; filter: grayscale(0.6);
+    pointer-events: none; user-select: none;
+  }
+  .card.ghosted::after {
+    content: "🔒 upcoming — not started";
+    position: absolute; top: 10px; right: 12px;
+    font-size: 11px; color: var(--g4); font-family: 'JetBrains Mono', monospace;
+    background: var(--g0); border: 1px solid var(--g2); border-radius: 4px; padding: 2px 6px;
+  }
+  .stage-id { font-size: 11px; color: var(--g4); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+  .stage-title { font-size: 16px; font-weight: 600; margin: 4px 0 10px; color: var(--deep); }
+  .pill {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 10px;
+  }
+  .pill.done { background: var(--siglo); color: var(--sighi); }
+  .pill.in_progress { background: var(--warnlo); color: var(--warn); }
+  .pill.ghosted { background: var(--g2); color: var(--g4); }
+  .grade { font-size: 28px; font-weight: 700; }
+  .grade.A, .grade.B { color: var(--sig); }
+  .grade.C { color: var(--warn); }
+  .grade.D { color: var(--err); }
+  .grade.dash { color: var(--g3); }
+  .metric-row { display: flex; justify-content: space-between; font-size: 13px; margin: 3px 0; color: var(--ink); }
+  .metric-row .val { font-family: 'JetBrains Mono', monospace; color: var(--g4); }
+  .note { font-size: 12.5px; color: var(--g4); margin-top: 10px; line-height: 1.5; border-top: 1px dashed var(--g2); padding-top: 10px; }
+  footer { margin-top: 40px; font-size: 12px; color: var(--g3); text-align: center; }
+  a { color: var(--sig); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><span class="dot"></span><span class="brand">TRAINING LOOP SPRINT</span></header>
+  <p class="subtitle">S-01 → S-05 · nanoGPT → fine-tune → Tinker → OLMo → REST API · CetaLabs · Nurshafira Noh · Aug 2026</p>
+
+  <p style="margin: -12px 0 20px;"><a href="index.html" style="color: var(--sig); font-size: 13px; text-decoration: none;">← Back to BankBench-MY overview</a></p>
+
+  <div class="budget-bar">
+    <span>VastAI budget: <span class="metric" id="budget-used">$0.00</span> / $10.00 used</span>
+    <span id="last-updated" class="mono">not yet updated</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    No-code dashboard — edit the <code>DATA</code> object in this file's &lt;script&gt; block, save, refresh. No build step.<br>
+    Styled from Substrate brand kit · full sprint plan in the repo's <code>training-loop/</code> folder
+  </footer>
+</div>
+
+<script>
+// ============================================================
+// EDIT THIS BLOCK — no-code dashboard update, no build step.
+// status: "ghosted" (not started) | "in_progress" | "done"
+// grade: "A" | "B" | "C" | "D" | null  (Substrate/Cetavals grade, reused as-is)
+// ============================================================
+const DATA = {
+  budgetUsedUsd: 0.00,
+  lastUpdated: "not yet run",
+  stages: [
+    {
+      id: "S-01",
+      title: "nanoGPT from scratch",
+      status: "ghosted",
+      grade: null,
+      metrics: [
+        { label: "params", value: "—" },
+        { label: "loss (start→end)", value: "—" },
+        { label: "steps", value: "—" }
+      ],
+      note: "Proves you can run a full pretrain loop from random init. Local/free, no VastAI spend."
+    },
+    {
+      id: "S-02",
+      title: "Fine-tune on BankBench-MY data",
+      status: "ghosted",
+      grade: null,
+      metrics: [
+        { label: "held-out refusal % (base)", value: "—" },
+        { label: "held-out refusal % (ft)", value: "—" },
+        { label: "over-refusal delta", value: "—" }
+      ],
+      note: "PRIORITY. Clears the securefast.ai bar. Produces the scorecard's new trainability row."
+    },
+    {
+      id: "S-03",
+      title: "Reproduce on Tinker",
+      status: "ghosted",
+      grade: null,
+      metrics: [
+        { label: "loop shape match", value: "—" },
+        { label: "eval delta vs local", value: "—" }
+      ],
+      note: "Stretch. Only after S-02 is solid — same data, managed training API."
+    },
+    {
+      id: "S-04",
+      title: "OLMo provenance audit",
+      status: "ghosted",
+      grade: null,
+      metrics: [
+        { label: "domain terms in Dolma", value: "—" },
+        { label: "contamination check", value: "—" }
+      ],
+      note: "Stretch, do last. SinarProject civic-tech hook — open data lineage as auditability."
+    },
+    {
+      id: "S-05",
+      title: "Deploy via REST API",
+      status: "ghosted",
+      grade: null,
+      metrics: [
+        { label: "endpoint", value: "—" },
+        { label: "latency", value: "—" }
+      ],
+      note: "PRIORITY. Turns S-02's checkpoint into a live BankBench-MY-evaluable target."
+    }
+  ]
+};
+// ============================================================
+// END EDIT BLOCK — rendering code below, no need to touch it.
+// ============================================================
+
+const grid = document.getElementById("grid");
+document.getElementById("budget-used").textContent = "$" + DATA.budgetUsedUsd.toFixed(2);
+document.getElementById("last-updated").textContent = DATA.lastUpdated;
+
+for (const s of DATA.stages) {
+  const card = document.createElement("div");
+  card.className = "card" + (s.status === "ghosted" ? " ghosted" : "");
+
+  const gradeClass = s.grade ? s.grade : "dash";
+  const gradeLabel = s.grade ? s.grade : "–";
+
+  card.innerHTML = `
+    <div class="stage-id">${s.id}</div>
+    <div class="stage-title">${s.title}</div>
+    <span class="pill ${s.status}">${s.status.replace("_", " ")}</span>
+    <div class="grade ${gradeClass}">${gradeLabel}</div>
+    ${s.metrics.map(m => `<div class="metric-row"><span>${m.label}</span><span class="val">${m.value}</span></div>`).join("")}
+    <div class="note">${s.note}</div>
+  `;
+  grid.appendChild(card);
+}
+</script>
+</body>
+</html>

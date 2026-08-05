@@ -4,6 +4,8 @@
 
 The migration plan this repo followed lives in the source repo's `MIGRATION_TO_SINAR.md` (private working repo, not part of this public one).
 
+**Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard.
+
 ## What BankBench-MY is
 
 A multilingual (EN / Bahasa Malaysia / Manglish) safety evaluation for banking-agent LLMs — does a banking chatbot leak OTPs/PII, process unauthorised transfers, or follow phishing links when conversation register shifts mid-conversation (the "seam-over-model" hypothesis)? Built on Inspect AI, developed under the Sinar fellowship.
@@ -21,6 +23,8 @@ One shared eval core (`bankbench_my/`), four applied surfaces built on top of it
 | **+ Model** | `training-loop/` | The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it |
 | **+ Public Education** | `docs/consumer-explainer/`, `docs/rmit-gap-brief.md` | Plain-language and regulator-facing material built from the same findings |
 
+Below the four surfaces, the diagram also lists **related domains** this work draws on — fields, not folder or project names, since most of that adjacent work isn't public yet: Mechanistic Interpretability; Adversarial Sandbox & Honeypot Red-teaming; Multi-Agent Collusion & Cross-Language Pressure Testing; Meta-Evaluation & Benchmark Tooling; AI Governance & Standards Mapping; AI Safety Engineering Curriculum & Education.
+
 ## Current staging contents
 
 ```
@@ -28,6 +32,10 @@ BankBench/
 ├── README.md                  ← this file
 ├── diagrams/
 │   └── bankbench-meta-overview.svg
+├── site/                       ← the public-facing overview page (deployed to bankbench-sinar.pages.dev)
+│   ├── index.html              ← general landing page — NOT the raw training dashboard
+│   ├── training-loop-dashboard.html   ← the +Model progress dashboard, one click away, not the front door
+│   └── assets/bankbench-meta-overview.svg
 ├── bankbench_my/               ← first migration cut from the source working repo
 │   ├── bankbench_eval.py       ← canonical Inspect AI task (from bankbench/3-4 LLM_scorecard/)
 │   └── scenarios/
@@ -50,4 +58,3 @@ This repo is early and moving fast — check each surface's own README (`bankben
 - **Opening a PR:** use the repo's `.github/ISSUE_TEMPLATE/pull_request_template.md`, and link back to the relevant issue if one exists. Small, working increments are preferred over large batched PRs, given how much of this is still in flux.
 - **Adding a new scenario to `bankbench_my/scenarios/`:** follow the shape of the existing entries in `bankbench-20-tasks.json`; a scenario-writing guide (`CONTRIBUTING.md`) is planned but not written yet — ask before assuming a format.
 - **Running things locally:** each surface's README has its own setup — `bankbench_my/` for the eval harness, `training-loop/` for the fine-tune/deploy sprint. There's no single top-level install step yet since the surfaces don't share a runtime (Python eval harness vs. Cloudflare Worker vs. training scripts).
-
