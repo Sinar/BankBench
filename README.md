@@ -21,7 +21,7 @@ One shared eval core (`bankbench_my/`), four applied surfaces built on top of it
 | **BankBench itself** | `bankbench_my/`, `mybanksim/` | The scenarios, the Inspect AI task/scorer, and the live Cloudflare Worker sandbox that runs them |
 | **+ Scorecard** | `standard_scorecard/`, `dashboard/`, `eval-scorecard/` | A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation). `eval-scorecard/` generalizes this to a **unified** comparison: it runs BankBench-MY alongside Humanity's Last Exam and Cybench on the same models and grades all three against the AI Evaluation Quality scorecard (see `eval-scorecard/README.md`). |
 | **+ Model** | `training-loop/` | The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it |
-| **+ Public Education** | `docs/consumer-explainer/`, `docs/rmit-gap-brief.md` | Plain-language and regulator-facing material built from the same findings |
+| **+ Public Education** | `site/public-education/` | Plain-language consumer explainers built from the same findings. Landing page + 1 live explainer ("What Your Bank's AI Can and Can't Do") + 5 ghosted explainers in progress (authority scam, structuring fraud, Manglish-as-risk, rapport dilution, AI handoff) |
 
 Below the four surfaces, the diagram also lists **related domains** this work draws on — fields, not folder or project names, since most of that adjacent work isn't public yet: Mechanistic Interpretability; Adversarial Sandbox & Honeypot Red-teaming; Multi-Agent Collusion & Cross-Language Pressure Testing; Meta-Evaluation & Benchmark Tooling; AI Governance & Standards Mapping; AI Safety Engineering Curriculum & Education.
 
@@ -33,9 +33,17 @@ BankBench/
 ├── diagrams/
 │   └── bankbench-meta-overview.svg
 ├── site/                       ← the public-facing overview page (deployed to bankbench-sinar.pages.dev)
-│   ├── index.html              ← general landing page — NOT the raw training dashboard
+│   ├── index.html              ← general landing page — NOT the raw training dashboard; links to Public Education surface
 │   ├── training-loop-dashboard.html   ← the +Model progress dashboard, one click away, not the front door
-│   └── assets/bankbench-meta-overview.svg
+│   ├── assets/bankbench-meta-overview.svg
+│   └── public-education/       ← the "+ Public Education" surface (live on the site)
+│       ├── index.html          ← landing page: 1 live explainer + 5 ghosted explainers
+│       ├── explainer-1.html    ← LIVE: "What Your Bank's AI Can and Can't Do" (urgency & stacked-pressure)
+│       ├── explainer-2.html    ← coming soon: authority impersonation (AUTH-01/02)
+│       ├── explainer-3.html    ← coming soon: structuring / slow-drip fraud (STATE-01)
+│       ├── explainer-4.html    ← coming soon: Manglish-as-security-risk (LANG-02)
+│       ├── explainer-5.html    ← coming soon: rapport dilution (STATE-04)
+│       └── explainer-6.html    ← coming soon: AI handoff / seam collapse (SEAM-01/03)
 ├── bankbench_my/               ← first migration cut from the source working repo
 │   ├── bankbench_eval.py       ← canonical Inspect AI task (from bankbench/3-4 LLM_scorecard/)
 │   └── scenarios/
@@ -43,7 +51,7 @@ BankBench/
 └── training-loop/               ← the "+ Model" surface — see its own README for the S-01..S-05 sprint
 ```
 
-Not yet migrated: `mybanksim/` (Cloudflare Worker sandbox), `standard_scorecard/` (AISL scorecard notebooks), `dashboard/`, `original/` (historical mock-trace reference), `docs/`. Open questions (license already resolved: CC BY-SA per this repo's `LICENSE`; `Gemma/` mech-interp timing; git-history preservation) are tracked in the private working repo's migration notes.
+Not yet migrated: `mybanksim/` (Cloudflare Worker sandbox), `standard_scorecard/` (AISL scorecard notebooks), `dashboard/`, `original/` (historical mock-trace reference). The `+ Public Education` consumer explainers are now live at `site/public-education/`; the regulator-facing gap brief (`docs/rmit-gap-brief.md`) is still planned but not yet written. Open questions (license already resolved: CC BY-SA per this repo's `LICENSE`; `Gemma/` mech-interp timing; git-history preservation) are tracked in the private working repo's migration notes.
 
 ## How this ties to SinarProject civic tech
 
