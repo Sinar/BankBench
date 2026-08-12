@@ -45,6 +45,9 @@ BankBench/
 │       ├── explainer-4.html    ← coming soon: Manglish-as-security-risk (LANG-02)
 │       ├── explainer-5.html    ← coming soon: rapport dilution (STATE-04)
 │       └── explainer-6.html    ← coming soon: AI handoff / seam collapse (SEAM-01/03)
+│   └── bio/                    ← the fellow's public bio (draft + rendered page)
+│       ├── bio.md              ← Markdown draft of the Sinar Project fellow bio
+│       └── index.html          ← rendered bio at /bio/ (links from site nav)
 ├── bankbench_my/               ← first migration cut from the source working repo
 │   ├── bankbench_eval.py       ← canonical Inspect AI task (from bankbench/3-4 LLM_scorecard/)
 │   └── scenarios/

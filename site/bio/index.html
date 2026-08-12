@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shafira Noh — Sinar Project Civic Tech Fellow · BankBench-MY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Shafira Noh (Sha) — Sinar Project Civic Tech Fellow building BankBench-MY, an open multilingual safety evaluation for Malaysian AI banking agents.">
+<style>
+  :root {
+    --g0: #F5F5F3; --g1: #EAEAE7; --g2: #D4D4D0; --g3: #AFAFAB; --g4: #6B6B68;
+    --ink: #3A3A38; --deep: #1A1A18;
+    --sig: #4E7A51; --siglo: #D6E6D7; --sighi: #2C5A2F;
+    --warn: #9B5B1A; --warnlo: #F5E6D5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--g0); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.7;
+  }
+  h1, h2, h3, .brand, nav a { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  a { color: var(--sig); }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    border-bottom: 1px solid var(--g2); background: #fff;
+    position: sticky; top: 0; z-index: 10;
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sig); display: inline-block; margin-right: 8px; }
+  .brand { font-weight: 700; font-size: 16px; color: var(--deep); text-decoration: none; display: flex; align-items: center; }
+  .navlinks { display: flex; gap: 18px; font-size: 13px; }
+  .navlinks a { color: var(--g4); text-decoration: none; }
+  .navlinks a:hover { color: var(--sig); }
+
+  header.hero { padding: 56px 0 24px; text-align: center; }
+  header.hero h1 { font-size: 30px; margin: 0 0 8px; color: var(--deep); }
+  header.hero .role {
+    display: inline-block; background: var(--siglo); color: var(--sighi);
+    padding: 5px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 14px;
+  }
+  header.hero .tagline { font-size: 15px; color: var(--g4); max-width: 560px; margin: 0 auto; }
+
+  section { padding: 24px 0; }
+  section.alt { background: #fff; border-top: 1px solid var(--g2); border-bottom: 1px solid var(--g2); }
+  h2 { font-size: 19px; color: var(--deep); margin: 0 0 12px; }
+  h2 .accent { color: var(--sig); }
+  p { margin: 0 0 14px; font-size: 15px; color: var(--ink); }
+  ul { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; font-size: 15px; }
+  a { color: var(--sig); }
+
+  .links {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px;
+  }
+  .links a {
+    font-size: 13px; padding: 8px 14px; border: 1px solid var(--g2); border-radius: 8px;
+    text-decoration: none; color: var(--ink); background: #fff;
+  }
+  .links a:hover { border-color: var(--sig); color: var(--sig); }
+
+  footer { padding: 36px 0 60px; text-align: center; font-size: 12px; color: var(--g3); }
+  footer a { color: var(--g4); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="dot"></span>BANKBENCH-MY</a>
+    <div class="navlinks">
+      <a href="/#surfaces">Surfaces</a>
+      <a href="/public-education/">Public Education</a>
+      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="role">Sinar Project · Civic Tech Fellow</div>
+    <h1>Shafira Noh <span style="color:var(--g3);font-weight:400;">(Sha)</span></h1>
+    <p class="tagline">Malaysian field-builder at the intersection of AI safety, civic infrastructure, and education. Building BankBench-MY — an open, multilingual safety evaluation for AI banking agents.</p>
+  </div>
+</header>
+
+<section id="working-on">
+  <div class="wrap">
+    <h2>What I'm <span class="accent">working on</span></h2>
+    <p>BankBench-MY stress-tests LLM-powered banking chatbots — the kind millions already use on GrabPay, MAE, Boost, and GXBank — against adversarial social-engineering scenarios: urgency scams, authority impersonation, language-register switching, and slow-drip structuring. It scores them against BNM's <strong>RMiT</strong> framework. The point isn't a leaderboard; it's to make "is this agent safe?" a question banks, regulators, and everyday users can actually ask and verify. My own mother is in the audience for this work, so it has to be legible in <strong>Bahasa Malaysia</strong>, not just English.</p>
+  </div>
+</section>
+
+<section class="alt" id="brag">
+  <div class="wrap">
+    <h2>A few things I'm quietly <span class="accent">proud of</span></h2>
+    <ul>
+      <li><strong>Built the eval from scratch</strong> — from a ~700-line prototype through to a 22-scenario, multi-register suite, and kept it open-source so banks and researchers can run it <em>before</em> deploying.</li>
+      <li><strong>Ran Malaysia's first AI safety meetup</strong> (2024) — back when "AI safety" wasn't yet a local conversation.</li>
+      <li><strong>BlueDot AI Safety alum</strong>, and previously did compute-governance work with PauseAI and the iVAIS project at AI Safety Camp (AISC).</li>
+      <li><strong>Co-developed Cetavals</strong>, a tool for turning evaluation into something non-technical people can author and contest — my small attempt at democratising who gets to define "safe."</li>
+      <li><strong>Published on arXiv</strong> (Cetabench, 2506.20530) on ASEAN / middle-power compute governance.</li>
+      <li><strong>Cross-domain by design:</strong> I've taken the same safety lens to an ageing NGO (the AgeTech Safety Hackathon with UPM + MyAgeing Centre), fintech, and domestic-violence advocacy — because the failure modes don't respect sector boundaries.</li>
+      <li>I like poking at <em>why</em> models fail, not just <em>that</em> they do. I've paired evaluation work with light mechanistic-interpretability experiments, just enough to look inside the "brain" behind a result.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="hobby">
+  <div class="wrap">
+    <h2>Off the clock <span class="accent">(hobby)</span></h2>
+    <p>I'm slowly teaching myself <strong>six languages at once</strong> — Arabic, Latin, Hindi, Korean, Hebrew, and German — mostly through films (Hindi via Bollywood is a personal favourite). On the side I draw <strong>Japanese-style line illustration</strong> (Noritake and Henn Kim are my muses) and am developing a healing-focused illustrated children's book series. I also tutor a handful of secondary students, which keeps me honest about what "education" actually feels like from the other side of the desk.</p>
+  </div>
+</section>
+
+<section class="alt" id="links">
+  <div class="wrap" style="text-align:center;">
+    <h2>Elsewhere</h2>
+    <div class="links">
+      <a href="https://shafiranoh.com/links.html" target="_blank" rel="noopener">shafiranoh.com/links</a>
+      <a href="https://bankbench-sinar.pages.dev" target="_blank" rel="noopener">BankBench-MY</a>
+      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
+      <a href="/public-education/">Public Education</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Sinar/BankBench · CC BY-SA 4.0 · built under the Sinar fellowship
+  </div>
+</footer>
+
+</body>
+</html>
