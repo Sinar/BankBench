@@ -1,26 +1,28 @@
 # Shafira Noh (Sha)
 
-**Sinar Project · Civic Tech Fellow — BankBench-MY**
+**Sinar Project · Civic Tech Fellow**
 
-Hi, I'm Shafira — a Malaysian field-builder working at the intersection of AI safety, civic infrastructure, and education. I'm currently a Civic Tech Fellow at **Sinar Project**, where I'm building **BankBench-MY**, an open, multilingual safety evaluation for AI banking agents in the Malaysian context.
+I do technical AI-safety work — evaluations, a little mechanistic interpretability, field-building — so that the people actually affected by fast-moving LLM development can decide better. My real audience isn't other researchers; it's **consumers, families, government agencies, and NGOs** who currently have to make calls about AI tools without the evidence to back them. That's the "meta-overview" I work from: build the underlying picture carefully, so many downstream decisions get easier — not to hoard expertise, but to give it away.
 
-## What I'm working on
-
-BankBench-MY stress-tests LLM-powered banking chatbots — the kind millions already use on GrabPay, MAE, Boost, and GXBank — against adversarial social-engineering scenarios: urgency scams, authority impersonation, language-register switching, and slow-drip structuring. It scores them against BNM's **RMiT** framework. The point isn't a leaderboard; it's to make "is this agent safe?" a question banks, regulators, and everyday users can actually ask and verify. My own mother is in the audience for this work, so it has to be legible in **Bahasa Malaysia**, not just English.
+I work this way on purpose. I believe in being **frugal and restrained with resources, and finding joy in that restraint** — a barakah-over-maximisation stance. It's also *why* I believe in the meta-overview: a small, well-made piece of evidence infrastructure can serve far more people than another model or another app. **BankBench-MY** — the open, multilingual safety evaluation for Malaysian AI banking agents I'm building as a Sinar Project fellow — is just *one case study* in that logic. It shows how evaluation can feed three things at once: **policy** (what BNM's RMiT framework should actually require), **safe products for society** (what banks should ship), and **public education** (what my mother, using MAE or GrabPay, deserves to understand). The method matters more than the domain.
 
 ## A few things I'm quietly proud of (humble brag)
 
-- **Built the eval from scratch** — from a ~700-line prototype through to a 22-scenario, multi-register suite, and kept it open-source so banks and researchers can run it *before* deploying.
+- **Built BankBench-MY from scratch** — from a ~700-line prototype through to a 22-scenario, multi-register suite, kept open-source so banks and researchers can run it *before* deploying. It's one case study; the pattern is the point.
+- **Co-developed Cetavals**, a tool for turning evaluation into something non-technical people can author and contest — my attempt at democratising who gets to define "safe."
+- **Published on arXiv** (Cetabench, 2506.20530) on ASEAN / middle-power compute governance, and built CetaLabs as a field-building base across the region.
 - **Ran Malaysia's first AI safety meetup** (2024) — back when "AI safety" wasn't yet a local conversation.
-- **BlueDot AI Safety alum**, and previously did compute-governance work with PauseAI and the iVAIS project at AI Safety Camp (AISC).
-- **Co-developed Cetavals**, a tool for turning evaluation into something non-technical people can author and contest — my small attempt at democratising who gets to define "safe."
-- **Published on arXiv** (Cetabench, 2506.20530) on ASEAN / middle-power compute governance.
-- **Cross-domain by design:** I've taken the same safety lens to an ageing NGO (the AgeTech Safety Hackathon with UPM + MyAgeing Centre), fintech, and domestic-violence advocacy — because the failure modes don't respect sector boundaries.
+- **BlueDot AI Safety alum**, with earlier compute-governance work at PauseAI and the iVAIS project at AI Safety Camp (AISC).
+- **Cross-domain by design:** I've taken the same safety lens to an ageing NGO (the AgeTech Safety Hackathon with UPM + MyAgeing Centre), fintech, and domestic-violence advocacy — because the failure modes don't respect sector boundaries, and the meta-overview has to travel.
 - I like poking at *why* models fail, not just *that* they do. I've paired evaluation work with light mechanistic-interpretability experiments, just enough to look inside the "brain" behind a result.
 
 ## Off the clock (hobby)
 
 I'm slowly teaching myself **six languages at once** — Arabic, Latin, Hindi, Korean, Hebrew, and German — mostly through films (Hindi via Bollywood is a personal favourite). On the side I draw **Japanese-style line illustration** (Noritake and Henn Kim are my muses) and am developing a healing-focused illustrated children's book series. I also tutor a handful of secondary students, which keeps me honest about what "education" actually feels like from the other side of the desk.
+
+## For Sinar Project's site (one paragraph)
+
+> Shafira Noh is a Sinar Project Civic Tech Fellow working at the intersection of AI safety, civic infrastructure, and education. She builds open, multilingual evaluation tooling — beginning with BankBench-MY, a safety benchmark for Malaysian AI banking agents — to help consumers, families, government agencies, and NGOs make better decisions about fast-moving LLM technology. Her work connects technical evaluation to policy, safer products, and public education, and she approaches it frugally and at a restrained scale so the evidence can serve many, not few.
 
 ## Elsewhere
 
