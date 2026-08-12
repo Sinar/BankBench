@@ -97,19 +97,19 @@
 // ============================================================
 const DATA = {
   budgetUsedUsd: 0.00,
-  lastUpdated: "not yet run",
+  lastUpdated: "2026-08-12 · local run (S-02/S-05 pending VastAI rental)",
   stages: [
     {
       id: "S-01",
       title: "nanoGPT from scratch",
-      status: "ghosted",
+      status: "in_progress",
       grade: null,
       metrics: [
-        { label: "params", value: "—" },
-        { label: "loss (start→end)", value: "—" },
-        { label: "steps", value: "—" }
+        { label: "params", value: "10.7M" },
+        { label: "loss (start→end)", value: "— (pending run)" },
+        { label: "steps", value: "500 (planned)" }
       ],
-      note: "Proves you can run a full pretrain loop from random init. Local/free, no VastAI spend."
+      note: "nanoGPT flattened into s01-nanogpt/. Corpus = BankBench-MY prompts + Sinar civic text (see data/ECOSYSTEMS_DATA_SOURCES.md). Training run is yours to execute locally (MPS, free); wire numbers here once done."
     },
     {
       id: "S-02",
@@ -121,7 +121,7 @@ const DATA = {
         { label: "held-out refusal % (ft)", value: "—" },
         { label: "over-refusal delta", value: "—" }
       ],
-      note: "PRIORITY. Clears the securefast.ai bar. Produces the scorecard's new trainability row."
+      note: "PRIORITY, BLOCKED today: needs a VastAI GPU rental (no account/card on file) + Kaggle/AdaptationAI creds. sft_train.jsonl (17) / sft_heldout.jsonl (5) already built. ECOSYSTEMS civic data (data/raw/sinar-civic) can substitute the Kaggle Banking77 benign smoke set."
     },
     {
       id: "S-03",
@@ -154,7 +154,7 @@ const DATA = {
         { label: "endpoint", value: "—" },
         { label: "latency", value: "—" }
       ],
-      note: "PRIORITY. Turns S-02's checkpoint into a live BankBench-MY-evaluable target."
+      note: "PRIORITY, BLOCKED today: depends on the S-02 checkpoint (needs VastAI rental first). FastAPI wrapper (s05-deploy/serve.py) is ready to wrap the checkpoint once it exists."
     }
   ]
 };

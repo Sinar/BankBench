@@ -4,19 +4,28 @@ Proves: you can run a full pretraining loop with your own hands. Cheapest, faste
 
 ## Run
 
+nanoGPT is flattened directly into this folder (`train.py`, `model.py`, `config/`,
+`data/` at the top level) — no sibling clone. Run everything from inside `s01-nanogpt/`.
+
 ```bash
 cd s01-nanogpt
-./setup.sh                 # clones nanoGPT, installs deps
-python prepare_corpus.py   # builds a tiny BM/Manglish + BankBench-MY text corpus
-python ../../../../nanoGPT/train.py config_train.py --device=mps --compile=False
+./setup.sh                 # installs deps into .venv (nanoGPT already present)
+python prepare_corpus.py --bankbench-path ../../bankbench_my/scenarios/bankbench-20-tasks.json
+python prepare_char.py     # tokenizes input.txt -> data/shakespeare_char/*.bin
+python train.py config/train_shakespeare_char.py --device=mps --compile=False \
+     --max_iters=500 --eval_interval=100 --out_dir=./out
 ```
 
-(`setup.sh` clones `nanoGPT` as a sibling `nanoGPT/` folder next to this one — not vendored into git, it's upstream code you drive, not code you own.)
+The corpus (`input.txt`) is BankBench-MY prompt text + Sinar civic text
+(`../data/raw/sinar-civic/pool.txt`, see `../data/ECOSYSTEMS_DATA_SOURCES.md`),
+so this is a from-scratch run on our own Malaysian civic + adversarial corpus,
+not Shakespeare. It is small (~25k chars) so it will overfit fast — that's a
+loop sanity check, not a sample-quality claim; add a Kaggle BM corpus for more.
 
 ## Deliverable to capture
 
 Once training finishes, fill in `RESULT.md` with:
-- Loss curve screenshot (`nanoGPT` writes to `out/`)
+- Loss curve + final `out/` checkpoint (nanoGPT writes to `out/`)
 - 3 sample generations at different checkpoint steps
 - One paragraph: params, steps, loss X→Y — this paragraph is your literal securefast.ai answer
 

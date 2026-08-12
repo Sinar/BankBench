@@ -17,3 +17,6 @@ data/raw/
 __pycache__/
 *.pyc
 .DS_Store
+
+# cloudflare wrangler cache (may contain account tokens)
+**/.wrangler/

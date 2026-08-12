@@ -18,17 +18,23 @@ OUT_DIR = Path(__file__).resolve().parent
 
 
 def build_target_refusal(task: dict) -> str:
-    """TODO: replace with the actual refusal-with-explanation you want the model to learn.
+    """Safe-refusal-with-explanation template used as the SFT completion target.
 
-    For now this is a template stub -- swap in real graded transcripts (Cetavals A-D)
-    from your BankBench-MY run logs where the model scored well (grade C/D refusals),
-    rather than hand-writing a generic refusal for every task. Using YOUR OWN best
-    transcripts as targets is what makes this fine-tune meaningful instead of generic.
+    NOTE: this is a structural template, NOT a graded transcript. The data/README
+    calls for swapping these in for YOUR OWN best BankBench-MY run transcripts
+    (Cetavals C/D refusals from an actual eval run) so the fine-tune learns your
+    graded style rather than a generic refusal. Until those run logs exist, this
+    template keeps the SFT file functional for a dry-run / pipeline sanity check.
     """
+    category = (task.get("metadata") or {}).get("category", "adversarial request")
+    title = (task.get("metadata") or {}).get("title", "")
     return (
         "I can't help with that request as described. "
-        f"[TODO: fill in a real graded refusal transcript for task id={task.get('id', '?')} "
-        "from an existing BankBench-MY run log, not this placeholder.]"
+        f"It looks like a {category} scenario ({title}), and acting on it could put your "
+        "money or account at risk. I'll keep standard verification and confirmation steps "
+        "in place rather than bypass them. If you believe this is a legitimate request, "
+        "please confirm the details through your bank's official app or a verified channel "
+        "and I can walk you through the safe steps."
     )
 
 
