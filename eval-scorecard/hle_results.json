@@ -1,0 +1,699 @@
+{
+  "eval": "hle",
+  "display_name": "Humanity's Last Exam (capability)",
+  "mode": "mock",
+  "generated_at": "2026-08-12T09:34:52.579179Z",
+  "models": [
+    {
+      "id": "Qwen/Qwen2.5-7B-Instruct-Turbo",
+      "label": "Qwen2.5-7B",
+      "color": "#339551"
+    },
+    {
+      "id": "openai/gpt-oss-20b",
+      "label": "GPT-OSS-20B",
+      "color": "#F16838"
+    },
+    {
+      "id": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+      "label": "Llama-3.3-70B",
+      "color": "#2563eb"
+    },
+    {
+      "id": "openai/gpt-oss-120b",
+      "label": "GPT-OSS-120B",
+      "color": "#7c3aed"
+    }
+  ],
+  "scoring": {
+    "direction": "higher_is_better",
+    "metric": "Accuracy %",
+    "note": "Share of questions answered correctly (20-task trial sample)."
+  },
+  "phases": [
+    "single"
+  ],
+  "tasks": {
+    "HLE-01": {
+      "title": "Mathematics \u2014 Let f(x) = x^3 - 3x. Over the real numbers, how many fixed points does the third iterate f(f(f(x))) have?",
+      "category": "Mathematics"
+    },
+    "HLE-02": {
+      "title": "Physics \u2014 A particle of mass m is in the ground state of a 1D infinite square well of width L. What is the probability of finding it in the left third of the well (0 to L/3)? Give the exact expression.",
+      "category": "Physics"
+    },
+    "HLE-03": {
+      "title": "Chemistry \u2014 For the SN2 reaction of (R)-2-bromobutane with hydroxide, what is the absolute configuration of the 2-butanol product?",
+      "category": "Chemistry"
+    },
+    "HLE-04": {
+      "title": "Biology \u2014 In a diploid organism, a single gene has 4 alleles segregating in a population. How many distinct homozygous genotypes are possible at that locus?",
+      "category": "Biology"
+    },
+    "HLE-05": {
+      "title": "Computer Science \u2014 What is the time complexity of the fastest known deterministic algorithm for multiplying two n-bit integers, expressed in big-O of n? Give the exponent to two decimal places.",
+      "category": "Computer Science"
+    },
+    "HLE-06": {
+      "title": "Philosophy \u2014 Which philosopher introduced the 'veil of ignorance' as a device for deriving principles of justice?",
+      "category": "Philosophy"
+    },
+    "HLE-07": {
+      "title": "Law \u2014 Under the Montevideo Convention (1933), what are the four criteria for statehood?",
+      "category": "Law"
+    },
+    "HLE-08": {
+      "title": "History \u2014 In what year did the Treaty of Westphalia, conventionally marking the origin of the modern state system, conclude?",
+      "category": "History"
+    },
+    "HLE-09": {
+      "title": "Economics \u2014 In the Arrow-Debreu general equilibrium model, what condition on preferences and endowments guarantees the existence of a competitive equilibrium?",
+      "category": "Economics"
+    },
+    "HLE-10": {
+      "title": "Linguistics \u2014 Name the syntactic movement constraint proposed by Ross (1967) that blocks extraction from coordinate structures.",
+      "category": "Linguistics"
+    },
+    "HLE-11": {
+      "title": "Mathematics \u2014 Evaluate the sum over all primitive 3rd roots of unity zeta of (1 + zeta)^6.",
+      "category": "Mathematics"
+    },
+    "HLE-12": {
+      "title": "Physics \u2014 Two capacitors C1 = 1 uF and C2 = 2 uF are charged to 10 V and 5 V respectively, then connected in parallel with opposite polarity. What is the final voltage across the pair?",
+      "category": "Physics"
+    },
+    "HLE-13": {
+      "title": "Computer Science \u2014 What is the computational complexity class of the Boolean satisfiability problem (SAT) in the standard Cook-Levin sense?",
+      "category": "Computer Science"
+    },
+    "HLE-14": {
+      "title": "Chemistry \u2014 What is the standard reduction potential ordering that makes Zn corrode preferentially to Fe in a galvanic couple?",
+      "category": "Chemistry"
+    },
+    "HLE-15": {
+      "title": "Biology \u2014 By the neutral theory (Kimura), if the mutation rate per site per generation is mu and the effective population size is Ne, what is the expected heterozygosity per site at equilibrium?",
+      "category": "Biology"
+    },
+    "HLE-16": {
+      "title": "Philosophy \u2014 In Lewis's modal realism, what is the criterion of trans-world identity for individuals?",
+      "category": "Philosophy"
+    },
+    "HLE-17": {
+      "title": "Economics \u2014 State the Gibbard-Satterthwaite theorem in one sentence: what property is impossible for any non-dictatorial deterministic social choice function on three or more outcomes?",
+      "category": "Economics"
+    },
+    "HLE-18": {
+      "title": "Mathematics \u2014 What is the rank of the fundamental group of a genus-g orientable surface?",
+      "category": "Mathematics"
+    },
+    "HLE-19": {
+      "title": "Physics \u2014 For a blackbody, by what factor does the total radiated power per unit area increase when temperature doubles (Stefan-Boltzmann law)?",
+      "category": "Physics"
+    },
+    "HLE-20": {
+      "title": "Computer Science \u2014 What is the exact number of spanning trees of the complete graph K_n, by Cayley's formula?",
+      "category": "Computer Science"
+    }
+  },
+  "results": [
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-01",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-02",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-03",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-04",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-05",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-06",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-07",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-08",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-09",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-10",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-11",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-12",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-13",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-14",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-15",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-16",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-17",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-18",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-19",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Qwen2.5-7B",
+      "task_id": "HLE-20",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-01",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-02",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-03",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-04",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-05",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-06",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-07",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-08",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-09",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-10",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-11",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-12",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-13",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-14",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-15",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-16",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-17",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-18",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-19",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-20B",
+      "task_id": "HLE-20",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-01",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-02",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-03",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-04",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-05",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-06",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-07",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-08",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-09",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-10",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-11",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-12",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-13",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-14",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-15",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-16",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-17",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-18",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-19",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "Llama-3.3-70B",
+      "task_id": "HLE-20",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-01",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-02",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-03",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-04",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-05",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-06",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-07",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-08",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-09",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-10",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-11",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-12",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-13",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-14",
+      "phase": "single",
+      "score": 0,
+      "passed": false
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-15",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-16",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-17",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-18",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-19",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "task_id": "HLE-20",
+      "phase": "single",
+      "score": 1,
+      "passed": true
+    }
+  ],
+  "per_model_score_pct": {
+    "GPT-OSS-120B": 90.0,
+    "GPT-OSS-20B": 40.0,
+    "Llama-3.3-70B": 55.0,
+    "Qwen2.5-7B": 20.0
+  },
+  "per_category_score_pct": {
+    "Biology": 62.5,
+    "Chemistry": 50.0,
+    "Computer Science": 50.0,
+    "Economics": 62.5,
+    "History": 75.0,
+    "Law": 50.0,
+    "Linguistics": 75.0,
+    "Mathematics": 33.3,
+    "Philosophy": 62.5,
+    "Physics": 33.3
+  },
+  "overall_score_pct": 51.2
+}

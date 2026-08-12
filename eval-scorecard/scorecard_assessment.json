@@ -1,0 +1,113 @@
+{
+  "paper": "Scorecard of AI Evaluation Quality (San Joaquin, Gipiskis, Chin — Feb 2026)",
+  "paper_ref": "bankbench/3-4 LLM_scorecard/scorecard-full-paper.md",
+  "scoring_note": "Each dimension scored 1 (best) to 4 (worst), following the paper. Classification = the category implied by the weakest dimension (the paper caps a benchmark at its lowest-scoring dimension). Working draft — self-assessment, not an independent third-party grade.",
+  "dimensions": ["construct_validity", "internal_validity", "external_validity", "reliability", "correctness"],
+  "evals": {
+    "bankbench": {
+      "display": "BankBench-MY (safety)",
+      "assessment": {
+        "construct_validity": {
+          "score": 3,
+          "satisfied": ["Hypothesis + operational failure definition pre-specified before running", "Canonical 22-task dataset with T-CTRL-01/02 single-agent controls", "Error analysis on the gpt-oss parsing bug (28%->0%)"],
+          "gaps": ["block/clarify/proceed rubric conflates 'avoided unsafe action' with 'added friction' — no sub-component split"],
+          "justification": "Strong on pre-specification and controls; weakened by an action rubric that does not separate 'did the safe thing' from 'added friction', the same ambiguity flagged in the first Make-Me-Pay eval."
+        },
+        "internal_validity": {
+          "score": 4,
+          "satisfied": ["Live Together AI inference (real model, not mocked)", "temperature=0; state cleared between task runs"],
+          "gaps": ["Pilot N=1 per (model, task, phase); no power calculation or SE estimates — a floor item per the paper"],
+          "justification": "Real inference helps, but N=1 per cell with no uncertainty estimate is the paper's internal-validity floor failure. N>=3 per cell is the single biggest lever."
+        },
+        "external_validity": {
+          "score": 3,
+          "satisfied": ["Real Malaysian banking domain grounded in BNM RMiT / PDPA", "Live inference is one genuine deployment condition"],
+          "gaps": ["Only 2 of 4 pre-registered deployment conditions implemented (clean baseline + compliance-forcing; protective Bedrock-XML overlay and neutral-persona condition open)", "No domain-expert review yet"],
+          "justification": "Domain grounding is good; coverage of deployment conditions is partial, so external validity is capped below the published-benchmark level."
+        },
+        "reliability": {
+          "score": 4,
+          "satisfied": ["Fixed the gpt-oss reasoning-token truncation bug", "Fisher's exact, Cohen's h, Bonferroni correction reported"],
+          "gaps": ["No replication_config.json (pinned API versions, seed, judge prompt) committed", "No OSF pre-registration filed", "No 3rd-party replication"],
+          "justification": "Statistical hygiene present, but the paper treats missing pinned-versions/seed config and absent 3rd-party replication as reliability floor failures."
+        },
+        "correctness": {
+          "score": 4,
+          "satisfied": ["Programmatic, edge-case-aware scoring rules", "0% unparseable outputs after the parser fix"],
+          "gaps": ["No inter-rater kappa computed (open JAIST collaboration, 40-item sample)"],
+          "justification": "Scoring is machine-checkable and robust post-fix, but the paper requires rater-consistency evidence (kappa) for a top correctness grade."
+        }
+      }
+    },
+    "hle": {
+      "display": "Humanity's Last Exam (capability)",
+      "assessment": {
+        "construct_validity": {
+          "score": 1,
+          "satisfied": ["Expert-authored, precisely operationalized graduate-level questions", "Broad subject coverage with well-specified single targets", "Questions target genuine reasoning gaps, not guessing"],
+          "gaps": [],
+          "justification": "Closely matches the paper's construct-validity ideal: precise phenomenon, representative expert task space, verifiable targets. (Our 20-task trial is a sample, not the full 3k-item set.)"
+        },
+        "internal_validity": {
+          "score": 2,
+          "satisfied": ["Model isolated from ground truth (closed-book)", "Deterministic exact/normalized grading", "No MCQ guessing (open answer)"],
+          "gaps": ["Single attempt per item in this trial; no per-item SE reported"],
+          "justification": "Isolation and grading are clean; the trial's single attempt per item is the only internal-validity deduction versus the published protocol."
+        },
+        "external_validity": {
+          "score": 1,
+          "satisfied": ["Drawn from real expert-domain tasks across many disciplines", "Difficulty calibrated to exceed frontier-model capability"],
+          "gaps": ["Our 20-task sample is not representative of the full distribution"],
+          "justification": "Strong real-world expert grounding; sampling caveat applies only to this trial's downsampled set."
+        },
+        "reliability": {
+          "score": 2,
+          "satisfied": ["Published protocol is replicable", "Fixed task sample reused across models"],
+          "gaps": ["No seeded run config / pinned model versions committed for this trial"],
+          "justification": "Replicable in principle; the trial run does not yet commit a full replication config (floor item for Cat A standing)."
+        },
+        "correctness": {
+          "score": 1,
+          "satisfied": ["Each question has a single verifiable target answer", "Normalized answer matching handles formatting variance"],
+          "gaps": [],
+          "justification": "Ground truth is unambiguous and programmatically checkable — the paper's correctness ideal."
+        }
+      }
+    },
+    "cybench": {
+      "display": "Cybench (capability, CTF)",
+      "assessment": {
+        "construct_validity": {
+          "score": 2,
+          "satisfied": ["Tasks map to real offensive-security skill areas (web/crypto/pwn/reverse/forensics)", "Difficulty ladder present"],
+          "gaps": ["Our 20 tasks are hand-authored trial samples, not the curated published repo tasks", "Population not sampled from the published difficulty distribution"],
+          "justification": "Construct is right (real CTF skills), but the trial set is author-built rather than the vetted published corpus, so construct validity is a step below HLE."
+        },
+        "internal_validity": {
+          "score": 2,
+          "satisfied": ["Flag is programmatic ground truth — no guessing path", "Deterministic check", "No MCQ"],
+          "gaps": ["Single attempt per task in this trial"],
+          "justification": "Ground-truth isolation is excellent (a flag is either produced or not); single-attempt caveat only."
+        },
+        "external_validity": {
+          "score": 2,
+          "satisfied": ["Real CTF categories and realistic task framing"],
+          "gaps": ["Difficulty/population not sampled from the published distribution", "No malicious-use deployment config exercised"],
+          "justification": "Genuine categories, but the trial sample is not drawn from the published task population."
+        },
+        "reliability": {
+          "score": 2,
+          "satisfied": ["Reproducible given the fixed task set", "Trivial-agent baseline (random guessing) ~0%"],
+          "gaps": ["No committed replication config for the trial"],
+          "justification": "Reproducible in principle; trial lacks a committed config (floor item for Cat A)."
+        },
+        "correctness": {
+          "score": 1,
+          "satisfied": ["Each task has a verified end state (a known flag)", "Scoring rule well-specified and handles edge cases"],
+          "gaps": [],
+          "justification": "Every task has an explicit solution to compare against — the paper's correctness ideal."
+        }
+      }
+    }
+  }
+}

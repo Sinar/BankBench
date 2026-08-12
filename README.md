@@ -19,7 +19,7 @@ One shared eval core (`bankbench_my/`), four applied surfaces built on top of it
 | Surface | Folder | What it adds |
 |---|---|---|
 | **BankBench itself** | `bankbench_my/`, `mybanksim/` | The scenarios, the Inspect AI task/scorer, and the live Cloudflare Worker sandbox that runs them |
-| **+ Scorecard** | `standard_scorecard/`, `dashboard/` | A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation) |
+| **+ Scorecard** | `standard_scorecard/`, `dashboard/`, `eval-scorecard/` | A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation). `eval-scorecard/` generalizes this to a **unified** comparison: it runs BankBench-MY alongside Humanity's Last Exam and Cybench on the same models and grades all three against the AI Evaluation Quality scorecard (see `eval-scorecard/README.md`). |
 | **+ Model** | `training-loop/` | The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it |
 | **+ Public Education** | `docs/consumer-explainer/`, `docs/rmit-gap-brief.md` | Plain-language and regulator-facing material built from the same findings |
 
