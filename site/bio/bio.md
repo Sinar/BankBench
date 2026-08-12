@@ -11,6 +11,8 @@ I work this way on purpose. I believe in being **frugal and restrained with reso
 - **Built BankBench-MY from scratch** — from a ~700-line prototype through to a 22-scenario, multi-register suite, kept open-source so banks and researchers can run it *before* deploying. It's one case study; the pattern is the point.
 - **Co-developed Cetavals**, a tool for turning evaluation into something non-technical people can author and contest — my attempt at democratising who gets to define "safe."
 - **Published on arXiv** (Cetabench, 2506.20530) on ASEAN / middle-power compute governance, and built CetaLabs as a field-building base across the region.
+- **Won the BlueDot–Apart Hackathon** (AI Safety Public Education track) — proof that rigorous eval work and public education belong in the same breath.
+- **Brought AI safety to 300 teachers at DutaGuru** — because educators, not just engineers, should get to decide what "safe" means in their classrooms.
 - **Ran Malaysia's first AI safety meetup** (2024) — back when "AI safety" wasn't yet a local conversation.
 - **BlueDot AI Safety alum**, with earlier compute-governance work at PauseAI and the iVAIS project at AI Safety Camp (AISC).
 - **Cross-domain by design:** I've taken the same safety lens to an ageing NGO (the AgeTech Safety Hackathon with UPM + MyAgeing Centre), fintech, and domestic-violence advocacy — because the failure modes don't respect sector boundaries, and the meta-overview has to travel.
@@ -22,7 +24,7 @@ I'm slowly teaching myself **six languages at once** — Arabic, Latin, Hindi, K
 
 ## For Sinar Project's site (one paragraph)
 
-> Shafira Noh is a Sinar Project Civic Tech Fellow working at the intersection of AI safety, civic infrastructure, and education. She builds open, multilingual evaluation tooling — beginning with BankBench-MY, a safety benchmark for Malaysian AI banking agents — to help consumers, families, government agencies, and NGOs make better decisions about fast-moving LLM technology. Her work connects technical evaluation to policy, safer products, and public education, and she approaches it frugally and at a restrained scale so the evidence can serve many, not few.
+> Shafira Noh is a Sinar Project Civic Tech Fellow who believes the best AI-safety work is done lightly — frugally, with restraint, and a real joy in using few resources to help many. She builds open, multilingual evaluation tooling, starting with BankBench-MY (a safety benchmark for Malaysian AI banking agents), so that consumers, families, government agencies, and NGOs can decide better about fast-moving LLM technology. Her approach is hands-on and quietly decorated: she was part of the winning team at the BlueDot–Apart Hackathon (AI Safety Public Education track) and has workshopped AI safety with 300 teachers at DutaGuru. Off the clock she's teaching herself six languages at once and drawing Japanese-style line illustration — because, for her, curiosity and care are the same muscle. She works at a restrained scale so the evidence can serve many, not few.
 
 ## Elsewhere
 
