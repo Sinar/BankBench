@@ -21,7 +21,7 @@ One shared eval core (`bankbench_my/`), four applied surfaces built on top of it
 | **BankBench itself** | `bankbench_my/`, `mybanksim/` | The scenarios, the Inspect AI task/scorer, and the live Cloudflare Worker sandbox that runs them |
 | **+ Scorecard** | `standard_scorecard/`, `dashboard/`, `eval-scorecard/` | A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation). `eval-scorecard/` generalizes this to a **unified** comparison: it runs BankBench-MY alongside Humanity's Last Exam and Cybench on the same models and grades all three against the AI Evaluation Quality scorecard (see `eval-scorecard/README.md`). |
 | **+ Model** | `training-loop/` | The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it |
-| **+ Public Education** | `site/public-education/` | Plain-language consumer explainers built from the same findings. Landing page + 1 live explainer ("What Your Bank's AI Can and Can't Do") + 5 ghosted explainers in progress (authority scam, structuring fraud, Manglish-as-risk, rapport dilution, AI handoff) |
+| **+ Public Education** | `site/public-education/` | Plain-language consumer explainers built from the same findings. Includes an **interactive bilingual (EN/BM) demo** (`interactive.html`) — pick a real scam scenario, see safe vs. vulnerable AI behavior, and explore the evaluation data as charts — plus 1 live written explainer ("What Your Bank's AI Can and Can't Do") and 5 ghosted explainers in progress (authority scam, structuring fraud, Manglish-as-risk, rapport dilution, AI handoff) |
 
 Below the four surfaces, the diagram also lists **related domains** this work draws on — fields, not folder or project names, since most of that adjacent work isn't public yet: Mechanistic Interpretability; Adversarial Sandbox & Honeypot Red-teaming; Multi-Agent Collusion & Cross-Language Pressure Testing; Meta-Evaluation & Benchmark Tooling; AI Governance & Standards Mapping; AI Safety Engineering Curriculum & Education.
 
@@ -37,7 +37,8 @@ BankBench/
 │   ├── training-loop-dashboard.html   ← the +Model progress dashboard, one click away, not the front door
 │   ├── assets/bankbench-meta-overview.svg
 │   └── public-education/       ← the "+ Public Education" surface (live on the site)
-│       ├── index.html          ← landing page: 1 live explainer + 5 ghosted explainers
+│       ├── index.html          ← landing page: interactive demo + 1 live explainer + 5 ghosted explainers
+│       ├── interactive.html    ← LIVE: interactive, bilingual (EN/BM) scam-scenario demo + evaluation data charts
 │       ├── explainer-1.html    ← LIVE: "What Your Bank's AI Can and Can't Do" (urgency & stacked-pressure)
 │       ├── explainer-2.html    ← coming soon: authority impersonation (AUTH-01/02)
 │       ├── explainer-3.html    ← coming soon: structuring / slow-drip fraud (STATE-01)
