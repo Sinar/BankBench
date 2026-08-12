@@ -92,12 +92,13 @@
 <nav>
   <div class="wrap">
     <a class="brand" href="#top"><span class="dot"></span>BANKBENCH-MY</a>
-    <div class="navlinks">
-      <a href="#surfaces">Surfaces</a>
-      <a href="#domains">Related domains</a>
-      <a href="training-loop-dashboard.html">Training Loop</a>
-      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
-    </div>
+     <div class="navlinks">
+       <a href="#surfaces">Surfaces</a>
+       <a href="#domains">Related domains</a>
+       <a href="training-loop-dashboard.html">Training Loop</a>
+       <a href="https://github.com/Sinar/BankBench/tree/main/eval-scorecard" target="_blank" rel="noopener">Scorecard</a>
+       <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
+     </div>
   </div>
 </nav>
 
@@ -118,6 +119,13 @@
     <h2>One eval core, four applied surfaces</h2>
     <p class="lede">BankBench-MY's scenarios and scorer are the shared core. Everything else is a different way of putting that core to work — some finished, some still in progress.</p>
 
+    <div class="card" style="border-color: var(--sig); margin-bottom: 28px;">
+      <span class="badge live">new — Aug 2026</span>
+      <h3>Unified Eval-Scorecard</h3>
+      <p>The +Scorecard surface, generalized to a <strong>multi-eval comparison</strong>. It runs BankBench-MY (safety) alongside <strong>Humanity's Last Exam</strong> and <strong>Cybench</strong> (capability) on the same 4 models, normalizes every eval onto one 0–100 score, and grades all three against the <strong>AI Evaluation Quality scorecard</strong> (5 dimensions, Category A–E). First run is a trial: 20-task samples, deterministic mock track, with a live Together AI option. See the unified dashboard for the models×evals matrix and the cross-eval scorecard.</p>
+      <a class="card-link" href="https://github.com/Sinar/BankBench/tree/main/eval-scorecard">Open eval-scorecard →</a>
+    </div>
+
     <div class="diagram-frame">
       <img src="assets/bankbench-meta-overview.svg" alt="BankBench-MY meta-overview diagram — one shared eval core with four applied surfaces (BankBench itself, plus Scorecard, plus Model, plus Public Education) and a row of related domain fields below">
     </div>
@@ -129,11 +137,11 @@
         <p>The core: adversarial banking-agent scenarios in EN/BM/Manglish, an Inspect AI task + scorer, and a live agentic sandbox you can run them against.</p>
         <a class="card-link" href="https://bankbench-sandbox.shalomshafa.workers.dev" target="_blank" rel="noopener">Try it live →</a>
       </div>
-      <div class="card ghosted">
-        <span class="badge soon">coming soon</span>
+      <div class="card">
+        <span class="badge live">live — new</span>
         <h3>+ Scorecard</h3>
-        <p>A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation) instead of a one-off leaderboard number.</p>
-        <a class="card-link" href="#">Not yet migrated</a>
+        <p>A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation) instead of a one-off leaderboard number. Now generalized into a <strong>unified eval-scorecard</strong> that compares BankBench-MY against Humanity's Last Exam and Cybench and grades each against the AI Evaluation Quality scorecard (Cat A–E).</p>
+        <a class="card-link" href="https://github.com/Sinar/BankBench/tree/main/eval-scorecard">Open eval-scorecard →</a>
       </div>
       <div class="card">
         <span class="badge progress">in progress</span>
