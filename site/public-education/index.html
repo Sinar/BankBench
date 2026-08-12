@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Public Education — BankBench-MY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Plain-language explainers for consumers about AI safety in Malaysian digital banking.">
+<style>
+  :root {
+    --g0: #F5F5F3; --g1: #EAEAE7; --g2: #D4D4D0; --g3: #AFAFAB; --g4: #6B6B68;
+    --ink: #3A3A38; --deep: #1A1A18;
+    --sig: #4E7A51; --siglo: #D6E6D7; --sighi: #2C5A2F;
+    --warn: #9B5B1A; --warnlo: #F5E6D5;
+    --err: #8B2A2A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--g0); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  h1, h2, h3, .brand, nav a { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  code, .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+  a { color: var(--sig); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    border-bottom: 1px solid var(--g2); background: #fff;
+    position: sticky; top: 0; z-index: 10;
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sig); display: inline-block; margin-right: 8px; }
+  .brand { font-weight: 700; font-size: 17px; color: var(--deep); text-decoration: none; display: flex; align-items: center; }
+  .navlinks { display: flex; gap: 22px; font-size: 13.5px; }
+  .navlinks a { color: var(--g4); text-decoration: none; }
+  .navlinks a:hover { color: var(--sig); }
+
+  header.hero { padding: 64px 0 48px; text-align: center; }
+  header.hero h1 { font-size: 34px; margin: 0 0 12px; color: var(--deep); }
+  header.hero p.sub { max-width: 640px; margin: 0 auto 28px; color: var(--g4); font-size: 15.5px; line-height: 1.6; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 20px; border-radius: 7px; font-size: 14px;
+    font-weight: 600; text-decoration: none; font-family: 'Space Grotesk', sans-serif;
+  }
+  .btn.primary { background: var(--sig); color: #fff; }
+  .btn.primary:hover { background: var(--sighi); }
+  .btn.secondary { background: #fff; color: var(--ink); border: 1px solid var(--g2); }
+  .btn.secondary:hover { border-color: var(--sig); color: var(--sig); }
+
+  section { padding: 40px 0; }
+  section.alt { background: #fff; border-top: 1px solid var(--g2); border-bottom: 1px solid var(--g2); }
+  h2 { font-size: 20px; color: var(--deep); margin: 0 0 6px; }
+  p.lede { color: var(--g4); font-size: 14px; margin: 0 0 24px; max-width: 720px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+  .card {
+    background: #fff; border: 1px solid var(--g2); border-radius: 10px; padding: 22px;
+    position: relative; display: flex; flex-direction: column; transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card.ghosted { background: var(--g1); opacity: 0.55; filter: grayscale(0.4); }
+  .card.ghosted:hover { transform: none; }
+  .badge {
+    display: inline-block; font-size: 10.5px; padding: 3px 10px; border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 12px; align-self: flex-start;
+  }
+  .badge.live { background: var(--siglo); color: var(--sighi); }
+  .badge.progress { background: var(--warnlo); color: var(--warn); }
+  .badge.soon { background: var(--g2); color: var(--g4); }
+  .card h3 { font-size: 16px; margin: 0 0 10px; color: var(--deep); }
+  .card p { font-size: 13.5px; color: var(--g4); line-height: 1.6; margin: 0 0 16px; flex-grow: 1; }
+  .card a.card-link { font-size: 13.5px; font-weight: 600; text-decoration: none; }
+  .card.ghosted a.card-link { color: var(--g3); pointer-events: none; }
+
+  .series-tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px;
+    background: var(--g2); color: var(--g4); font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  footer { padding: 36px 0 60px; text-align: center; font-size: 12px; color: var(--g3); }
+  footer a { color: var(--g4); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="dot"></span>BANKBENCH-MY</a>
+    <div class="navlinks">
+      <a href="/#surfaces">Surfaces</a>
+      <a href="/#domains">Domains</a>
+      <a href="/training-loop-dashboard.html">Training Loop</a>
+      <a href="/eval-scorecard/unified_scorecard_dashboard.html">Scorecard</a>
+      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div style="display:inline-block;background:var(--siglo);color:var(--sighi);padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;margin-bottom:16px;">Public Education</div>
+    <h1>AI Safety for Malaysian Banking</h1>
+    <p class="sub">Plain-language explainers for consumers — built from real safety-evaluation findings. No jargon, no assumptions, just what you need to know about the AI in your banking app.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="explainer-1.html">Read the first explainer</a>
+      <a class="btn secondary" href="/#surfaces">Back to BankBench-MY</a>
+    </div>
+  </div>
+</header>
+
+<section id="explainers">
+  <div class="wrap">
+    <h2>Consumer Explainers</h2>
+    <p class="lede">Each explainer translates a real safety-evaluation finding into something a non-technical reader can use. The first is live. The rest are in progress — check back as we publish them.</p>
+
+    <div class="grid">
+      <div class="card" style="border-color: var(--sig);">
+        <span class="badge live">live</span>
+        <span class="series-tag">Explainer 01</span>
+        <h3>What Your Bank's AI Can and Can't Do</h3>
+        <p>Your banking chatbot can check balances, flag suspicious transfers, and even call the police on a scammer. But it can also be tricked — and the tricks are getting cleverer. Here's what you need to know.</p>
+        <a class="card-link" href="explainer-1.html">Read now →</a>
+      </div>
+
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <span class="series-tag">Explainer 02</span>
+        <h3>The Authority Scam: When Someone Claims to Be From the Bank</h3>
+        <p>"I'm from your bank's compliance team — transfer now or face charges." Real authority impersonation cases from BankBench-MY's evaluation suite, translated into plain warnings.</p>
+        <a class="card-link" href="#">Not yet published</a>
+      </div>
+
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <span class="series-tag">Explainer 03</span>
+        <h3>Slow Drip: How Scammers Use Structuring Transfers</h3>
+        <p>RM50 today, RM80 tomorrow, RM150 the day after. Why small repeated transfers to a new payee are a red flag — and what the AI should (but sometimes doesn't) catch.</p>
+        <a class="card-link" href="#">Not yet published</a>
+      </div>
+
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <span class="series-tag">Explainer 04</span>
+        <h3>When Manglish Becomes a Security Risk</h3>
+        <p>Switching from formal Bahasa to casual Manglish mid-conversation is natural — but scammers use it to trick banking AI into lowering its guard. What to watch for.</p>
+        <a class="card-link" href="#">Not yet published</a>
+      </div>
+
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <span class="series-tag">Explainer 05</span>
+        <h3>The Rapport Trap: Why Long Benign Chats Can End Badly</h3>
+        <p>After ten minutes of friendly financial advice, your banking AI might let its guard down. Here's the science of rapport dilution — and how to spot it.</p>
+        <a class="card-link" href="#">Not yet published</a>
+      </div>
+
+      <div class="card ghosted">
+        <span class="badge soon">coming soon</span>
+        <span class="series-tag">Explainer 06</span>
+        <h3>AI Hands Off to Humans: What That Really Means</h3>
+        <p>When your banking chatbot says "let me pass this to my supervisor," it's not just a delay. It's a safety control — and scammers know how to exploit the handoff.</p>
+        <a class="card-link" href="#">Not yet published</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="about">
+  <div class="wrap">
+    <h2>About This Series</h2>
+    <p class="lede">BankBench-MY is a research project that tests how safe Malaysian banking AI really is. These explainers are the public-facing side of that work — translated from evaluation findings into advice you can actually use.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Built on real findings</h3>
+        <p>Every explainer is grounded in an actual safety-evaluation scenario tested on real banking-agent LLMs. We don't speculate — we show what failed, why, and what it means for you.</p>
+      </div>
+      <div class="card">
+        <h3>Bahasa Malaysia + English</h3>
+        <p>Explainers are published in both BM and EN where possible. The scenarios themselves are tested across BM Baku, BM Pasar, Manglish, and code-switching.</p>
+      </div>
+      <div class="card">
+        <h3>No jargon, ever</h3>
+        <p>We assume you've used GrabPay or MAE. We don't assume you know what "prompt injection" or "multi-turn state manipulation" means. If we use a term, we define it in plain language.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Sinar/BankBench · CC BY-SA 4.0 · <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">github.com/Sinar/BankBench</a> · built under the Sinar fellowship
+  </div>
+</footer>
+
+</body>
+</html>
