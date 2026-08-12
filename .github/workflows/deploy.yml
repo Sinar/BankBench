@@ -1,0 +1,39 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "eval-scorecard/unified_scorecard_dashboard.html"
+      - "eval-scorecard/README.md"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site output
+        run: |
+          OUT=dist
+          rm -rf "$OUT" && mkdir -p "$OUT"
+          cp -R site/. "$OUT"/
+          mkdir -p "$OUT/eval-scorecard"
+          cp eval-scorecard/unified_scorecard_dashboard.html "$OUT/eval-scorecard/"
+          cp eval-scorecard/README.md "$OUT/eval-scorecard/" 2>/dev/null || true
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name bankbench-sinar
