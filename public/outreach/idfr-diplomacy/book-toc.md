@@ -62,22 +62,26 @@
     - EU AI Act (2024) — risk-tier classification (unacceptable/high/limited/minimal risk). https://artificialintelligenceact.eu/the-act/
     - Reuel, A., Bucknall, B. et al. (2024). "Open Problems in Technical AI Governance." *TMLR*. https://arxiv.org/abs/2407.14981 *(filed in project Drive as "Chp 2.4")*
     - **Add — Diplomatic risk taxonomy (perplexity):** organise risks by harm type — epistemic (fabricated facts/citations), linguistic-cultural (translation distortion, pragmatic mismatch), information-integrity (deepfakes, impersonation, synthetic statements), cybersecurity (prompt injection, exfiltration), decision (automation bias, over-reliance), institutional (deskilling, weakened accountability), sovereignty (vendor lock-in, service withdrawal), systemic (correlated errors across ministries), catastrophic (irreversible escalation / loss of critical capacity).
+    - **Four-layer spine:** classify by *which layer can fail most severely* — model / application / institutional / infrastructure — then assign review tier (Table 5.1).
 - 5.2 Evaluation, Validation and Continuous Monitoring
   - **Contribution (AI safety):** contribute evaluation & benchmarking practices (capability evals, scenario testing) adapted for diplomatic workflows.
     - Shevlane, T. et al. (2023). "Model Evaluation for Extreme Risks." *arXiv:2305.15324*. https://arxiv.org/abs/2305.15324
     - **Add — model-level vs system-level evaluation (perplexity):** a model may be safe in chat but unsafe when connected to classified repos, email, document systems, browsers, databases, external channels. Evaluate the full system, not vendor benchmarks. Dimensions: factual accuracy, source reliability, uncertainty calibration, multilingual/cultural competence, prompt-injection resistance, tool-use safety, impersonation resilience, crisis robustness, post-update stability.
     - **Add — NIST Generative AI Profile** (companion to AI RMF 1.0): treats red-teaming, incident response, evaluation, lifecycle monitoring as organisational risk management. https://www.nist.gov/itl/ai-risk-management-framework
+    - **Four-layer spine:** evaluate at each layer — model (capability/accuracy), application (retrieval/draft fidelity), institutional (human review/expertise), infrastructure (continuity/update control); loop in Figure 5.2 spans all four.
 - 5.3 Red-Teaming and Adversarial Testing
   - **Contribution (AI safety) — strongest single contribution:** adversarial testing, jailbreak/resilience probing, and tabletop exercises for diplomatic AI misuse.
     - Ganguli, D. et al. / Anthropic (2022). "Red Teaming Language Models to Reduce Harms: Methods, Scaling Behaviors, and Lessons Learned." https://arxiv.org/abs/2209.07858
     - Anthropic. "Claude System Card." https://www.anthropic.com/claude-4-system-card
     - OpenAI. "GPT-4 System Card." https://cdn.openai.com/papers/gpt-4-system-card.pdf
     - **Add — sandbox transgression (perplexity):** system appears a bounded assistant but its access to tools/docs/workflows lets it act outside approval assumptions. Red-team scenarios: poisoned briefing doc, indirect prompt injection in external report, AI-generated false statement attributed to a minister, translation that shifts a negotiation position, agent sending unauthorised comms, vendor outage during regional crisis.
+    - **Four-layer spine:** red-team per layer — model (jailbreak/capability), application (sandbox transgression/poisoned retrieval), institutional (synthetic authority/skip-review), infrastructure (update path/channel exploit); probe flow in Figure 5.3 by layer.
 - 5.4 Internal AI Guidelines, Escalation Protocols and Safe-Use Policies for Foreign Ministries
   - **Contribution (AI safety):** draft concrete safe-use policy templates for foreign ministries (model access tiers, human-in-the-loop mandates, prohibited uses).
     - NIST AI RMF 1.0. https://www.nist.gov/itl/ai-risk-management-framework
     - OWASP Gen AI Security Project — Top 10 for LLM Applications. https://genai.owasp.org/
     - **Add — the diplomatic AI safety case (perplexity):** for each significant use case, document intended purpose, prohibited uses, users/affected parties, data classification, model+vendor, tools/permissions, known limitations, eval results, red-team results, human decision points, incident-response, fallback, conditions for suspension. Converts "responsible AI" into an approvable/auditable artifact.
+    - **Four-layer spine:** guideline specifies something at each layer — model (approved models/tiers), application (OWASP controls on retrieval/tools), institutional (named review + escalation protocol), infrastructure (data-residency/jurisdiction + vendor-update/exit clauses); safety case anchors it (Figure 5.4).
 - 5.5 Technical AI Governance for Foreign Affairs
   - **Contribution (AI safety):** link frontier technical governance (capability eval, compute governance, hardware governance) to foreign-affairs adoption decisions and Malaysia's ASEAN role.
     - Shah, R. et al. (2024). *An Approach to Technical AGI Safety and Security.* arXiv:2504.01849.
@@ -86,8 +90,10 @@
     - UK AISI (2023). *Emerging Processes for Frontier AI Safety.*
     - Frontier Safeguards (2025). *Emerging Practices in Frontier AI Safety Frameworks.*
     - International AI Safety Report (2026).
+    - **Four-layer spine:** technical governance maps onto all four layers — strengthens model (capabilities), underpins application (allowed actions), sets institutional standard (adoption requirement), bears on infrastructure (compute/supply-chain control); levers in Figure 5.5.
 - 5.6 From Model Safety to Diplomatic System Safety *(new — user-approved POV "From Model Safety to Diplomatic Resilience")*
   - **Contribution (AI safety):** frame AI safety as protection of judgment, communication, institutional autonomy and sovereignty — not only model behaviour. Distinguish four layers of the AI-enabled foreign-affairs system: (1) model (capability, hallucination, bias, uncertainty); (2) application (retrieval, translation, summarisation, drafting, decision support); (3) institutional (workflows, authorisation, accountability, human review); (4) infrastructure (cloud, data centres, networks, identity, APIs, vendors). A system may pass at the model layer yet fail because it retrieves poisoned data, has excessive file access, its output is accepted without review, a vendor silently changes the model, or the ministry cannot operate if the service is withdrawn. Ties technical safety (necessary but insufficient) to governance, legitimacy and continuity — the through-line of the chapter.
+    - **Four-layer spine:** this section IS the four-layer model as the chapter's unifying mental model (Figure 5.6); "necessary but not sufficient" is the thesis.
 
   - **Defined Chapter 5 corpus (added to /CHAPTER 5 Drive folder, 2026-08-13):** operational AI-safety literature now part of `gdrive_pdf_index.md`:
     - Shevlane, T. et al. (2023). *Model Evaluation for Extreme Risks.* arXiv:2305.15324. https://arxiv.org/abs/2305.15324
