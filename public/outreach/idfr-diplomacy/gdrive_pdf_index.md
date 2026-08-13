@@ -175,4 +175,12 @@
 | 166 | /CHAPTER 5 | Red Teaming Language Models (2022) — Ganguli | 3189 | https://drive.google.com/file/d/1YiM1Gj9DWICsRZPdM_qt4UwM5KWB7ok0/view?usp=drivesdk |
 | 167 | /CHAPTER 5 | Technical AGI Safety and Security (2024) — Shah et al.pdf | 2758 | https://drive.google.com/file/d/1mz-q056v7kXxylJ-sgxN7YIDaF5ifYQP/view?usp=drivesdk |
 
-_Index generated 2026-08-13 11:24 · 167 files · 5 subfolders._
+> **PROPOSED ADDITIONS — open-source tools (NOT yet uploaded to Drive).** Per the Chapter 5 research-prompt workflow, these must be added to the `/CHAPTER 5` Drive folder (`1d1__eLENaGcbylnGPNQEpnp0RjZjwZzw`) and then the index regenerated via the worker `POST /sync`. They are tools, not PDFs, so nothing is attached; cite by canonical URL. **Drive URL: PENDING_UPLOAD (no local Drive token available to push).**
+>
+> | # | Folder | Tool | Canonical URL | Status |
+> |---|--------|------|--------------|--------|
+> | 168 | /CHAPTER 5 | Garak — LLM vulnerability scanner (open-source, NVIDIA / leondz) | https://github.com/NVIDIA/garak | PENDING_UPLOAD |
+> | 169 | /CHAPTER 5 | PyRIT — Python Risk Identification Tool for generative AI (open-source, Microsoft) | https://github.com/Azure/PyRIT | PENDING_UPLOAD |
+> | 170 | /CHAPTER 5 | Ollama — run open-weight language models locally (open-source) | https://ollama.com | PENDING_UPLOAD |
+
+_Index generated 2026-08-13 11:24 · 167 files · 5 subfolders. (Proposed open-source tool entries 168–170 are tracked above but are NOT yet present in Drive — upload + re-run `POST /sync` to populate real Drive URLs.)_
