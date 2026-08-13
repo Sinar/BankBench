@@ -1,0 +1,21 @@
+name = "ais-research-rag"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Vectorize index for the idfr-diplomacy corpus (768-dim cosine)
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "idfr-diplomacy"
+
+# Workers AI for embeddings (built-in, no API key needed in-account)
+[ai]
+binding = "AI"
+
+# Run sync automatically every 30 min (catches new/updated Drive PDFs)
+# Note: full re-sync is idempotent (Vectorize upsert overwrites by ID).
+[[triggers]]
+crons = ["*/30 * * * *"]
+
+# Google Drive folder + token live as secrets (set via `wrangler secret put`)
+[vars]
+DRIVE_FOLDER_ID = "1d1__eLENaGcbylnGPNQEpnp0RjZjwZzw"
