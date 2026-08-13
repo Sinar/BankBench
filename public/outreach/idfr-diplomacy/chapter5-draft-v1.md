@@ -58,7 +58,23 @@ A useful way to make classification concrete is to read every use case through t
 - **Institutional layer:** who approves, who reviews, who is accountable? A consular brief accepted without named review is an institutional-layer risk.
 - **Infrastructure layer:** where do data and compute sit, under whose jurisdiction? A vendor with silent update rights is an infrastructure-layer risk that can change behaviour after approval.
 
-Classification tags each use case by the *highest* layer at which a serious failure could occur, then assigns review accordingly. The nine-category **diplomatic risk taxonomy** (epistemic, linguistic-cultural, information-integrity, cybersecurity, decision, institutional, sovereignty, systemic, catastrophic) supplies the vocabulary for *what* harm a layer might cause; the tier model supplies the *how much care*.
+Classification tags each use case by the *highest* layer at which a serious failure could occur, then assigns review accordingly. The nine-category **diplomatic risk taxonomy** supplies the vocabulary for *what* harm a layer might cause; the tier model (Table 5.1) supplies the *how much care*. The nine categories are set out below so the reader can see the full range — from everyday error to the catastrophic end of the scale.
+
+***Table — The nine-category diplomatic risk taxonomy***
+
+| # | Category | What can go wrong (diplomatic example) |
+| -- | -- | -- |
+| 1 | Epistemic | Confident but false facts, hallucination, poor uncertainty calibration — a fluent briefing that quietly gets a figure wrong. |
+| 2 | Linguistic-cultural | Lost nuance, mistranslation, or culturally tone-deaf phrasing that offends or misleads a counterpart. |
+| 3 | Information-integrity | Fabricated sources, deepfakes, or manipulated evidence entering the diplomatic record. |
+| 4 | Cybersecurity | Intrusion, exfiltration, prompt injection, or poisoned retrieval from a connected system. |
+| 5 | Decision | AI distorting or crowding out human judgement in a high-stakes call. |
+| 6 | Institutional | Unclear ownership, missing review, or accountability gaps when something breaks. |
+| 7 | Sovereignty | Data or jurisdiction held offshore, vendor control of updates, dependency on foreign compute. |
+| 8 | Systemic | Contagion across missions and partners; gradual erosion of trust in the institution. |
+| 9 | Catastrophic | A single failure cascading to bilateral rupture, conflict escalation, or loss of life. |
+
+The ninth category — **catastrophic** — is why classification can never be cosmetic. The International AI Safety Report 2026 treats catastrophic AI risk, including escalation and loss of control, as a live policy concern rather than a distant scenario; classification exists to keep the most dangerous uses at the Critical tier, where executive sign-off applies before any output reaches the world. Incidents in diplomacy are not always minor, and the rest of this chapter returns to that point.
 
 ***Table 5.1  Risk classification matrix for diplomatic AI use cases***
 
@@ -71,7 +87,9 @@ Classification tags each use case by the *highest* layer at which a serious fail
 
 *Source: Authors' synthesis from NIST AI RMF 1.0 (2023) and our survey and interview data.*
 
-**Case studies (fresh).** *First*, our survey shows officers already reason in layers without naming them: 46 of 64 respondents (71.9 per cent) spontaneously raised confidentiality or data-leakage concerns — an instinctive infrastructure-layer worry — while 15 (23.4 per cent) pointed to high-stakes decisions and negotiations, an institutional-layer worry (Survey for Diplomats, 2026). We classify precisely to make that instinct auditable. *Second*, the International AI Safety Report 2026 argues that advanced AI can aggravate existing harms and that failure modes surface only in real-world use (International AI Safety Report, 2026) — exactly why a static, model-only classification is unsafe and the four-layer view is needed. *Third*, the distinction we drew in Chapter 4 between assistance and authority is operationalised here: classification is the administrative mechanism that decides, for each task and each layer, where assistance ends and authority must be retained.
+### Case studies — 5.1 AI Risk Assessment & Classification for Diplomatic Use Cases
+
+*First*, our survey shows officers already reason in layers without naming them: 46 of 64 respondents (71.9 per cent) spontaneously raised confidentiality or data-leakage concerns — an instinctive infrastructure-layer worry — while 15 (23.4 per cent) pointed to high-stakes decisions and negotiations, an institutional-layer worry (Survey for Diplomats, 2026). We classify precisely to make that instinct auditable. *Second*, the International AI Safety Report 2026 argues that advanced AI can aggravate existing harms and that failure modes surface only in real-world use (International AI Safety Report, 2026) — exactly why a static, model-only classification is unsafe and the four-layer view is needed. *Third*, the distinction we drew in Chapter 4 between assistance and authority is operationalised here: classification is the administrative mechanism that decides, for each task and each layer, where assistance ends and authority must be retained.
 
 ***Figure 5.1  Risk-classification map for diplomatic AI use cases***
 
@@ -87,7 +105,7 @@ flowchart TD
 ```
 *Source: Authors' synthesis from NIST AI RMF 1.0 (2023), the four-layer model, and the nine-category diplomatic risk taxonomy.*
 
-> **Entry-level AI safety action (5.1):** An officer new to AI safety can start today without new software: label every AI-assisted task with the layer most likely to fail (model / app / institutional / infrastructure) and the tier (Low–Critical), plus one line naming the reviewer. This single habit — *tag the layer, tag the tier, name the reviewer* — is the seed of the full classification scheme.
+> **Entry-level AI safety action (5.1) — model & institutional layers:** An officer new to AI safety can start today without new software: label every AI-assisted task with the layer most likely to fail (model / app / institutional / infrastructure) and the tier (Low–Critical), plus one line naming the reviewer. This single habit — *tag the layer, tag the tier, name the reviewer* — is the seed of the full classification scheme.
 
 # 5.2 Evaluation, Validation and Continuous Monitoring
 
@@ -98,9 +116,11 @@ Classification (5.1) tells a ministry what level of care a use case requires. Ev
 - **Institutional layer:** test whether officers notice errors, challenge recommendations, and retain the expertise to operate without the tool — the human-factor evaluation Ganguli et al. (2022) and the International AI Safety Report 2026 both treat as essential.
 - **Infrastructure layer:** test continuity — does the workflow survive a vendor outage, a silent model update, or a jurisdiction change? Monitoring at this layer is often the only warning that the system has drifted.
 
-Sidhu and Scholefield et al. (2026) extend this to the post-deployment phase: AI systems may produce failures that pre-deployment assessments do not anticipate, and adequate *AI incident governance* requires good definitions, taxonomies, monitoring practices and reporting mechanisms. Their analysis finds existing frameworks inconsistent in how incidents are defined and classified — a gap a ministry closes by monitoring at all four layers rather than trusting a one-time model certificate. The NIST *Generative AI Profile*, companion to the AI RMF 1.0, supports this by treating evaluation, red-teaming, incident response and lifecycle monitoring as parts of organisational risk management (National Institute of Standards and Technology, 2023).
+Sidhu and Scholefield et al. (2026) extend this to the post-deployment phase: AI systems may produce failures that pre-deployment assessments do not anticipate, and adequate *AI incident governance* requires good definitions, taxonomies, monitoring practices and reporting mechanisms. Their analysis finds existing frameworks inconsistent in how incidents are defined and classified — a gap a ministry closes by monitoring at all four layers rather than trusting a one-time model certificate. The NIST *Generative AI Profile*, companion to the AI RMF 1.0, supports this by treating evaluation, red-teaming, incident response and lifecycle monitoring as parts of organisational risk management (National Institute of Standards and Technology, 2023). The same open-source tooling used for red-teaming (5.3) can run a ministry's first model-layer evaluation at low cost, so capability testing is not reserved for vendors.
 
-**Case studies (fresh).** *First*, Shevlane et al. (2023) show that dangerous capabilities can emerge without developer intent — a model may gain a capacity no benchmark tested for — which is precisely why model-layer evaluation must be assumption-breaking, not checklist-based, in diplomatic adoption. *Second*, our survey's human-factor signal: 47 of 64 respondents raised accuracy, hallucination or verification somewhere in their answers (Survey for Diplomats, 2026), evidence that officers already practise ad-hoc validation at the institutional layer and should be given a formal one. *Third*, Sidhu and Scholefield's (2026) finding that incident taxonomies are inconsistent across regulators means our monitoring definitions (layer by layer) are not a bureaucratic extra but the only reliable incident record.
+### Case studies — 5.2 Evaluation, Validation and Continuous Monitoring
+
+*First*, Shevlane et al. (2023) show that dangerous capabilities can emerge without developer intent — a model may gain a capacity no benchmark tested for — which is precisely why model-layer evaluation must be assumption-breaking, not checklist-based, in diplomatic adoption. *Second*, our survey's human-factor signal: 47 of 64 respondents raised accuracy, hallucination or verification somewhere in their answers (Survey for Diplomats, 2026), evidence that officers already practise ad-hoc validation at the institutional layer and should be given a formal one. *Third*, Sidhu and Scholefield's (2026) finding that incident taxonomies are inconsistent across regulators means our monitoring definitions (layer by layer) are not a bureaucratic extra but the only reliable incident record.
 
 ***Figure 5.2  Evaluation-and-monitoring loop across the four layers***
 
@@ -119,7 +139,7 @@ flowchart LR
 ```
 *Source: Authors' synthesis from Shevlane et al. (2023), Sidhu & Scholefield (2026), Ganguli et al. (2022), NIST Generative AI Profile (2023).*
 
-> **Entry-level AI safety action (5.2):** Before trusting any AI output, an officer can adopt a one-step rule — *find the source, or don't use the claim*. Verifying a single loaded fact against a primary source turns passive consumption into active, model-layer evaluation and is the habit Shevlane et al. (2023) describe as dangerous-capability awareness at the user level.
+> **Entry-level AI safety action (5.2) — model & application layers:** Before trusting any AI output, an officer can adopt a one-step rule — *find the source, or don't use the claim*. Verifying a single loaded fact against a primary source turns passive consumption into active, model-layer evaluation and is the habit Shevlane et al. (2023) describe as dangerous-capability awareness at the user level.
 
 # 5.3 Red-Teaming and Adversarial Testing
 
@@ -132,7 +152,11 @@ Evaluation (5.2) answers whether a system works as intended under ordinary condi
 
 Ganguli et al. (2022) document **scaling behaviours** in red-teaming: a model's resistance to probing changes non-linearly as capability grows. That implies a ministry's red-team cadence must track model updates rather than be a one-off gate — a direct infrastructure-layer concern, since vendors update silently.
 
-**Case studies (fresh).** *First*, Ganguli et al.'s (2022) scaling result means a system judged safe at version N may be unsafe at N+1; red-teaming must be version-pinned and re-run on every update — the institutional and infrastructure layers, not the model alone, enforce this. *Second*, the sandbox-transgression scenarios above (poisoned document, injected report, shifted translation) are application-layer failures no model benchmark would surface; they must be red-teamed as deployed systems, not as chat prompts. *Third*, the International AI Safety Report 2026 frames adversarial testing as part of a broader evaluation culture across states — a norm Malaysia can import into ASEAN exercises rather than treat as a vendor service (International AI Safety Report, 2026).
+Civic-tech practice shows this discipline need not be expensive. Open-source red-teaming toolkits — such as Garak and Microsoft's PyRIT — let a small team probe a model for jailbreaks and prompt injection at near-zero cost, and running an open-weight model locally (for example via Ollama) keeps diplomatic data on ministry hardware, turning a sovereignty worry (infrastructure layer) into the easiest first step. We recommend ministries begin with these free, well-documented tools before procuring bespoke platforms.
+
+### Case studies — 5.3 Red-Teaming and Adversarial Testing
+
+*First*, Ganguli et al.'s (2022) scaling result means a system judged safe at version N may be unsafe at N+1; red-teaming must be version-pinned and re-run on every update — the institutional and infrastructure layers, not the model alone, enforce this. *Second*, the sandbox-transgression scenarios above (poisoned document, injected report, shifted translation) are application-layer failures no model benchmark would surface; they must be red-teamed as deployed systems, not as chat prompts. *Third*, the International AI Safety Report 2026 frames adversarial testing as part of a broader evaluation culture across states — a norm Malaysia can import into ASEAN exercises rather than treat as a vendor service (International AI Safety Report, 2026).
 
 ***Figure 5.3  Red-teaming adversarial probe across the four layers***
 
@@ -152,7 +176,7 @@ flowchart TD
 ```
 *Source: Authors' synthesis from Ganguli et al. (2022), the sandbox-transgression concept, and International AI Safety Report (2026).*
 
-> **Entry-level AI safety action (5.3):** Treat any unusual instruction or flattering message arriving through a new channel as guilty until verified. A junior officer's daily habit of *call-back on a known number* for anything sensitive is, in miniature, the red-teaming lesson Ganguli et al. (2022) describe — assume the plausible is potentially adversarial, and authenticate out-of-band.
+> **Entry-level AI safety action (5.3) — institutional & infrastructure layers:** Treat any unusual instruction or flattering message arriving through a new channel as guilty until verified. A junior officer's daily habit of *call-back on a known number* for anything sensitive is, in miniature, the red-teaming lesson Ganguli et al. (2022) describe — assume the plausible is potentially adversarial, and authenticate out-of-band.
 
 # 5.4 Internal AI Guidelines, Escalation Protocols and Safe-Use Policies
 
@@ -163,7 +187,7 @@ Classification (5.1), evaluation (5.2) and red-teaming (5.3) are necessary but i
 - **Institutional layer:** named human review per tier, who approves tools at missions, and the escalation protocol — who is notified, through what secure channel, on what timeline, with what containment. The NIST AI RMF *Govern* function makes accountable, transparent use an organisational prerequisite (National Institute of Standards and Technology, 2023).
 - **Infrastructure layer:** data-residency and jurisdiction rules, vendor-update notification, continuity and exit clauses — the sovereignty dimension this guideline must not omit.
 
-Our survey points to a readiness gap these guidelines must close: only 15 of 64 respondents agreed procedures for using AI were clear and systematic, while 31 disagreed (Survey for Diplomats, 2026). The MOSTI National Guidelines on AI Governance and Ethics supply national principles — privacy, security, transparency, accountability — but those require translation into foreign-affairs operating rules (Ministry of Science, Technology and Innovation Malaysia, 2024). A guideline that merely restates "be careful" changes nothing; one that names the approver, the channel and the consequence does.
+Our survey points to a readiness gap these guidelines must close: only 15 of 64 respondents agreed procedures for using AI were clear and systematic, while 31 disagreed (Survey for Diplomats, 2026). The MOSTI National Guidelines on AI Governance and Ethics supply national principles — privacy, security, transparency, accountability — but those require translation into foreign-affairs operating rules (Ministry of Science, Technology and Innovation Malaysia, 2024). A guideline that merely restates "be careful" changes nothing; one that names the approver, the channel and the consequence does. Civic-tech commons help here too: the OWASP Gen AI Top 10 already maps the application-layer pitfalls (prompt injection, supply-chain, excessive agency, data leakage) as free, maintained guidance a ministry can adopt directly, and open-source policy templates lower the cost of writing the guideline itself.
 
 The guideline and protocol are most effective when anchored to a **diplomatic AI safety case**: a structured, evidence-backed argument that a deployment is acceptably safe for a defined use. For each significant use case the ministry documents intended purpose, prohibited uses, users and affected parties, data classification, model and vendor, tools and permissions, known limitations, evaluation results, red-team results, human decision points, incident-response procedures, fallback arrangements, and conditions for suspension. This converts "responsible AI" into something approvable and auditable, and is where the taxonomy (5.1) and system-level evaluation (5.2) land as formal evidence.
 
@@ -183,9 +207,11 @@ flowchart TD
 ```
 *Source: Authors' synthesis from Sidhu & Scholefield (2026), NIST AI RMF 1.0 (2023), OWASP Gen AI Top 10 (2024), and our survey readiness gaps (Survey for Diplomats, 2026).*
 
-**Case studies (fresh).** *First*, our survey's readiness gap (only 15 of 64 found procedures clear) is itself the mandate: guidelines written along the four layers close exactly the ambiguity officers report (Survey for Diplomats, 2026). *Second*, Sidhu and Scholefield (2026) show incident definitions are inconsistent across regulators — our safety-case template (above) is the only reliable internal record and the seed of the regional incident database later chapters propose. *Third*, the MOSTI guidelines demonstrate the national anchor exists; the foreign-affairs translation gap is the real work, and Chapter 6 takes up vendor and sovereignty clauses in detail.
+### Case studies — 5.4 Internal AI Guidelines, Escalation Protocols and Safe-Use Policies
 
-> **Entry-level AI safety action (5.4):** Keep a one-page personal rule sheet: *what I may paste into AI, what I never paste, and who I call if something looks wrong.* Distributing this to every officer — not just the AI champions — is the cheapest possible safe-use policy and the foundation the full guideline builds on.
+*First*, our survey's readiness gap (only 15 of 64 found procedures clear) is itself the mandate: guidelines written along the four layers close exactly the ambiguity officers report (Survey for Diplomats, 2026). *Second*, Sidhu and Scholefield (2026) show incident definitions are inconsistent across regulators — our safety-case template (above) is the only reliable internal record and the seed of the regional incident database later chapters propose. *Third*, the MOSTI guidelines demonstrate the national anchor exists; the foreign-affairs translation gap is the real work, and Chapter 6 takes up vendor and sovereignty clauses in detail.
+
+> **Entry-level AI safety action (5.4) — institutional layer:** Keep a one-page personal rule sheet: *what I may paste into AI, what I never paste, and who I call if something looks wrong.* Distributing this to every officer — not just the AI champions — is the cheapest possible safe-use policy and the foundation the full guideline builds on.
 
 Our interviews reinforce that guidance is only as strong as the training that carries it. Ambassador Zamshari Shaharan was direct: awareness cannot be built by announcing that AI exists; officers need to understand hallucination, prompting, source limits and the boundary between personal and official use, and "you need to do training."¹ Training and guideline are two faces of the same requirement — the institution must make safe use the path of least resistance. This connects forward: Chapter 6 turns the infrastructure-layer clauses above into procurement and sovereignty requirements, and Chapter 7 positions the ministry as a shaper of the regional AI-safety norms these guidelines anticipate.
 
@@ -197,7 +223,9 @@ Three technical governance levers are increasingly relevant to foreign affairs. 
 
 For a foreign ministry, technical governance is not about building the eval harness — it is about knowing what questions to ask of vendors and partners. A diplomat negotiating a digital-partnership agreement, a cyber attaché assessing a counterpart's AI capacity, or a mission evaluating whether to adopt a foreign-hosted system all benefit from a working literacy in these levers. The governance need is therefore twofold: externally, Malaysia should be able to represent its interests in emerging compute and safety frameworks; internally, it should require vendors to disclose capability-evaluation and incident-history information as a condition of adoption.
 
-**Case studies.** *First*, as shown in 5.3, the Rubio-style synthetic-identity breach is also a technical-governance failure at the platform level — identity assurance is now a model-and-channel property, not only a human one (Lee, 2025); the governance levers here are what would have constrained it. *Second*, the International AI Safety Report 2026 demonstrates the multilateral track: states are building shared vocabularies for frontier risk that Malaysia can shape rather than inherit. *Third*, Ramiah et al.'s (2025) compute-governance proposal illustrates a concrete diplomatic artefact — a verifiable "pause button" — that a middle-power can champion as a confidence-building measure in ASEAN forums.
+### Case studies — 5.5 Technical AI Governance for Foreign Affairs
+
+*First*, as shown in 5.3, the Rubio-style synthetic-identity breach is also a technical-governance failure at the platform level — identity assurance is now a model-and-channel property, not only a human one (Lee, 2025); the governance levers here are what would have constrained it. *Second*, the International AI Safety Report 2026 demonstrates the multilateral track: states are building shared vocabularies for frontier risk that Malaysia can shape rather than inherit. *Third*, Ramiah et al.'s (2025) compute-governance proposal illustrates a concrete diplomatic artefact — a verifiable "pause button" — that a middle-power can champion as a confidence-building measure in ASEAN forums.
 
 ***Figure 5.5  Technical AI governance levers for foreign affairs***
 
@@ -214,7 +242,7 @@ flowchart LR
 ```
 *Source: Authors' synthesis from Shah et al. (2024), Shevlane et al. (2023), Ramiah et al. (2025), Ansari (2026), UK AISI (2023), Frontier Safeguards (2025), International AI Safety Report (2026).*
 
-> **Entry-level AI safety action (5.5):** When evaluating any AI tool for mission use, an officer can ask the vendor three questions — *what dangerous-capability testing did you run, where is my data stored, and what is your incident-reporting history?* Even without technical depth, demanding these answers shifts the burden of proof to the supplier and is the user-facing edge of technical governance.
+> **Entry-level AI safety action (5.5) — model & infrastructure layers:** When evaluating any AI tool for mission use, an officer can ask the vendor three questions — *what dangerous-capability testing did you run, where is my data stored, and what is your incident-reporting history?* Even without technical depth, demanding these answers shifts the burden of proof to the supplier and is the user-facing edge of technical governance.
 
 # 5.6 From Model Safety to Diplomatic System Safety
 
@@ -224,7 +252,9 @@ Four layers must be held together. The **model layer** carries capability, hallu
 
 The implication is the book's core claim about diplomacy: technical safety is *necessary but not sufficient*. Evaluation and red-teaming produce the evidence and control mechanisms that make governance meaningful, but they do not determine political legitimacy, acceptable risk, or the distribution of power. From "trusting the model" the ministry moves to governing the entire workflow — and, at the infrastructure layer, to the sovereignty question of who controls data, operations, updates and jurisdiction. The nine-category risk taxonomy (5.1) and the system-level evaluation discipline (5.2) are the analytical tools; the safety case (5.4) is the institutional artifact; this four-layer view is the mental model that keeps them aligned.
 
-**Case studies.** *First*, as shown in 5.1 and 5.3, the travel-advice and synthetic-identity incidents are not model failures alone but failures that propagate upward through all four layers — exactly the pattern this section's model predicts. *Second*, the International AI Safety Report 2026 is itself the proof of the four-layer thesis at the policy level: it treats technical safeguards, monitoring, evaluation and institutional risk management as complementary rather than interchangeable, the same posture this chapter has taken (International AI Safety Report, 2026). *Third*, our survey's readiness gap — only 15 of 64 officers found AI procedures clear and systematic (Survey for Diplomats, 2026) — shows the institutional layer is where the four-layer model must be made operational first; the diagostic in Figure I.1 is useless if no one is trained to act on it.
+### Case studies — 5.6 From Model Safety to Diplomatic System Safety
+
+*First*, as shown in 5.1 and 5.3, the travel-advice and synthetic-identity incidents are not model failures alone but failures that propagate upward through all four layers — exactly the pattern this section's model predicts. *Second*, the International AI Safety Report 2026 is itself the proof of the four-layer thesis at the policy level: it treats technical safeguards, monitoring, evaluation and institutional risk management as complementary rather than interchangeable, the same posture this chapter has taken (International AI Safety Report, 2026). *Third*, our survey's readiness gap — only 15 of 64 officers found AI procedures clear and systematic (Survey for Diplomats, 2026) — shows the institutional layer is where the four-layer model must be made operational first; the diagostic in Figure I.1 is useless if no one is trained to act on it. *Fourth*, the catastrophic tier is not abstract: a misjudged AI output in a crisis — an unverified translation that hardens a negotiating position, or a fabricated cited precedent in a demarche — can escalate a dispute or endanger lives. The Rubio-style synthetic-identity breach (Ch.2.2, consolidated in 5.5) shows how convincing impersonation at the decision and sovereignty layers can ripple into a bilateral incident within hours; the four-layer model exists precisely so such uses sit at the Critical tier, not in an officer's inbox.
 
 ***Figure 5.6  The four-layer AI-enabled foreign-affairs system and its failure modes***
 
@@ -242,7 +272,7 @@ flowchart TD
 ```
 *Source: Authors' synthesis from the four-layer model (perplexity refinement), International AI Safety Report (2026), and the chapter's prior sections.*
 
-> **Entry-level AI safety action (5.6):** Before adopting any AI tool, an officer can map it on one page across the four layers — *which model, which app, which approval, whose servers* — and circle the layer they do not control. That single map reveals where dependence lives and is the seed of the full system-safety view.
+> **Entry-level AI safety action (5.6) — all four layers:** Before adopting any AI tool, an officer can map it on one page across the four layers — *which model, which app, which approval, whose servers* — and circle the layer they do not control. That single map reveals where dependence lives and is the seed of the full system-safety view.
 
 # Conclusion
 
@@ -298,4 +328,10 @@ Frontier Safeguards. (2025). *Emerging Practices in Frontier AI Safety Framework
 
 ---
 
-**Proposed Additional Sources:** *(none — all material drawn from the defined corpus and project data; the four Chapter 5 PDFs are now part of `gdrive_pdf_index.md`)*
+**Proposed Additional Sources:** *(the three tools below are not yet in `gdrive_pdf_index.md`; per the new-file workflow they must be added to the Chapter 5 Drive folder and appended to `book-toc.md` before finalisation, and marked blue in the Word output)*
+
+- Garak. (2024). *Garak — an LLM vulnerability scanner* (open-source). NVIDIA / leondz. https://github.com/NVIDIA/garak
+- Microsoft. (2023–). *PyRIT — Python Risk Identification Tool for generative AI* (open-source red-teaming framework). https://github.com/Azure/PyRIT
+- Ollama. (2023–). *Ollama — run open-weight language models locally* (open-source). https://ollama.com
+
+*All other material is drawn from the defined corpus (Chapter 5 folder: Shevlane 2023; Ganguli 2022; NIST AI RMF 1.0; Sidhu & Scholefield 2026; OWASP Gen AI Top 10) and our survey and interview data.*
