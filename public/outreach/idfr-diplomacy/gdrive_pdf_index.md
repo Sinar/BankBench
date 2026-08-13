@@ -3,7 +3,7 @@
 > Generated: **2026-08-13 11:24** · Root folder: `1d1__eLENaGcbylnGPNQEpnp0RjZjwZzw`
 > Last Vectorize sync: _(run `POST /sync` on the worker to populate; see rag-worker)_
 
-**167 PDFs** across **5 subfolders** + root.
+**170 files** across **5 subfolders** + root.
 
 | # | Folder | File | Size (KB) | Drive URL |
 |---|--------|------|----------|-----------|
@@ -174,13 +174,10 @@
 | 165 | /CHAPTER 5 | Open Problems in AI Incident Governance (2026) — Sidhu & Scholefield | 298 | https://drive.google.com/file/d/1tcxXmy_ANqSKyWVMLBnMg7Oj0GiSrZm1/view?usp=drivesdk |
 | 166 | /CHAPTER 5 | Red Teaming Language Models (2022) — Ganguli | 3189 | https://drive.google.com/file/d/1YiM1Gj9DWICsRZPdM_qt4UwM5KWB7ok0/view?usp=drivesdk |
 | 167 | /CHAPTER 5 | Technical AGI Safety and Security (2024) — Shah et al.pdf | 2758 | https://drive.google.com/file/d/1mz-q056v7kXxylJ-sgxN7YIDaF5ifYQP/view?usp=drivesdk |
+| 168 | /CHAPTER 5 | Garak (2023) — NVIDIA | 0 | https://drive.google.com/file/d/1fi_NLV_UwL3tkyDSLnfxIoDOSaS-9uUn/view?usp=drivesdk |
+| 169 | /CHAPTER 5 | PyRIT (2024) — Microsoft | 0 | https://drive.google.com/file/d/1DdBSGmbUstsBd9_cwLwXf0jQq4dy0Puc/view?usp=drivesdk |
+| 170 | /CHAPTER 5 | Ollama (2023) — Ollama | 0 | https://drive.google.com/file/d/1AzKBbFYt0cU0Vei-pF297iL5og-3lHiT/view?usp=drivesdk |
 
-> **PROPOSED ADDITIONS — open-source tools (NOT yet uploaded to Drive).** Per the Chapter 5 research-prompt workflow, these must be added to the `/CHAPTER 5` Drive folder (`1d1__eLENaGcbylnGPNQEpnp0RjZjwZzw`) and then the index regenerated via the worker `POST /sync`. They are tools, not PDFs, so nothing is attached; cite by canonical URL. **Drive URL: PENDING_UPLOAD (no local Drive token available to push).**
->
-> | # | Folder | Tool | Canonical URL | Status |
-> |---|--------|------|--------------|--------|
-> | 168 | /CHAPTER 5 | Garak — LLM vulnerability scanner (open-source, NVIDIA / leondz) | https://github.com/NVIDIA/garak | PENDING_UPLOAD |
-> | 169 | /CHAPTER 5 | PyRIT — Python Risk Identification Tool for generative AI (open-source, Microsoft) | https://github.com/Azure/PyRIT | PENDING_UPLOAD |
-> | 170 | /CHAPTER 5 | Ollama — run open-weight language models locally (open-source) | https://ollama.com | PENDING_UPLOAD |
+> **Open-source tools added (168–170).** These are operational AI-safety tools (not PDFs), uploaded as `.md` stubs to `/CHAPTER 5` with the same "Short Title (Year) — Org" title convention. Cite by canonical URL: Garak https://github.com/NVIDIA/garak · PyRIT https://github.com/Azure/PyRIT · Ollama https://ollama.com. Run `POST /sync` on the worker to (re)populate Vectorize embeddings.
 
-_Index generated 2026-08-13 11:24 · 167 files · 5 subfolders. (Proposed open-source tool entries 168–170 are tracked above but are NOT yet present in Drive — upload + re-run `POST /sync` to populate real Drive URLs.)_
+_Index generated 2026-08-13 · 170 files · 5 subfolders._
