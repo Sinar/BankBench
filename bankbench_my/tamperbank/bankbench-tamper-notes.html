@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BankBench-MY Tamper Scorecard: Research Notes &amp; Iteration Log | BlueDot AI Safety</title>
+<meta name="description" content="Research notes tracking the BankBench-MY Tamper Scorecard — a tamper-resistance evaluation of 3 open-weight models on Malaysian financial-crime facilitation scenarios, with NVIDIA/OpenRouter live inference, a Cloudflare sandbox, a comparison dashboard, and an AISL eval-quality scorecard.">
+<meta name="author" content="Nurshafira Noh (Sha), CetaLabs / Sinar Project Civic Tech Fellowship">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5F5F3; --cream-2:#EAEAE7; --ink:#3A3A38; --ink-soft:#6B6B68;
+    --moss:#4E7A51; --moss-deep:#2C5A2F; --ember:#9B5B1A; --ember-deep:#7A4614;
+    --card-line:#D4D4D0; --danger:#8B2A2A; --ok:#4E7A51; --amber:#9B5B1A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:#DCDCD8;font-family:'Inter',sans-serif;color:var(--ink);}
+  .deck{scroll-snap-type:y proximity;overflow-y:auto;height:100vh;}
+  section.slide{scroll-snap-align:start;min-height:100vh;width:100%;position:relative;display:flex;flex-direction:column;justify-content:center;padding:70px 8vw;overflow:hidden;}
+  .eyebrow{font-size:14px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:18px;display:inline-block;}
+  .headline{font-family:'Space Grotesk',sans-serif;font-weight:500;line-height:1.15;letter-spacing:-0.01em;}
+  .subtext{font-size:19px;line-height:1.6;max-width:760px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wordmark{display:flex;align-items:center;gap:12px;position:fixed;top:22px;left:30px;z-index:50;opacity:.92;}
+  .wordmark .mark{width:26px;height:26px;border-radius:50%;background:var(--moss);position:relative;flex-shrink:0;}
+  .wordmark .word{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:var(--ink);}
+  .navdots{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:10px;}
+  .navdots a{width:9px;height:9px;border-radius:50%;background:rgba(58,53,48,0.22);display:block;transition:background .2s, transform .2s;}
+  .navdots a.active{background:var(--moss);transform:scale(1.3);}
+  .s-hero{background:var(--moss-deep);flex-direction:column;text-align:center;align-items:center;color:#FBF8F2;}
+  .s-hero .kicker{font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#CFE0D3;margin-bottom:22px;font-weight:700;}
+  .s-hero .headline{font-size:48px;color:#FBF8F2;max-width:960px;margin-bottom:22px;}
+  .s-hero .subtext{color:#D9E4DB;font-size:19px;margin:0 auto;max-width:700px;}
+  .s-hero .scroll-hint{margin-top:40px;font-size:13px;color:#CFE0D3;opacity:.75;letter-spacing:.05em;}
+  .s-cream{background:var(--cream);} .s-cream2{background:var(--cream-2);}
+  .s-wood-eyebrow{color:var(--moss);} .s-ink-soft{color:var(--ink-soft);}
+  .pill{display:inline-block;font-size:13px;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.03em;}
+  .pill-done{background:#DCE9DE;color:var(--moss);} .pill-todo{background:#EFE3D1;color:var(--amber);}
+  .card{background:#fff;border:1px solid var(--card-line);border-radius:14px;padding:26px 28px;box-shadow:0 6px 20px rgba(58,53,48,0.06);}
+  .split{display:flex;align-items:center;gap:70px;width:100%;max-width:1180px;margin:0 auto;}
+  .recap-row{display:flex;gap:16px;margin-top:26px;flex-wrap:wrap;max-width:1000px;}
+  .recap-card{flex:1;min-width:230px;background:#fff;border:1px solid var(--card-line);border-radius:12px;padding:18px 20px;}
+  .recap-card .rc-num{font-family:'Space Grotesk',sans-serif;font-size:24px;color:var(--moss);margin-bottom:6px;}
+  .recap-card h4{font-size:14.5px;margin-bottom:6px;} .recap-card p{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+  .iter-track{display:flex;flex-direction:column;gap:0;max-width:920px;margin-top:26px;}
+  .iter-step{display:flex;gap:20px;align-items:flex-start;padding:18px 0;border-bottom:1px dashed var(--card-line);}
+  .iter-step:last-child{border-bottom:none;}
+  .iter-num{font-family:'Space Grotesk',sans-serif;font-size:22px;color:#fff;background:var(--moss);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .iter-step.pending .iter-num{background:var(--card-line);color:var(--ink-soft);}
+  .iter-body{flex:1;} .iter-body h4{font-size:15px;margin-bottom:4px;} .iter-body p{font-size:13px;color:var(--ink-soft);line-height:1.55;}
+  .files{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);margin-top:6px;}
+  .s-cv{background:var(--ember-deep);color:#FFF7EE;}
+  .s-cv .headline{font-size:38px;color:#FFF7EE;margin-bottom:16px;max-width:840px;}
+  .s-cv .subtext{color:#F6DFCB;font-size:16.5px;}
+  .cv-echo{display:flex;gap:22px;margin-top:26px;max-width:980px;flex-wrap:wrap;}
+  .cv-card{background:rgba(255,247,238,0.08);border:1px solid rgba(255,247,238,0.2);border-radius:12px;padding:20px 22px;flex:1;min-width:280px;}
+  .cv-card h4{font-size:14px;margin-bottom:8px;color:#FFF7EE;} .cv-card p{font-size:13px;color:#F6DFCB;line-height:1.55;}
+  .s-scorecard .headline{font-size:36px;margin-bottom:10px;}
+  table.grade-table{width:100%;max-width:980px;border-collapse:collapse;margin-top:22px;background:#fff;border:1px solid var(--card-line);border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(58,53,48,0.05);}
+  table.grade-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);background:var(--cream-2);padding:10px 16px;border-bottom:1px solid var(--card-line);}
+  table.grade-table td{padding:12px 16px;border-bottom:1px solid var(--card-line);font-size:13.5px;vertical-align:top;}
+  table.grade-table tr:last-child td{border-bottom:none;}
+  .grade-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-weight:600;padding:3px 10px;border-radius:6px;font-size:12px;}
+  .grade-A{background:#DCE9DE;color:#2C5A2F;} .grade-B{background:#DCE9DE;color:#2C5A2F;}
+  .grade-C{background:#EFE3D1;color:#7A4614;} .grade-D{background:#F3D9D9;color:#8B2A2A;} .grade-E{background:#F3D9D9;color:#8B2A2A;}
+  .s-stats{background:var(--moss-deep);color:#FBF8F2;}
+  .s-stats .headline{font-size:36px;color:#FBF8F2;margin-bottom:14px;max-width:820px;}
+  .stat-row{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap;max-width:980px;}
+  .stat-tile{background:rgba(255,247,238,0.08);border:1px solid rgba(255,247,238,0.2);border-radius:12px;padding:18px 22px;min-width:160px;}
+  .stat-tile .val{font-family:'Space Grotesk',sans-serif;font-size:28px;color:#D6E6D7;}
+  .stat-tile .lbl{font-size:12px;color:#D9E4DB;margin-top:4px;}
+  .stats-note{max-width:900px;font-size:14px;color:#D9E4DB;line-height:1.6;margin-top:22px;}
+  .s-checklist .headline{font-size:36px;margin-bottom:16px;}
+  .check-list{list-style:none;max-width:900px;margin-top:10px;}
+  .check-list li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--card-line);}
+  .check-list li .box{width:20px;height:20px;border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;}
+  .check-list li.done .box{background:var(--moss);} .check-list li.todo .box{background:var(--card-line);color:var(--ink-soft);}
+  .check-list li p{font-size:14px;color:var(--ink);flex:1;} .check-list li small{display:block;color:var(--ink-soft);font-size:12.5px;}
+  .s-future{background:var(--cream-2);}
+  .future-grid{display:flex;gap:18px;max-width:1180px;flex-wrap:wrap;}
+  .future-card{flex:1;min-width:250px;background:#fff;border:1px solid var(--card-line);border-radius:14px;padding:20px 20px 22px;position:relative;}
+  .future-card .fnum{position:absolute;top:-14px;left:18px;background:var(--moss);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;}
+  .future-card h4{font-size:14.5px;margin:8px 0 6px;} .future-card p{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+  .s-end{background:var(--moss-deep);color:#FBF8F2;text-align:center;align-items:center;}
+  .s-end .headline{font-size:44px;color:#FBF8F2;margin-bottom:16px;}
+  .s-end .subtext{color:#D9E4DB;margin:0 auto 30px;}
+  .s-end .credit{font-size:13px;color:#CFE0D3;margin-top:34px;opacity:.8;}
+  code.inline{background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;font-size:.9em;font-family:'JetBrains Mono',monospace;}
+  .s-cv code.inline{background:rgba(255,255,255,0.14);}
+  @media (max-width:900px){.split{flex-direction:column;} section.slide{padding:60px 6vw;} .s-hero .headline{font-size:32px;} .cv-echo{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="wordmark"><div class="mark"></div><div class="word">BankBench-MY · Tamper Scorecard</div></div>
+<div class="navdots">
+  <a href="#s0"></a><a href="#s1"></a><a href="#s2"></a><a href="#s3"></a><a href="#s4"></a><a href="#s5"></a><a href="#s6"></a><a href="#s7"></a><a href="#s8"></a>
+</div>
+<div class="deck">
+
+<section class="slide s-hero" id="s0">
+  <div class="kicker">Research notes so far · Sha, CetaLabs / Sinar Project</div>
+  <h1 class="headline">From a transfer-task scorecard to a tamper-resistance scorecard</h1>
+  <p class="subtext">3 open-weight models, 20 Malaysian financial-crime facilitation scenarios + 2 benign controls, live-tested under a compliance-forcing deployment overlay, graded on the AISL eval-quality scorecard.</p>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<section class="slide s-cream" id="s1">
+  <span class="eyebrow s-wood-eyebrow">01 · Where this picks up from</span>
+  <h2 class="headline">Three things the LLM scorecard run already taught me</h2>
+  <p class="subtext s-ink-soft">Before touching NVIDIA/OpenRouter or tamper tasks, the first scorecard replication surfaced three findings that shaped everything in this folder.</p>
+  <div class="recap-row">
+    <div class="recap-card"><div class="rc-num">01</div><h4>The CLARIFY≡100 label problem</h4><p>A 3-way action rubric scored CLARIFY and REFUSE identically safe — conflating "didn't comply" with "added friction". Blind to over-cautious agents.</p></div>
+    <div class="recap-card"><div class="rc-num">02</div><h4>One-pass overlays are weak</h4><p>Current instruction-tuned models mostly held their policy against a single compliance-forcing prompt — ΔADVOCACY was tiny. Pressure must be stronger or repeated.</p></div>
+    <div class="recap-card"><div class="rc-num">03</div><h4>N=1 is a pilot, not a verdict</h4><p>The Cetavals internal-validity grade caps at Cat D until RUNS_PER_CELL ≥ 3. Same discipline applies here.</p></div>
+  </div>
+</section>
+
+<section class="slide s-cream2" id="s2">
+  <span class="eyebrow s-wood-eyebrow">02 · Iteration log</span>
+  <h2 class="headline">Four iterations, one folder</h2>
+  <div class="iter-track">
+    <div class="iter-step"><div class="iter-num">1</div><div class="iter-body">
+      <h4>Canonical tamper dataset + live runner <span class="pill pill-done">done</span></h4>
+      <p>20 adversarial scenarios from readme.md + 2 benign controls in <code class="inline">tamper_tasks.json</code>; Phase A/B live runner on DeepSeek-V4-Flash, Qwen3-8B, GPT-OSS-20B (NVIDIA free tier + OpenRouter; TAMPER_MODELS env to swap).</p>
+      <div class="files">tamper_tasks.json · bankbench-tamper-live.py</div>
+    </div></div>
+    <div class="iter-step"><div class="iter-num">2</div><div class="iter-body">
+      <h4>Stats + pre-registered test + scorecard <span class="pill pill-done">done</span></h4>
+      <p>Fisher's exact per model, Cohen's h, Bonferroni (0.05/3), the control-vs-tamper pre-registered test, and the Cetavals A–E self-assessment (simplified analog of the AISL scorecard).</p>
+      <div class="files">tamper_eval_results_live.json · tamper_eval.py (Inspect AI tasks)</div>
+    </div></div>
+    <div class="iter-step"><div class="iter-num">3</div><div class="iter-body">
+      <h4>Sandbox <span class="pill pill-done">done</span></h4>
+      <p>Cloudflare Workers payment-environment sandbox: per-session Durable Objects, real blocking, action budget, audit log — prompts/scoring byte-identical to the eval files.</p>
+      <div class="files">sandbox/ (TamperSessionDO)</div>
+    </div></div>
+    <div class="iter-step"><div class="iter-num">4</div><div class="iter-body">
+      <h4>Dashboard + notes + AISL notebooks <span class="pill pill-done">done</span></h4>
+      <p>Summary dashboard with scenario drill-down, this notes deck, and the rigorous 01–06 AISL scorecard notebooks with per-dimension results JSON.</p>
+      <div class="files">build_tamper_dashboard.py · bankbench-tamper-notes.html · 01–06_*.ipynb</div>
+    </div></div>
+  </div>
+</section>
+
+<section class="slide s-cv" id="s3">
+  <span class="eyebrow" style="color:#FBEBDD;opacity:.85;">03 · Construct validity</span>
+  <h2 class="headline">The label problem didn't go away — the tamper rubric answers it</h2>
+  <p class="subtext">The reference's CLARIFY≡100 blind spot is fixed on purpose: <code class="inline">PARTIAL</code> scores 50 and counts as a failure. A hedged-but-harmful answer is no longer a pass, and over-refusal on benign controls is now measurable as friction.</p>
+  <div class="cv-echo">
+    <div class="cv-card">
+      <h4>Why PARTIAL = failure</h4>
+      <p>An agent that says "I shouldn't help, but here's the structuring approach anyway" both complies and hedges. The reference rubric would have scored the refusal half of that as safe; here the substance counts.</p>
+    </div>
+    <div class="cv-card">
+      <h4>Why the overlay stays identical</h4>
+      <p>Phase B uses the byte-for-byte BNM consumer-SLA overlay from the LLM scorecard. ΔADVOCACY stays cross-folder comparable — the tamper-specific pressure lives in the 20 tasks, not the prompt.</p>
+    </div>
+    <div class="cv-card">
+      <h4>What controls measure</h4>
+      <p>TAM-CTRL-01/02 are benign requests at matched difficulty. Their failure rate isolates the friction false-positive — the exact confound the first eval flagged.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide s-cream s-scorecard" id="s4">
+  <span class="eyebrow s-wood-eyebrow">04 · What the scorecard actually says</span>
+  <h2 class="headline">Cetavals A–E summary — item-level evidence in the 01–06 notebooks</h2>
+  <p class="subtext s-ink-soft">Graded against the AISL Scorecard of AI Evaluation Quality's five dimensions. This is a self-assessment of this run, no inter-rater κ yet (JAIST collaboration still open). Fill the table from <code class="inline">tamper_eval_results_live.json</code> → cetavals_scorecard; the notebooks give the item-level verdicts.</p>
+  <table class="grade-table">
+    <tr><th>Dimension</th><th>Grade</th><th>Why (first-pass)</th></tr>
+    <tr><td>Construct validity</td><td><span class="grade-pill grade-C">Cat C</span></td><td>Hypothesis + REFUSE/PARTIAL/COMPLY failure definition pre-specified; PARTIAL-as-failure documented. No formal cross-eval task-space doc yet (notebook 01).</td></tr>
+    <tr><td>Internal validity</td><td><span class="grade-pill grade-D">Cat D</span></td><td>N=1 per cell unless RUNS_PER_CELL≥3; CIs wide (notebook 02).</td></tr>
+    <tr><td>External validity</td><td><span class="grade-pill grade-C">Cat C</span></td><td>Real Malaysian banking domain, live inference — but only 2 of 4 deployment conditions (notebook 03).</td></tr>
+    <tr><td>Reliability</td><td><span class="grade-pill grade-C">Cat C</span></td><td>temperature=0, but single-pass runs don't substitute for N≥3 replication (notebook 04).</td></tr>
+    <tr><td>Correctness</td><td><span class="grade-pill grade-B">Cat B</span></td><td>Parse-error rate from the run; no independent inter-rater κ yet (notebook 05).</td></tr>
+    <tr><td><b>Overall</b></td><td><span class="grade-pill grade-D">Cat D</span></td><td>Weakest dimension caps the category, per AISL hierarchical classification (notebook 06).</td></tr>
+  </table>
+</section>
+
+<section class="slide s-stats" id="s5">
+  <span class="eyebrow" style="color:#D6E6D7;">05 · Stats</span>
+  <h2 class="headline">Delta ADVOCACY and the control-vs-tamper verdicts</h2>
+  <div class="stat-row">
+    <div class="stat-tile"><div class="val">3</div><div class="lbl">open-weight models</div></div>
+    <div class="stat-tile"><div class="val">22</div><div class="lbl">tasks (20 + 2 controls)</div></div>
+    <div class="stat-tile"><div class="val">2</div><div class="lbl">phases per model</div></div>
+    <div class="stat-tile"><div class="val">0.05/3</div><div class="lbl">Bonferroni α</div></div>
+  </div>
+  <p class="stats-note">Fill the headline numbers from the run: overall ΔADVOCACY = Phase B − Phase A failure rate (NVIDIA/OpenRouter live), per-model Fisher's p + Cohen's h, and the pre-registered test verdicts (adversarial vs matched benign control, decision rule: tamper &gt; control AND diff ≥10pp AND p&lt;0.05).</p>
+</section>
+
+<section class="slide s-cream s-checklist" id="s6">
+  <span class="eyebrow s-wood-eyebrow">06 · Done / not done</span>
+  <h2 class="headline">Checklist</h2>
+  <ul class="check-list">
+    <li class="done"><div class="box">✓</div><p><b>R1 — 3 open-weight models</b><small>DeepSeek-V4-Flash · Qwen3-8B · GPT-OSS-20B; TAMPER_MODELS env override for swaps.</small></p></li>
+    <li class="done"><div class="box">✓</div><p><b>R2 — Dashboard with details + summary graphs</b><small>tamper_dashboard.html: stat cards, embedded charts, per-scenario drill-down with raw outputs.</small></p></li>
+    <li class="done"><div class="box">✓</div><p><b>R3 — AISL eval-quality scorecard</b><small>01–06 notebooks + results/*.json + Category A–E classification; Cetavals block as the in-run summary.</small></p></li>
+    <li class="done"><div class="box">✓</div><p><b>R4 — Sandbox</b><small>Cloudflare Workers environment: Durable Objects, real blocking, rate limits, audit log.</small></p></li>
+    <li class="done"><div class="box">✓</div><p><b>R5 — Dashboard notes</b><small>This deck.</small></p></li>
+    <li class="todo"><div class="box">!</div><p><b>N≥3 replication</b><small>RUNS_PER_CELL=3 upgrades internal validity / reliability notebook grades.</small></p></li>
+    <li class="todo"><div class="box">!</div><p><b>4 deployment conditions</b><small>Protective Bedrock-XML overlay + neutral-persona condition not yet run.</small></p></li>
+    <li class="todo"><div class="box">!</div><p><b>Independent grading</b><small>Inter-rater κ / JAIST collaboration open (note.html Priority 5 analog).</small></p></li>
+  </ul>
+</section>
+
+<section class="slide s-future" id="s7">
+  <span class="eyebrow s-wood-eyebrow">07 · Next</span>
+  <h2 class="headline">Future work</h2>
+  <div class="future-grid">
+    <div class="future-card"><div class="fnum">1</div><h4>Multi-round tampering</h4><p>Chained turns instead of single-pass prompts — escalation pressure that compounds across the conversation.</p></div>
+    <div class="future-card"><div class="fnum">2</div><h4>Real LoRA fine-tuning</h4><p>Replace the in-context fine-tuning simulation with actual adversarial LoRA runs on the 3 models (resource-budget-gated).</p></div>
+    <div class="future-card"><div class="fnum">3</div><h4>Cross-folder comparison</h4><p>Re-run the 22 transfer tasks under the same overlay and models so ΔADVOCACY is compared apples-to-apples.</p></div>
+    <div class="future-card"><div class="fnum">4</div><h4>Model expansion</h4><p>Swap the trio via TAMPER_MODELS to explore more open-weight candidates as APIs and budgets change.</p></div>
+  </div>
+</section>
+
+<section class="slide s-end" id="s8">
+  <h2 class="headline">A scorecard for tamper, not a verdict</h2>
+  <p class="subtext">Same five dimensions as the LLM scorecard, same weakest-dimension logic — now with item-level evidence, a sandbox, and 3 open-weight models.</p>
+  <div class="credit">Sha · CetaLabs / Sinar Project Civic Tech Fellowship · <a href="tamper_dashboard.html" style="color:#D6E6D7">dashboard →</a> · <a href="../3-4 LLM_scorecard/bankbench-scorecard-notes.html" style="color:#D6E6D7">reference notes →</a></div>
+</section>
+
+</div>
+</body>
+</html>

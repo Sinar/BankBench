@@ -1,0 +1,16 @@
+# BankBench-MY Tamper Scorecard - Python dependencies
+# Live runner + dashboard (primary path)
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+seaborn>=0.13
+requests>=2.31
+scipy>=1.10
+
+# Inspect AI task file (tamper_eval.py) - optional if you only use the live runner
+inspect-ai>=0.3.0
+
+# AISL scorecard notebooks (01-06) - headless re-scoring via nbconvert
+jupyter>=1.0
+nbformat>=5.9
+nbclient>=0.8

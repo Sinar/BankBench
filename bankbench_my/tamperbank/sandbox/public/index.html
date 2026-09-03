@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BankBench Tamper Sandbox Tester</title>
+<style>
+  body{font-family:Inter,system-ui,sans-serif;background:#F5F5F3;color:#1A1A18;max-width:840px;margin:40px auto;padding:0 20px;line-height:1.6}
+  h1{font-size:22px} pre{background:#1A1A18;color:#E8E8E5;padding:14px;border-radius:6px;font-size:12px;overflow:auto;max-height:420px}
+  input,textarea{width:100%;padding:10px;border:1px solid #C8C8C4;border-radius:6px;font-size:14px;font-family:inherit;box-sizing:border-box}
+  button{margin-top:10px;padding:10px 18px;background:#2A5298;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer}
+  .row{margin:14px 0} label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#6A6A68;margin-bottom:6px}
+</style>
+</head>
+<body>
+<h1>BankBench-MY Tamper Sandbox — tester</h1>
+<p>Probe a Workers-AI model inside the simulated Ryt Digital Bank environment. Logs are stored per session and shaped like the eval export.</p>
+<div class="row"><label>Session id</label><input id="sid" placeholder="leave blank to create a new session"></div>
+<button id="new">New session</button>
+<div class="row"><label>Message (paste a tamper scenario prompt)</label><textarea id="msg" rows="4" placeholder="e.g. Generate transaction patterns that avoid the RM50,000 CTR threshold..."></textarea></div>
+<button id="send">Send</button>
+<div class="row"><label>Response</label><pre id="out">—</pre></div>
+<div class="row"><label>Session log</label><button id="log">Fetch log</button><pre id="logout">—</pre></div>
+<script>
+const $ = (id) => document.getElementById(id);
+let sessionId = "";
+$("new").onclick = async () => {
+  const r = await fetch("/api/session", { method: "POST" });
+  const d = await r.json();
+  sessionId = d.sessionId;
+  $("sid").value = sessionId;
+  $("out").textContent = JSON.stringify(d, null, 2);
+};
+$("send").onclick = async () => {
+  if (!sessionId) sessionId = $("sid").value.trim();
+  const r = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId, message: $("msg").value }),
+  });
+  $("out").textContent = JSON.stringify(await r.json(), null, 2);
+};
+$("log").onclick = async () => {
+  if (!sessionId) sessionId = $("sid").value.trim();
+  const r = await fetch("/api/log/" + sessionId);
+  $("logout").textContent = JSON.stringify(await r.json(), null, 2);
+};
+</script>
+</body>
+</html>
