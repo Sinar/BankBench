@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Running a Safe Local LLM — A Five-Part Hands-On Series</title>
+<style>
+  :root{
+    --cream:#F7F2E7;
+    --cream-deep:#EFE7D6;
+    --paper:#FCFAF2;
+    --ink:#2A3126;
+    --ink-soft:#4A5244;
+    --moss:#5C6B4F;
+    --moss-deep:#3E4A35;
+    --wood:#A67C52;
+    --wood-deep:#8A643F;
+    --border:#DDD3BD;
+    --rule:#C9BDA0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:Georgia,"Times New Roman",serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  a{color:var(--wood-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:color .15s,border-color .15s;}
+  a:hover,a:focus-visible{color:var(--moss-deep);border-color:var(--moss);outline:none;}
+  a:focus-visible{box-shadow:0 0 0 3px rgba(92,107,79,.35);border-radius:2px;}
+  @media (prefers-reduced-motion:reduce){a{transition:none;}}
+
+  /* ---------- masthead ---------- */
+  header{background:var(--paper);border-bottom:1px solid var(--border);}
+  .masthead{max-width:960px;margin:0 auto;padding:72px 24px 56px;}
+  .kicker{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--wood-deep);margin-bottom:20px;
+  }
+  h1{
+    font-size:clamp(2.5rem,6.5vw,4.3rem);
+    line-height:1.05;letter-spacing:-.01em;font-weight:400;
+    max-width:16ch;color:var(--ink);
+  }
+  .thesis{
+    margin-top:28px;font-size:clamp(1.15rem,2.4vw,1.5rem);
+    line-height:1.4;color:var(--ink-soft);max-width:34ch;
+  }
+  .thesis strong{color:var(--moss-deep);font-style:italic;font-weight:600;}
+  .meta{
+    margin-top:36px;padding-top:24px;border-top:1px solid var(--border);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.82rem;color:var(--ink-soft);
+  }
+  .meta b{display:block;color:var(--moss-deep);font-weight:600;margin-bottom:4px;letter-spacing:.08em;text-transform:uppercase;font-size:.68rem;}
+  .meta span{display:block;line-height:1.5;}
+
+  /* ---------- nav index ---------- */
+  nav.index{max-width:960px;margin:0 auto;padding:34px 24px 8px;}
+  nav.index ol{list-style:none;display:flex;flex-wrap:wrap;gap:10px 22px;}
+  nav.index a{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.78rem;color:var(--ink-soft);border-bottom:1px solid var(--rule);
+  }
+  nav.index a b{color:var(--wood-deep);font-weight:600;margin-right:6px;}
+
+  /* ---------- sections ---------- */
+  section{max-width:960px;margin:0 auto;padding:56px 24px;}
+  .sec-label{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wood-deep);
+    margin-bottom:18px;
+  }
+  h2{font-size:clamp(1.6rem,3.4vw,2.2rem);font-weight:400;line-height:1.2;margin-bottom:16px;color:var(--ink);}
+  section p.lede{font-size:1.08rem;color:var(--ink-soft);max-width:62ch;margin-bottom:8px;}
+  .hrule{height:1px;background:var(--rule);max-width:960px;margin:0 auto;}
+
+  /* ---------- the five articles ---------- */
+  .articles{max-width:960px;margin:0 auto;padding:24px;counter-reset:art;}
+  .art{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:32px 32px 30px 92px;
+    margin:14px 0;
+    display:grid;gap:12px;
+  }
+  .art::before{
+    counter-increment:art;
+    content:counter(art,decimal-leading-zero);
+    position:absolute;left:26px;top:26px;
+    font-size:1.9rem;color:var(--moss);
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-.02em;
+  }
+  .art h3{font-size:1.35rem;font-weight:400;line-height:1.25;}
+  .art .core{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.78rem;color:var(--moss-deep);
+    border:1px solid var(--moss);
+    border-radius:99px;padding:3px 12px;width:fit-content;
+  }
+  .art p{color:var(--ink-soft);max-width:60ch;}
+  @media (max-width:640px){.art{padding:26px 22px 24px 22px;}.art::before{position:static;content:counter(art,decimal-leading-zero) "  ·  ";font-size:1.1rem;}}
+
+  /* ---------- toolchain ---------- */
+  .toolchain{background:var(--cream-deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 0 64px;}
+  .tc-inner{max-width:960px;margin:0 auto;padding:0 24px;}
+  table{width:100%;border-collapse:collapse;font-size:.95rem;background:var(--paper);}
+  caption{caption-side:top;text-align:left;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wood-deep);padding-bottom:14px;}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;}
+  thead th{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--moss-deep);background:var(--cream);}
+  td code,th code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.85em;color:var(--ink-soft);}
+  tbody tr:last-child td{border-bottom:none;}
+
+  /* ---------- safety note ---------- */
+  .safety{max-width:960px;margin:0 auto;padding:56px 24px;}
+  .safety .panel{
+    background:var(--paper);border:1px solid var(--border);border-left:3px solid var(--moss);
+    border-radius:10px;padding:28px 30px;margin-top:20px;
+  }
+  .panel h3{font-size:1.2rem;font-weight:400;margin-bottom:10px;}
+  .panel p{color:var(--ink-soft);max-width:64ch;}
+  .honesty{font-size:.9rem;color:var(--ink-soft);font-style:italic;margin-top:18px;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink);color:var(--cream);margin-top:40px;}
+  .foot-inner{max-width:960px;margin:0 auto;padding:40px 24px;display:grid;gap:14px;font-size:.88rem;line-height:1.6;}
+  .foot-inner .foot-kicker{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#C9BDA0;}
+  .foot-inner p{color:#D9D2BE;max-width:70ch;}
+  .foot-inner code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color:#EFE7D6;}
+
+  :focus-visible{outline:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="masthead">
+    <div class="kicker">AI Safety · Public Education · Five Parts</div>
+    <h1>Running a Safe Local LLM</h1>
+    <p class="thesis">Local does not equal safe. Local equals <strong>responsibility.</strong> A five-part hands-on series on evaluating, red-teaming, and fine-tune-testing the open-weight models you actually deploy.</p>
+    <div class="meta">
+      <div><b>Audience</b><span>Practitioners in government, finance, diplomacy, and mid-size companies running local open-weight models.</span></div>
+      <div><b>Prerequisites</b><span>Basic Python, a machine with a consumer GPU, and a willingness to treat evaluation as part of deployment.</span></div>
+      <div><b>Reading order</b><span>1 → 2 → 3 → 4 → 5. Each article builds on the previous.</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="index" aria-label="Series index">
+  <ol>
+    <li><a href="#art1"><b>01</b>The Local AI Fallacy</a></li>
+    <li><a href="#art2"><b>02</b>Fine-Tuning Risk</a></li>
+    <li><a href="#art3"><b>03</b>The Forgotten Threat Model</a></li>
+    <li><a href="#art4"><b>04</b>The Eval Battery</a></li>
+    <li><a href="#art5"><b>05</b>From Models to Norms</a></li>
+  </ol>
+</nav>
+
+<section id="why">
+  <div class="sec-label">Why this series</div>
+  <h2>The safety burden transfers. This is the manual.</h2>
+  <p class="lede">Local and open-weight models are spreading through ministries, banks, and missions because they promise sovereignty, cost, and control. The promise is real — and on your hardware there is no provider SOC, no automatic patches, and no safety card to lean on.</p>
+  <p class="lede">After five articles you will be able to: detect the false comforts that make local AI feel safer than it is (01), measure how quickly fine-tuning re-elicits harmful capabilities (02), red-team the <em>deployed system</em> — retrieval, agents, and tool access (03), run a reproducible pre-deployment eval battery with Inspect (04), and write a fine-tune disclosure profile while publishing harm metrics safely (05).</p>
+</section>
+
+<div class="hrule"></div>
+
+<div class="articles">
+  <div class="sec-label" style="margin:8px 4px 18px;">The five articles</div>
+
+  <article class="art" id="art1">
+    <div class="core">Detect · Measure</div>
+    <h3>The Local AI Fallacy: Why Running Locally Doesn't Make It Safer</h3>
+    <p>Three false comforts — ownership, offline, open weights — and the three measurable targets that replace them: refusal robustness, calibration, and capability presence. Includes a 30-minute see-it-yourself demo.</p>
+  </article>
+
+  <article class="art" id="art2">
+    <div class="core">Fine-Tune Sweep · Marginal Risk</div>
+    <h3>Fine-Tuning: The Risk Local Models Bring Home</h3>
+    <p>The reason to run locally is that you <em>can</em> fine-tune — and that is precisely the risk. A complete one-GPU tamper-resistance sweep: grid, controls, and the suppressed-vs-absent verdict (TamperBench logic).</p>
+  </article>
+
+  <article class="art" id="art3">
+    <div class="core">Red-Team the Deployment · Agents</div>
+    <h3>"It's Offline, So We're Secure": The Threat Model You Forgot</h3>
+    <p>Offline kills network exfiltration — and nothing else. Retrieval-injection runs, sandbox-transgression agentic runs, garak/PyRIT automation, and the incident workflow you still need on your own machine.</p>
+  </article>
+
+  <article class="art" id="art4">
+    <div class="core">Inspect · Reproducible Battery</div>
+    <h3>Choosing a Local Model: The Pre-Deployment Eval Battery</h3>
+    <p>Without a safety card, the buyer's gate <em>is</em> your evaluation. A reproducible battery on Inspect (UK AI Security Institute): baseline ability, robustness per quantisation, calibration scoring, provenance, and the eval ledger.</p>
+  </article>
+
+  <article class="art" id="art5">
+    <div class="core">Norms · Disclosure</div>
+    <h3>From "My Model" to Norms: The Fine-Tune Disclosure Profile</h3>
+    <p>Every open-weight release should ship a post-training re-elicitation profile — what fine-tuning restores, and how fast. Includes the seven-field template and the three policy asks that make it a norm.</p>
+  </article>
+</div>
+
+<div class="toolchain">
+  <div class="tc-inner">
+    <table>
+      <caption>Toolchain — all open-source, verified at drafting time</caption>
+      <thead><tr><th>Tool</th><th>Role</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Ollama</td><td>Local model runtime — quick trials</td><td><code>ollama.com</code></td></tr>
+        <tr><td>vLLM / llama.cpp</td><td>Local serving — evals and production</td><td><code>vllm.ai</code> · <code>github.com/ggml-org/llama.cpp</code></td></tr>
+        <tr><td>Inspect</td><td>Evaluation harness — UK AI Security Institute</td><td><code>inspect.aisi.org.uk</code> · <code>pip install inspect-ai</code></td></tr>
+        <tr><td>garak</td><td>LLM vulnerability scanner — NVIDIA / leondz</td><td><code>github.com/NVIDIA/garak</code></td></tr>
+        <tr><td>PyRIT</td><td>Red-teaming framework — Microsoft</td><td><code>github.com/Azure/PyRIT</code></td></tr>
+        <tr><td>TRL / axolotl / Unsloth</td><td>Fine-tuning</td><td><code>github.com/huggingface/trl</code> et al.</td></tr>
+        <tr><td>lm-eval-harness</td><td>Baseline capability benchmarks — EleutherAI</td><td><code>github.com/EleutherAI/lm-evaluation-harness</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<section class="safety" id="safety">
+  <div class="sec-label">How to read this series</div>
+  <h2>Evaluation, not exploitation.</h2>
+  <div class="panel">
+    <h3>The publishing rule: scores, not exploits</h3>
+    <p>Every procedure in this series is evaluation, conducted on models you are authorised to test, on your own machines. Publish scores, curves, and verdicts — never attack recipes or fine-tune corpora that operationalise harm for others. Open benchmarks follow the same shape: scenario ID, benign anchor, probe set, scoring rubric, degradation curve.</p>
+  </div>
+  <div class="panel">
+    <h3>Honesty notes</h3>
+    <p>The "fine-tune disclosure profile" is this series' proposal, not an existing standard. Command syntax moves — versions are pinned and re-verified before publication. All tool and organisation claims were live-verified at drafting time (UK AI Security Institute / Inspect, garak, PyRIT, Ollama).</p>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-kicker">Series draft · status</div>
+    <p>Draft package — dates, byline, and publishing target to be confirmed. British English; technical-but-accessible tone; procedures to run, not legal or procurement advice.</p>
+    <p>Sources: TamperBench (Hossain et al., 2026, arXiv:2602.06911) · Worst-case open-weight risks (Wallace et al., 2026, arXiv:2508.03153) · NIST AI RMF 1.0 · CSET incident-reporting template · AI Lab Watch scorecard tradition (ailabwatch.org).</p>
+  </div>
+</footer>
+
+</body>
+</html>
