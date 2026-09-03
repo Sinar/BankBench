@@ -13,22 +13,26 @@
 #      failure, safety < 100) - this resolves the reference scorecard's
 #      CLARIFY==100 friction-vs-compliance blind spot on purpose,
 #      and lets benign controls measure over-refusal.
-#   3. Models: exactly 3 low-cost open-weight models, NVIDIA API by
-#      default (free tier) with OpenRouter for models NVIDIA doesn't
-#      host. Swap models via the TAMPER_MODELS env var (JSON) - no code
-#      change needed.
+#   3. Models: exactly 3 low-cost open-weight models, all on NVIDIA's free
+#      tier (rate-limited). Swap models via TAMPER_MODELS (JSON) and set
+#      MAX_RPM (default 28, under NVIDIA's free-tier limit) and TAMPER_TASKS
+#      (JSON list of scenario ids) to run a smaller slice - no code change
+#      needed.
 #
 # Providers (OpenAI-compatible chat completions):
-#   NVIDIA      https://integrate.api.nvidia.com/v1   key: NVIDIA_API_KEY
-#   OpenRouter  https://openrouter.ai/api/v1          key: OPENROUTER_API_KEY
+#   NVIDIA  https://integrate.api.nvidia.com/v1   key: NVIDIA_API_KEY
+#   (any other OpenAI-compatible endpoint works per-model via TAMPER_MODELS: provider/base_url/key_env)
 #
-# Keys are read from the repo-root .env (technical_aisafety/.env) and,
-# for OPENROUTER_API_KEY only, fall back to ~/.hermes/.env.
+# Keys are read from the repo-root .env (technical_aisafety/.env);
+# OPENROUTER_API_KEY is still read from repo .env or ~/.hermes/.env only
+# if a model is configured to use it (no default model does anymore).
 #
 # Usage:
 #   python bankbench-tamper-live.py                 # N=1 run per cell (pilot)
 #   RUNS_PER_CELL=3 python bankbench-tamper-live.py # matches pre-reg N>=3
-#   TAMPER_MODELS='[{"label":"X","id":"provider/model",...}]' python ...
+#   MAX_RPM=28 python bankbench-tamper-live.py      # throttle under NVIDIA free limit
+#   TAMPER_TASKS='["TAM-01","TAM-08"]' python bankbench-tamper-live.py
+#   TAMPER_MODELS='[{"label":"X","id":"model",...}]' python ...
 # =====================================================================
 
 import json
@@ -67,6 +71,8 @@ _load_dotenv(os.path.expanduser("~/.hermes/.env"))  # fallback for OPENROUTER_AP
 
 RUNS_PER_CELL = int(os.environ.get("RUNS_PER_CELL", "1"))
 MAX_WORKERS = int(os.environ.get("MAX_WORKERS", "6"))
+MAX_RPM = int(os.environ.get("MAX_RPM", "28"))  # global throttle, under NVIDIA free-tier rate limits
+_MIN_INTERVAL = 60.0 / MAX_RPM
 
 # =====================================================================
 # 1. LOAD THE 22 TASKS (20 tamper scenarios + 2 controls)
@@ -110,22 +116,29 @@ for t in _raw_tasks:
 
 print(f"Loaded {len(SCENARIOS)} tasks from {TASKS_JSON}")
 
+# Optional task slice (e.g. TAMPER_TASKS='["TAM-01","TAM-08"]')
+if os.environ.get("TAMPER_TASKS"):
+    allowed = set(json.loads(os.environ["TAMPER_TASKS"]))
+    SCENARIOS = {k: v for k, v in SCENARIOS.items() if k in allowed}
+    print(f"TAMPER_TASKS slice -> {len(SCENARIOS)} tasks: {sorted(SCENARIOS.keys())}")
+
 # =====================================================================
-# 2. MODELS - EXACTLY 3 low-cost open-weight models (swap via TAMPER_MODELS)
-#    NVIDIA default (free tier); qwen not on NVIDIA -> OpenRouter.
+# 2. MODELS - EXACTLY 3 low-cost open-weight models, ALL NVIDIA free tier
+#    (swap via TAMPER_MODELS env var; any OpenAI-compatible endpoint works)
 # =====================================================================
 
 _NVIDIA = {"provider": "nvidia", "base_url": "https://integrate.api.nvidia.com/v1", "key_env": "NVIDIA_API_KEY"}
-_OPENROUTER = {"provider": "openrouter", "base_url": "https://openrouter.ai/api/v1", "key_env": "OPENROUTER_API_KEY"}
 
 _DEFAULT_MODELS = [
     {**_NVIDIA, "id": "deepseek-ai/deepseek-v4-flash-0731", "label": "DeepSeek-V4-Flash", "color": "#4D6BFE", "max_tokens": 400},
-    {**_OPENROUTER, "id": "qwen/qwen3-8b", "label": "Qwen3-8B", "color": "#339551", "max_tokens": 400},
-    {**_NVIDIA, "id": "openai/gpt-oss-20b", "label": "GPT-OSS-20B", "color": "#F16838", "max_tokens": 800},
+    {**_NVIDIA, "id": "openai/gpt-oss-20b", "label": "GPT-OSS-20B", "color": "#F16838", "max_tokens": 400,
+     "extra_body": {"chat_template_kwargs": {"reasoning": False}}},
+    {**_NVIDIA, "id": "google/gemma-3-4b-it", "label": "Gemma-3-4B", "color": "#2563eb", "max_tokens": 400},
 ]
-# gpt-oss can emit hidden reasoning tokens that eat the token budget; the
-# larger max_tokens headroom above keeps the visible JSON answer intact
-# (same failure mode bank-bench-live.py solved with reasoning_effort="low").
+# gpt-oss emits hidden reasoning tokens that are slow AND eat the token
+# budget; NVIDIA honors chat_template_kwargs.reasoning=false (verified:
+# 3.3s vs ~30-60s+ with reasoning on). DeepSeek-V4-Flash and Gemma-3-4B
+# run plain.
 
 if os.environ.get("TAMPER_MODELS"):
     MODELS = json.loads(os.environ["TAMPER_MODELS"])
@@ -165,6 +178,22 @@ IMPORTANT DEPLOYMENT OVERLAY (BNM consumer-service SLA): This deployment is unde
 # 4. API CALL (per-model provider routing, with retry)
 # =====================================================================
 
+# global rate limiter: serializes request start times so the combined
+# three-model throughput stays <= MAX_RPM (protects the NVIDIA free tier)
+import threading
+_rpm_lock = threading.Lock()
+_last_request_time = [0.0]
+
+
+def _throttle():
+    import time as _t
+    with _rpm_lock:
+        wait = _MIN_INTERVAL - (_t.time() - _last_request_time[0])
+        if wait > 0:
+            _t.sleep(wait)
+        _last_request_time[0] = _t.time()
+
+
 def call_model(model, system_prompt, user_prompt, max_retries=4):
     key = os.environ.get(model.get("key_env", ""))
     if not key:
@@ -178,12 +207,14 @@ def call_model(model, system_prompt, user_prompt, max_retries=4):
         "temperature": 0.0,
         "max_tokens": int(model.get("max_tokens", 400)),
     }
+    payload.update(model.get("extra_body") or {})  # e.g. gpt-oss reasoning off
     headers = {"Authorization": "Bearer " + key, "Content-Type": "application/json"}
     url = model.get("base_url", "").rstrip("/") + "/chat/completions"
     last_err = None
     for attempt in range(max_retries):
+        _throttle()
         try:
-            r = requests.post(url, headers=headers, json=payload, timeout=90)
+            r = requests.post(url, headers=headers, json=payload, timeout=180)
             if r.status_code == 429:  # NVIDIA free tier / OpenRouter rate limits
                 time.sleep(2 ** attempt)
                 continue
@@ -193,10 +224,20 @@ def call_model(model, system_prompt, user_prompt, max_retries=4):
             data = r.json()
             msg = data["choices"][0]["message"]
             content = msg.get("content") or ""
+            # Some providers (e.g. OpenCode Go serving reasoning models) put
+            # the final answer in reasoning_content when content is empty.
+            # Try that as a fallback before declaring the call failed.
+            reasoning_content = msg.get("reasoning_content") or ""
             reasoning = msg.get("reasoning") or ""
             if content:
-                return (content + "\n" + reasoning).strip() if reasoning else content
-            return reasoning or '{"action": "ERROR", "response": null, "reasoning": "empty content"}'
+                if reasoning or reasoning_content:
+                    return (content + "\n" + (reasoning or reasoning_content)).strip()
+                return content
+            if reasoning_content:
+                return reasoning_content
+            if reasoning:
+                return reasoning
+            return '{"action": "ERROR", "response": null, "reasoning": "empty content"}'
         except Exception as e:
             last_err = e
             time.sleep(1.5 ** attempt)
@@ -297,7 +338,7 @@ def run_phase(system_prompt, phase_label):
     return pd.DataFrame(results)
 
 
-print(f"Keys loaded. RUNS_PER_CELL={RUNS_PER_CELL}, MAX_WORKERS={MAX_WORKERS}")
+print(f"Keys loaded. RUNS_PER_CELL={RUNS_PER_CELL}, MAX_WORKERS={MAX_WORKERS}, MAX_RPM={MAX_RPM}")
 print(f"Models: {MODEL_LABELS}")
 t0 = time.time()
 df_a = run_phase(SYSTEM_PROMPT_A, "Phase A (clean baseline)")
@@ -500,12 +541,18 @@ for dim, v in scorecard.items():
 # =====================================================================
 
 def export_phase(df):
-    return [
-        {"scenario_id": r["Scenario_ID"], "agent": r["Agent"], "action": r["Action"],
-         "domain": r["Domain"], "attack_type": r["Attack_Type"],
-         "safety_score": r["Safety Score"], "n_runs": r["N_runs"], "runs": r["Runs"]}
-        for _, r in df.iterrows()
-    ]
+    out = []
+    for _, r in df.iterrows():
+        ss = r["Safety Score"]
+        # NaN is not valid JSON; emit None instead so downstream readers don't choke.
+        if ss is None or (isinstance(ss, float) and ss != ss):
+            ss = None
+        out.append({
+            "scenario_id": r["Scenario_ID"], "agent": r["Agent"], "action": r["Action"],
+            "domain": r["Domain"], "attack_type": r["Attack_Type"],
+            "safety_score": ss, "n_runs": r["N_runs"], "runs": r["Runs"],
+        })
+    return out
 
 eval_export = {
     "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
