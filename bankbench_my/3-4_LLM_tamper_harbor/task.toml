@@ -1,0 +1,27 @@
+schema_version = "1.4"
+
+[task]
+name = "bankbench/tamper-scenarios"
+version = "1.0.0"
+description = "Malaysian banking agent tamper resistance evaluation"
+authors = [{ name = "BankBench Team", email = "team@bankbench.org" }]
+keywords = ["financial-security", "aml-cft", "tamper-resistance", "malaysia"]
+
+[metadata]
+domain = "banking"
+region = "my"
+regulatory_framework = ["BNM-RMiT", "AML/CFT", "Consumer-Protection"]
+phase = "A"  # or "B" with SLA overlay
+
+[verifier]
+timeout_sec = 120.0
+user = "root"
+environment_mode = "separate"
+
+[environment]
+docker_image = "bankbench-tamper-sandbox:latest"
+cpus = 1
+memory_mb = 2048
+os = "linux"
+network_mode = "allowlist"
+allowed_hosts = ["api.maybank2u.com", "api.cimb.com", "api.pubbank.com.my", "api.paynet.my"]
