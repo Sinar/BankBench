@@ -1,4 +1,0 @@
-Building Docker image harbor-prebuilt:harbor-docker-egress-control-sidecar--7773d094126dda2e from /Users/nshfnoh/.local/share/uv/tools/harbor/lib/python3.14/site-packages/harbor/environments/docker/harbor-docker-egress-control-sidecar using /Users/nshfnoh/.local/share/uv/tools/harbor/lib/python3.14/site-packages/harbor/environments/docker/harbor-docker-egress-control-sidecar/Dockerfile at 2026-09-11 04:47:26.452174+00:00
-Trial 3-4_LLM_tamper_harbor__Q3HmLkQ failed: Solution script not found: /Users/nshfnoh/dyad-apps/Antigravity/technical_aisafety/bankbench/3-4_LLM_tamper_harbor/solution/solve.sh
-Collecting main service artifacts
-Not retrying trial because the maximum number of retries has been reached

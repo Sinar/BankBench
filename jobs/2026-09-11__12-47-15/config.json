@@ -1,9 +1,0 @@
-{
-    "job_name": "2026-09-11__12-47-15",
-    "n_concurrent_trials": 1,
-    "tasks": [
-        {
-            "path": "."
-        }
-    ]
-}
