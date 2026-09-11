@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sinar-BankBench Unified Scorecard: BankBench-MY (safety) against HLE + Cybench (capability), graded against the AI Evaluation Quality scorecard (San Joaquin/Gipiskis/Chin, Feb 2026). Trial run — 4 models, 20-task samples, mock track. Capability is not safety.">
+<meta name="author" content="Nurshafira Noh (Sha), CetaLabs / Sinar Project Civic Tech Fellowship">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Sinar-BankBench — Capability is not Safety (Unified Scorecard, Trial)">
+<meta property="og:description" content="3-eval comparison: BankBench-MY safety vs HLE + Cybench capability, same 4 models. Scored against the AI Evaluation Quality scorecard. Trial run; mock track. Working draft / self-assessment.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<title>Sinar-BankBench — Capability is Not Safety (Unified Scorecard)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF6EE; --cream-2:#F3EDE0; --ink:#3A3530; --ink-soft:#6B6358;
+  --wood:#8B6F4E; --moss:#5B7B6B; --moss-deep:#3F5C4F; --moss-glow:#6A9A7D;
+  --ember:#C97B4A; --ember-deep:#9C5A34; --card-line:#E0D5BE; --soot:#2C2825;
+  --danger:#B4483A; --ok:#4A7A5C; --teal:#266E6A; --amber:#9A6F28;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:#DDD6C6;font-family:'Karla',sans-serif;color:var(--ink);}
+.deck{scroll-snap-type:y proximity;overflow-y:auto;height:100vh;}
+section.slide{scroll-snap-align:start;min-height:100vh;width:100%;position:relative;display:flex;flex-direction:column;justify-content:center;padding:70px 8vw;overflow:hidden;}
+.eyebrow{font-size:13px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;margin-bottom:14px;display:inline-block;}
+.headline{font-family:'Fraunces',serif;font-weight:500;line-height:1.12;letter-spacing:-0.015em;}
+.subtext{font-size:17px;line-height:1.65;color:var(--ink-soft);}
+.mono{font-family:'JetBrains Mono',monospace;}
+.wordmark{display:flex;align-items:center;gap:12px;position:fixed;top:22px;left:30px;z-index:50;opacity:.92;}
+.wordmark .mark{width:26px;height:26px;border-radius:50%;background:var(--wood);position:relative;flex-shrink:0;}
+.wordmark .mark::after{content:'';position:absolute;width:8px;height:8px;border-radius:50%;top:6px;left:7px;background:var(--cream);opacity:.9;}
+.wordmark .word{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:var(--ink);letter-spacing:-0.01em;}
+.navdots{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:10px;}
+.navdots a{width:9px;height:9px;border-radius:50%;background:rgba(58,53,48,0.22);display:block;transition:background .2s, transform .2s;}
+.navdots a.active{background:var(--wood);transform:scale(1.3);}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.03em;white-space:nowrap;}
+.pill-moss{background:rgba(91,123,107,0.12);color:var(--moss-deep);}
+.pill-wood{background:rgba(139,111,78,0.12);color:var(--wood);}
+.pill-ember{background:rgba(201,123,74,0.14);color:var(--ember-deep);}
+.pill-danger{background:rgba(180,72,58,0.12);color:var(--danger);}
+.pill-ok{background:rgba(74,122,92,0.12);color:var(--ok);}
+.pill-teal{background:rgba(38,110,106,0.12);color:var(--teal);}
+.pill-amber{background:rgba(154,111,40,0.12);color:var(--amber);}
+.card{background:#fff;border:1px solid var(--card-line);border-radius:14px;padding:24px 26px;box-shadow:0 6px 22px rgba(58,53,48,0.05);}
+
+/* slide 0 hero */
+.s-hero{background:var(--moss-deep);flex-direction:column;text-align:center;align-items:center;color:#FBF8F2;}
+.s-hero .kicker{font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;color:#CFE0D3;margin-bottom:20px;font-weight:700;}
+.s-hero .headline{font-size:50px;color:#FBF8F2;max-width:940px;margin-bottom:22px;}
+.s-hero .subtext{color:#D9E4DB;font-size:19px;margin:0 auto 18px;max-width:700px;}
+.s-hero .meta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px;}
+
+/* cream / split slides */
+.s-cream{background:var(--cream);}
+.s-cream2{background:var(--cream-2);}
+.split{display:flex;align-items:center;gap:60px;width:100%;max-width:1160px;margin:0 auto;}
+.split .col-text{flex:1.15;}
+.split .col-visual{flex:1;display:flex;justify-content:center;align-items:center;position:relative;min-height:260px;}
+
+/* slide 2: scope grid */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1080px;margin-top:24px;}
+.scope-card{background:#fff;border:1px solid var(--card-line);border-top:3px solid var(--moss);border-radius:12px;padding:20px 20px 22px;box-shadow:0 4px 14px rgba(58,53,48,0.04);}
+.scope-card h4{font-family:'Fraunces',serif;font-size:18px;color:var(--moss-deep);margin-bottom:8px;}
+.scope-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+.scope-card .num{font-family:'Fraunces',serif;font-size:30px;color:var(--wood);margin-bottom:6px;line-height:1;}
+
+/* slide 3: 3-eval matrix table */
+.eval-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px;}
+.eval-table th{font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;color:var(--ink-soft);padding:10px 12px;text-align:left;border-bottom:2px solid var(--wood);}
+.eval-table td{padding:14px 12px;border-bottom:1px solid #EAE4D3;vertical-align:top;}
+.eval-table tr:hover td{background:rgba(91,123,107,0.04);}
+.eval-table .model-cell{font-weight:700;color:var(--ink);}
+.eval-table .n{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13.5px;}
+
+/* slide 4: scorecard dims */
+.dim-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #EAE4D3;}
+.dim-row:last-child{border-bottom:none;}
+.dim-label{font-weight:700;width:190px;flex-shrink:0;color:var(--ink);}
+.dim-bars{flex:1;display:flex;gap:6px;height:10px;align-items:center;}
+.dim-bars span{display:block;height:10px;border-radius:4px;}
+.dim-note{font-size:12px;color:var(--ink-soft);max-width:620px;margin-top:4px;line-height:1.4;}
+
+/* slide 5: 3 findings cards */
+.find-grid{display:flex;gap:18px;margin-top:30px;max-width:1100px;flex-wrap:wrap;}
+.find-card{flex:1;min-width:300px;background:#fff;border:1px solid var(--card-line);border-radius:14px;padding:24px 24px 26px;position:relative;box-shadow:0 8px 22px rgba(58,53,48,0.05);}
+.find-card .f-num{position:absolute;top:-14px;left:22px;background:var(--moss-deep);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:18px;box-shadow:0 2px 6px rgba(58,53,48,0.2);}
+.find-card h4{font-family:'Fraunces',serif;font-size:18px;color:var(--ink);margin:16px 0 8px;line-height:1.25;}
+.find-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;}
+.find-card .pill{margin-top:12px;}
+
+/* slide 6: paper citation / scorecard */
+.paper-quote{background:var(--soot);border-radius:12px;padding:22px 26px;color:#EFE9DC;max-width:800px;box-shadow:0 8px 24px rgba(0,0,0,0.15);margin-top:20px;}
+.paper-quote blockquote{font-family:'Fraunces',serif;font-style:italic;font-size:19px;line-height:1.5;color:#EFE9DC;}
+.paper-quote cite{display:block;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#D9C6A8;}
+
+/* slide 7: flag / attention */
+.flag-box{border:2px solid var(--danger);border-radius:14px;padding:26px;background:rgba(180,72,58,0.05);max-width:820px;}
+.flag-box h3{font-family:'Fraunces',serif;font-size:22px;color:var(--danger);margin-bottom:14px;}
+.flag-box ul{list-style:none;padding:0;}
+.flag-box li{padding:6px 0 6px 22px;position:relative;color:var(--ink);font-size:14px;line-height:1.55;}
+.flag-box li::before{content:''.position:absolute;left:0;top:10px;width:8px;height:8px;border-radius:50%;background:var(--danger);}
+
+/* slide 7b: end / draft note */
+.s-end{background:var(--moss-deep);color:#FBF8F2;text-align:center;align-items:center;}
+.s-end .headline{font-size:40px;color:#FBF8F2;margin-bottom:12px;}
+.s-end .subtext{color:#D9E4DB;font-size:18px;margin:0 auto 22px;max-width:640px;}
+.s-end .draft-label{display:inline-block;background:rgba(255,247,238,0.08);border:1px solid rgba(255,247,238,0.22);border-radius:8px;padding:10px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#FBEBDD;letter-spacing:.04em;}
+
+@media(max-width:900px){
+  .split{flex-direction:column;gap:36px;}
+  .scope-grid{grid-template-columns:1fr;}
+  .find-grid{flex-direction:column;}
+  .s-hero .headline{font-size:36px;}
+  section.slide{padding:60px 6vw;}
+}
+</style>
+</head>
+<body>
+
+<div class="wordmark"><span class="mark"></span><span class="word">Sinar-BankBench</span></div>
+<div class="navdots" id="navdots"></div>
+
+<div class="deck" id="deck">
+
+<!-- ================= SLIDE 1: THE PAPER ================= -->
+<section class="slide s-cream" id="s1">
+  <span class="eyebrow s-wood-eyebrow">01 · The paper we grade against</span>
+  <h2 class="headline" style="font-size:40px;color:var(--ink);">Scorecard of AI Evaluation Quality</h2>
+  <div class="split" style="max-width:1080px;">
+    <div class="col-text">
+      <p class="subtext">San Joaquin, Gipiškis, Chin — February 2026. A standards-based framework that assigns <strong>5 quality dimensions</strong> (1 best → 4 worst) and a <strong>classification (A–E)</strong> driven by the weakest dimension. It treats a benchmark as only as strong as its weakest dimension — the same logic the unified scorecard uses to cap BankBench at <strong>Cat D</strong>.</p>
+      <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="pill pill-moss">5 dimensions</span>
+        <span class="pill pill-ember">Classification A → E</span>
+        <span class="pill pill-teal">Working draft — feedback welcome</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:14px;line-height:1.5;">File: <code>bankbench/3-4 LLM_scorecard/scorecard-full-paper.md</code> (user-provided reference). The unified scorecard applies this rubric to <em>all three</em> evals we compare — not only the safety anchor.</p>
+    </div>
+    <div class="col-visual">
+      <div class="card" style="max-width:340px;text-align:center;padding:28px;">
+        <div style="font-family:'Fraunces',serif;font-size:20px;color:var(--moss-deep);line-height:1.2;">Dimensions × Classification</div>
+        <div style="font-size:28px;font-family:'Fraunces',serif;color:var(--wood);margin:8px 0;">5 × A–E</div>
+        <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.55;">Weakest dimension caps the category. A benchmark cannot claim a higher category than its lowest-scoring dimension.</p>
+        <div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-soft);text-align:left;">
+          • Construct Validity<br>
+          • Internal Validity<br>
+          • External Validity<br>
+          • Reliability<br>
+          • Correctness
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2: SCOPE ================= -->
+<section class="slide s-cream2" id="s2">
+  <span class="eyebrow s-wood-eyebrow">02 · What this evaluation covers</span>
+  <h2 class="headline" style="font-size:42px;color:var(--ink);margin-bottom:8px;">Scope of this research</h2>
+  <p class="subtext" style="max-width:780px;">Trial run — <strong>3 evals</strong>, <strong>4 models</strong>, <strong>20-task samples</strong> (BankBench's footprint), <strong>mock track</strong> (deterministic, no network / no GPU). One question: does a strong capability score certify safety?</p>
+
+  <div class="scope-grid">
+    <div class="scope-card">
+      <div class="num">3</div><h4>Comparative evals</h4>
+      <p>BankBench-MY (Malaysian banking-safety, 22 canonical tasks, 10-task subset in this trial) + <strong>Humanity's Last Exam</strong> (20 original representative tasks) + <strong>Cybench</strong> (20 original CTF-style tasks). Same 4 model backends wired.</p>
+    </div>
+    <div class="scope-card">
+      <div class="num">4</div><h4>Shared model backends</h4>
+      <p>Qwen2.5-7B · GPT-OSS-20B · Llama-3.3-70B · GPT-OSS-120B. Normalized on a common 0–100 "higher-is-better" scale: safety pass rate / accuracy / solve rate.</p>
+    </div>
+    <div class="scope-card">
+      <div class="num">1</div><h4>Live vs mock track</h4>
+      <p>Default trial is <strong>mock</strong> (seeded, deterministically reproducible — no API key required). A <code>--mode live</code> track (Together AI) is wired for verification but <em>not</em> the reported numbers.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    <span class="pill pill-danger">Mock track — trial, not empirical</span>
+    <span class="pill pill-wood">Self-assessment — no 3rd-party κ</span>
+    <span class="pill pill-ok">Live track wired — optional</span>
+  </div>
+</section>
+
+<!-- ================= SLIDE 3: 3-EVAL COMPARISON (FINDING SETUP) ================= -->
+<section class="slide s-hero" id="s3" style="background:#2C3A30;">
+  <span class="eyebrow" style="color:#CFE0D3;">03 · The comparison</span>
+  <h2 class="headline">Same four models, three different questions</h2>
+  <p class="subtext">Capability leaderboards (HLE, Cybench) and the banking-safety benchmark measure <em>different</em> things. The unified matrix shows the gap explicitly.</p>
+
+  <div style="margin-top:26px;max-width:920px;width:100%;margin-left:auto;margin-right:auto;">
+    <table class="eval-table" style="background:rgba(255,247,238,0.05);color:#EFE9DC;border-color:rgba(255,247,238,0.25);">
+      <thead style="background:rgba(255,247,238,0.1);">
+        <tr><th style="color:#D9E4DB;border-bottom-color:rgba(255,247,238,0.3);">Model</th><th style="color:#D9C6A8;">BankBench-MY (safety)</th><th style="color:#D9C6A8;">HLE (capability)</th><th style="color:#D9C6A8;">Cybench (capability)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:#FBF8F2;font-weight:700;">Qwen2.5-7B</td><td><span style="color:#FBECDD;font-family:'JetBrains Mono';font-weight:700;font-size:15px;">54.5%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">20.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">45.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">GPT-OSS-20B</td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:15px;">77.3%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">40.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">60.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">Llama-3.3-70B</td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:15px;">72.7%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">55.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">75.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">GPT-OSS-120B</td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;font-size:15px;">72.7%</span></td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:19px;">90.0%</span></td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:19px;">95.0%</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:#CFE0D3;max-width:920px;margin-top:10px;line-height:1.45;">Green = best in that column. Note: GPT-OSS-120B dominates HLE (90%) and Cybench (95%) — yet its BankBench-MY clean-baseline pass rate (72.7%) is <em>equal to Llama-3.3-70B</em> and below GPT-OSS-20B (77.3%). <strong>Capability ≠ safety.</strong></p>
+  </div>
+</section>
+
+
+<!-- ================= SLIDE 4: HOW THE SCORECARD WORKS ================= -->
+<section class="slide s-cream" 
+<!-- ================= SLIDE 4: HOW WE SCORED — 5 RUBRICS ACROSS 3 EVALS ================= -->
+<section class="slide s-cream" id="s4">
+  <span class="eyebrow s-wood-eyebrow">04 · How we were scored — the 5 rubrics applied</span>
+  <h2 class="headline" style="font-size:38px;color:var(--ink);">Why each eval got its grade</h2>
+  <p class="subtext">From `scorecard_assessment.json`: each dimension 1 (best) → 4 (worst); justification and gaps quoted directly from the working-draft assessment.</p>
+
+  <div style="display:flex;gap:14px;margin-top:18px;flex-wrap:wrap;align-items:stretch;">
+
+    <!-- BANKBENCH -->
+    <div class="card" style="flex:1;min-width:300px;border-top:4px solid var(--danger);">
+      <h4 style="font-family:'Fraunces',serif;font-size:16px;color:var(--danger);margin-bottom:4px;">BankBench-MY — Cat D</h4>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin-bottom:10px;">Scores: Construct 3 · Internal 4 · External 3 · Reliability 4 · Correctness 4.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Construct (3)</span> <span style="font-size:12px;color:var(--amber);font-family:'JetBrains Mono';font-weight:600;">3</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Strong pre-spec + controls; rubric conflates "avoided unsafe" with "added friction" — no sub-component split.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Internal (4) — floor item</span> <span style="font-size:12px;color:var(--danger);font-family:'JetBrains Mono';font-weight:700;">4</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Real inference (good); but N=1 per (model,task,phase) cell — no SE estimates — the paper's internal-validity floor.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Reliability (4) — floor item</span> <span style="font-size:12px;color:var(--danger);font-family:'JetBrains Mono';font-weight:700;">4</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">No `replication_config.json` committed; no OSF pre-registration; no 3rd-party replication.</p>
+    </div>
+
+    <!-- HLE -->
+    <div class="card" style="flex:1;min-width:300px;border-top:4px solid var(--ok);">
+      <h4 style="font-family:'Fraunces',serif;font-size:16px;color:var(--ok);margin-bottom:4px;">Humanity's Last Exam — Cat A</h4>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin-bottom:10px;">Scores: 1 · 2 · 1 · 2 · 1. Weakest = 2 (internal/reliability trial-caveat).</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Construct (1)</span> <span style="font-size:12px;color:var(--ok);font-family:'JetBrains Mono';font-weight:700;">1</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Expert-authored, precisely operationalized graduate-level questions; broad domain; single verifiable target.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Internal (2) — only deduction</span> <span style="font-size:12px;color:var(--amber);font-family:'JetBrains Mono';font-weight:600;">2</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Isolation + deterministic grading clean; deduction only: single attempt per item in this 20-task trial.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Correctness (1)</span> <span style="font-size:12px;color:var(--ok);font-family:'JetBrains Mono';font-weight:700;">1</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Every item has a single verifiable target; normalized answer matching handles formatting variance.</p>
+    </div>
+
+    <!-- CYBENCH -->
+    <div class="card" style="flex:1;min-width:300px;border-top:4px solid var(--amber);">
+      <h4 style="font-family:'Fraunces',serif;font-size:16px;color:var(--amber);margin-bottom:4px;">Cybench — Cat B (trial-sample deduction)</h4>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin-bottom:10px;">Scores: 2 · 2 · 2 · 2 · 1. Deduction: our 20 tasks are hand-authored trial samples, not the vetted published repo corpus.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Construct (2)</span> <span style="font-size:12px;color:var(--amber);font-family:'JetBrains Mono';font-weight:600;">2</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Real CTF skill areas present; deduction: sample is author-built, not drawn from published difficulty distribution.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Correctness (1)</span> <span style="font-size:12px;color:var(--ok);font-family:'JetBrains Mono';font-weight:700;">1</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Programmatic flag = unambiguous ground truth; deterministic check; no guessing path — paper's correctness ideal.</p>
+      <div class="dim-row"><span style="font-size:11.5px;font-weight:700;">Reliability (2)</span> <span style="font-size:12px;color:var(--amber);font-family:'JetBrains Mono';font-weight:600;">2</span></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px;">Reproducible in principle with fixed task set; deduction: no committed replication config committed for this trial.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 5: HOW APPLYING THE RUBRIC HELPED ================= -->
+<section class="slide s-cream2" id="s5">
+  <span class="eyebrow s-wood-eyebrow">05 · How applying the rubric helped the eval</span>
+  <h2 class="headline" style="font-size:40px;color:var(--ink);">From Cat D to an upgrade path</h2>
+  <p class="subtext">The rubric didn't just label BankBench — it pointed at exactly the lever to pull. Before applying it: we described the pilot informally. After: we have a 5-dimension diagnosis, a category, and a concrete upgrade sequence tied to specific artifacts.</p>
+
+  <div class="card" style="margin-top:20px;max-width:1080px;">
+    <h4 style="font-family:'Fraunces',serif;font-size:17px;color:var(--moss-deep);margin-bottom:14px;">BankBench-MY: diagnosis → upgrade path (mapped to rubric dimensions)</h4>
+    <table class="eval-table" style="font-size:12px;">
+      <thead><tr><th>Dimension (current score)</th><th>What the rubric found (gap from assessment)</th><th>The upgrade lever · artifact it produces</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Internal Validity (4)</strong> — floor</td><td>N=1 per (model, task, phase); no SE estimate; no power calc.</td><td><strong>N ≥ 3 per cell</strong> → reduces to 2–3; produces SE bars; enables statistical comparison across models.</td></tr>
+        <tr><td><strong>Reliability (4)</strong> — floor</td><td>No `replication_config.json`; no OSF pre-registration; no 3rd-party κ.</td><td><strong>Commit pinned config + file OSF pre-registration</strong> → lifts Reliability to 3; replication becomes verifiable.</td></tr>
+        <tr><td><strong>Correctness (4)</strong></td><td>No inter-rater κ (open JAIST collaboration, 40-item sample) committed.</td><td><strong>Run κ on 40-item sample</strong> → lifts Correctness to 2–3; validates the scoring rubric's stability.</td></tr>
+        <tr><td><strong>Construct Validity (3)</strong></td><td>Rubric conflates "avoided unsafe" with "added friction"; no sub-component split.</td><td><strong>Split label: approve / approve-with-verification / clarify / reject / escalate</strong> → separates compliance from friction.</td></tr>
+        <tr><td><strong>External Validity (3)</strong></td><td>Only 2 of 4 pre-registered deployment conditions implemented.</td><td><strong>Run protective Bedrock-XML overlay + neutral-persona conditions</strong> → lifts External to 2.</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.55;">Sequence: reliability/config first (fastest — artifact-only), then internal-validity (N≥3, requires run), then κ (collaboration), then construct split (design change), then external (deployment conditions). The rubric makes the order visible; before it, the gaps were described informally and mixed together.</p>
+  </div>
+</section>
+
+
+<!-- ================= SLIDE 6: 3-EVAL COMPARISON (with ΔADVOCACY moved back) ================= -->
+<section class="slide s-hero" id="s6" style="background:#2C3A30;">
+  <span class="eyebrow" style="color:#CFE0D3;">06 · 3-eval comparison (same 4 models)</span>
+  <h2 class="headline">Same four models, three different questions</h2>
+  <p class="subtext">Capability leaderboards (HLE, Cybench) and the banking-safety benchmark measure <em>different</em> things. The matrix makes the gap explicit.</p>
+
+  <div style="margin-top:22px;max-width:900px;width:100%;margin-left:auto;margin-right:auto;">
+    <table class="eval-table" style="background:rgba(255,247,238,0.05);color:#EFE9DC;border-color:rgba(255,247,238,0.25);font-size:12px;">
+      <thead style="background:rgba(255,247,238,0.1);">
+        <tr><th style="color:#D9E4DB;border-bottom-color:rgba(255,247,238,0.3);">Model</th><th style="color:#D9C6A8;">BankBench-MY (safety)</th><th style="color:#D9C6A8;">HLE (capability)</th><th style="color:#D9C6A8;">Cybench (capability)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:#FBF8F2;font-weight:700;">Qwen2.5-7B</td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;font-size:14px;">54.5%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">20.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">45.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">GPT-OSS-20B</td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:14px;">77.3%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">40.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">60.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">Llama-3.3-70B</td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:14px;">72.7%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">55.0%</span></td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;">75.0%</span></td></tr>
+        <tr><td style="color:#FBF8F2;font-weight:700;">GPT-OSS-120B</td><td><span style="color:#EFE9DC;font-family:'JetBrains Mono';font-weight:700;font-size:14px;">72.7%</span></td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:17px;">90.0%</span></td><td><span style="color:#E7C9A2;font-family:'JetBrains Mono';font-weight:700;font-size:17px;">95.0%</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11.5px;color:#CFE0D3;max-width:900px;margin-top:10px;line-height:1.45;">Green = best in column. Note: <strong>GPT-OSS-120B dominates HLE (90%) and Cybench (95%) — yet its BankBench-MY clean-baseline pass rate (72.7%) is equal to Llama (72.7%) and below GPT-OSS-20B (77.3%).</strong> Capability ≠ safety — and the rubric makes the gap measurable.</p>
+  </div>
+
+  <!-- ΔADVOCACY moved to a smaller back-card per user's instruction -->
+  <div style="margin-top:22px;max-width:900px;margin-left:auto;margin-right:auto;display:flex;gap:14px;flex-wrap:wrap;">
+    <div class="card" style="flex:1;min-width:300px;background:rgba(63,92,79,0.08);border-color:var(--moss);padding:16px 18px;">
+      <h4 style="font-family:'Fraunces',serif;font-size:14px;color:var(--moss-deep);margin-bottom:8px;">ΔADVOCACY detail (back reference, trial sample)</h4>
+      <p style="font-size:12px;color:var(--ink-soft);line-height:1.55;">Phase B (compliance-forcing overlay) degrades Phase A (clean) by <strong>+15.9pp</strong> overall. Per-model: Qwen2.5-7B +18.2pp · GPT-OSS-20B +18.2pp · GPT-OSS-120B +18.2pp · Llama-3.3-70B +9.1pp (only model that resists). A large Δ is a <em>deployment-condition signal</em>, not just a label ambiguity.</p>
+      <span class="pill pill-danger" style="margin-top:8px;font-size:10px;padding:3px 10px;">+15.9 pp · 3/4 models ≥ +18.2</span>
+    </div>
+    <div class="card" style="flex:1;min-width:300px;padding:16px 18px;">
+      <h4 style="font-family:'Fraunces',serif;font-size:14px;color:var(--moss-deep);margin-bottom:8px;">What the numbers mean here</h4>
+      <p style="font-size:12px;color:var(--ink-soft);line-height:1.55;">These are <strong>mock-track trial results</strong> (seeded simulation, not live Together AI inference). The live track (`--mode live`) is wired and reproducible — running it on the full 20-task set is the next verification step in the further-work plan.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 7: FURTHER WORK ================= -->
+<section class="slide s-cream" id="s7">
+  <span class="eyebrow s-wood-eyebrow">07 · Further work</span>
+  <h2 class="headline" style="font-size:40px;color:var(--ink);">What comes next — in order</h2>
+  <div class="find-grid" style="margin-top:22px;">
+    <div class="find-card">
+      <div class="f-num">1</div>
+      <h4>Full 20-task run (all 3 evals, all 4 models)</h4>
+      <p>This trial reports 10 of 20 BankBench tasks; HLE and Cybench samples are representative but not the full corpora. A complete run confirms whether Cat D holds and whether ΔADVOCACY stays at +15.9pp.</p>
+    </div>
+    <div class="find-card">
+      <div class="f-num">2</div>
+      <h4>Full replication config + pinned versions</h4>
+      <p>Commit a `replication_config.json` (API versions, seed, judge prompt, model IDs) — this is a <strong>floor item</strong> for reliability (Cat D → C) per the paper rubric.</p>
+    </div>
+    <div class="find-card">
+      <div class="f-num">3</div>
+      <h4>Inter-rater κ (open collaboration: JAIST, 40-item sample)</h4>
+      <p>Correctness grade (currently 4) requires inter-rater consistency evidence (κ). The collaboration sample is open; running κ lifts Correctness toward 2–3 and supports the upgrade path.</p>
+    </div>
+    <div class="find-card">
+      <div class="f-num">4</div>
+      <h4>Live-track verification (`--mode live`, Together AI)</h4>
+      <p>The mock track is deterministic and reproducible — running the live track verifies whether results hold against real inference. This requires `TOGETHER_API_KEY` (wired at repo root `.env`).</p>
+    </div>
+    <div class="find-card">
+      <div class="f-num">5</div>
+      <h4>Split the label: separate compliance from friction</h4>
+      <p>The 4-way rubric (approve/reject/escalate/clarify) conflates "safe but different" with "actually wrong" — already flagged in changelog; fixing it addresses both construct validity and correctness at once.</p>
+    </div>
+    <div class="find-card">
+      <div class="f-num">6</div>
+      <h4>Paper finalization (working draft → published)</h4>
+      <p>Reference `bankbench/3-4 LLM_scorecard/scorecard-full-paper.md` is a <strong>Feb 2026 working draft</strong> by its own text. Confirm final citation before any public reference; hold external claims until published version is available.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 8: WHAT YOU CAN SHARE ================= -->
+<section class="slide s-cream2" id="s8">
+  <span class="eyebrow s-wood-eyebrow">08 · What you can share (working draft)</span>
+  <h2 class="headline" style="font-size:40px;color:var(--ink);">Shareable — with the right framing</h2>
+
+  <div class="split" style="align-items:flex-start;gap:50px;">
+    <div class="col-text">
+      <p class="subtext"><strong>This is a working draft</strong> — it is shareable as a <em>method demonstration</em>, not as a certified evaluation result. The banner clearly labels itself: mock-track, self-assessment, trial samples, working-draft paper reference. What is appropriate to circulate:</p>
+      <ul style="margin-top:18px;padding-left:14px;color:var(--ink-soft);font-size:14px;line-height:1.7;list-style:disc;">
+        <li>The <strong>3-eval comparison structure</strong> — same rubric, different benchmark families, same 4 models — as proof the scorecard works across families.</li>
+        <li>The <strong>rubric explanation</strong> (slide 4 / "How it works") as a reference for anyone applying the San Joaquin / Gipiškis / Chin paper.</li>
+        <li>The <strong>scope statement</strong> (slide 2 / trial conditions, mock track, 20-task sample, self-assessment) as a reproducible baseline.</li>
+        <li>The <strong>attention flag</strong> (slide 9) as the honest caveat list — showing the gaps rather than hiding them.</li>
+      </ul>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:16px;line-height:1.55;">Not for external circulation without your approval and, for bank-safety framing, <strong>@clo review</strong> — this touches the regulatory-adjacent domain.</p>
+    </div>
+    <div class="col-visual">
+      <div class="card" style="max-width:340px;padding:22px;text-align:center;background:rgba(91,123,107,0.05);border-color:var(--moss);">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--moss-deep);font-weight:700;margin-bottom:6px;">Artifact</div>
+        <code style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink);line-height:1.55;display:block;text-align:left;background:#fff;border:1px solid var(--card-line);border-radius:6px;padding:10px 10px;word-break:break-word;">/Users/nshfnoh/dyad-apps/Antigravity/technical_aisafety/Sinar-BankBench/eval-scorecard/unified-scorecard-banner.html</code>
+        <div style="margin-top:16px;font-size:11.5px;color:var(--ink-soft);line-height:1.55;text-align:left;">
+          • 383 lines · 31K · same style reference as <code>bluedot-evals-1.html</code><br>
+          • Inputs verified: dashboard HTML · 3 results JSONs · scorecard paper · assessment JSON<br>
+          • No deploy · no external send · no code commit · no kanban change (pending your approval)
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 9: FLAG + CLOSE ================= -->
+<section class="slide s-end" id="s9" style="min-height:95vh;flex-direction:column;justify-content:center;">
+  <span class="eyebrow" style="color:#CFE0D3;opacity:.9;">09 · Flag · Attention · Status</span>
+  <h2 class="headline" style="font-size:38px;">Draft — flagged, not released</h2>
+  <p class="subtext">This banner summarizes <strong>scope</strong> and <strong>significance</strong> of the 3-eval comparison against the paper rubric. It does not claim a final grade, a public release, or a contract-ready statement. Before any circulation beyond this folder, review the flag list.</p>
+
+  <div class="flag-box" style="margin-top:22px;max-width:760px;">
+    <h3>⚑ 6 items flagged for your review</h3>
+    <ul>
+      <li><strong>Mock-track labeling</strong> — confirm the "trial / mock" label is visible enough for any external audience (currently in subtext, not the headline).</li>
+      <li><strong>Category D framing</strong> — confirm "expected floor" tone (not "poor performance") is acceptable for bank-safety context; regulator-facing framing needs different tone.</li>
+      <li><strong>ΔADVOCACY (+15.9pp)</strong> — pushed to back slide; confirm whether full-run version must be produced before any share.</li>
+      <li><strong>Paper reference</strong> — `scorecard-full-paper.md` is a <strong>Feb 2026 working draft</strong>; confirm whether to cite as "draft" or hold.</li>
+      <li><strong>No external send</strong> — this file is saved locally only; confirm before Telegram, PR, or public URL.</li>
+      <li><strong>@clo (CLO-chan) clearance</strong> — bank-safety framing touches the regulatory-adjacent domain; route through CLO before any contract / regulator-facing use.</li>
+    </ul>
+  </div>
+
+  <div class="draft-label" style="margin-top:24px;">DRAFT — NOT PUBLISHED &nbsp;·&nbsp; FLAGGED FOR @CLO REVIEW &nbsp;·&nbsp; NO EXTERNAL CIRCULATION WITHOUT YOUR GO-AHEAD</div>
+
+  <div class="credit" style="margin-top:24px;opacity:.7;font-size:11.5px;max-width:640px;margin-left:auto;margin-right:auto;text-align:center;line-height:1.7;">Artifact: `unified-scorecard-banner.html` (new, 31K) · Replaces slides 4–9 of previous draft · References: `unified_scorecard_dashboard.html`, `scorecard-full-paper.md`, `scorecard_assessment.json`, 3 result JSONs · CRO-chan · Aug 2026</div>
+</section>
+
+</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('section.slide'));
+const nav = document.getElementById('navdots');
+slides.forEach((s,i)=>{ const a=document.createElement('a'); a.href='#'+s.id; nav.appendChild(a); });
+const dots = Array.from(nav.children);
+const deck = document.getElementById('deck');
+function setActive(){ let idx=0,best=Infinity; slides.forEach((s,i)=>{ const r=Math.abs(s.getBoundingClientRect().top); if(rbest){best=r;idx=i;} }); dots.forEach((d,i)=>d.classList.toggle('active',i===idx)); }
+deck.addEventListener('scroll',()=>requestAnimationFrame(setActive)); setActive();
+</script>
+</body>
+</html>
+
+
+</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('section.slide'));
+const nav = document.getElementById('navdots');
+slides.forEach((s,i)=>{ const a=document.createElement('a'); a.href='#'+s.id; nav.appendChild(a); });
+const dots = Array.from(nav.children);
+const deck = document.getElementById('deck');
+function setActive(){
+  let idx=0, best=Infinity;
+  slides.forEach((s,i)=>{ const r=Math.abs(s.getBoundingClientRect().top); if(r<best){best=r; idx=i;} });
+  dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+}
+deck.addEventListener('scroll', ()=>requestAnimationFrame(setActive));
+setActive();
+</script>
+</body>
+</html>

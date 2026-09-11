@@ -1,0 +1,3 @@
+Collecting main service artifacts
+Uploading environment/ to /app
+Trial 3-4_LLM_tamper_harbor__6rRoRgn failed: No reward file found at jobs/2026-09-11__12-49-15/3-4_LLM_tamper_harbor__6rRoRgn/verifier/reward.txt or jobs/2026-09-11__12-49-15/3-4_LLM_tamper_harbor__6rRoRgn/verifier/reward.json
