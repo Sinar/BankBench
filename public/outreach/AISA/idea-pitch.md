@@ -1,0 +1,11 @@
+(I am not sure what is the actual clear project-specific question for this one, but here is my proposal on what I would like to contribute to this, as a fellow ASEAN and am working actively in mitigating catastrophic risks from LLM-AI in Malaysia)
+
+I would like to explore with AISA on this particular topic, with a proposed country of mine, Malaysia, if it fits, asking: under what observable conditions could concentrated AI disruption across data center, labor, and public-sector adoption layers become a hard-to-reverse labour & job industry shock within the context AISA's proposing, which is in wider fiscal, social and governance consequences?
+
+I see and share the need to turn broad concern into decision infrastructure, when Malaysia (1) has been adopting at fast pace many data centers developments, (2) has been buying and spending millions to procure LLM at large scale in governmental agencies and universities (reference on this below), and (3) fast adoption, then, in the society to use LLM and agents, especially among local companies itself, workers, and startups.
+
+My concern is the same: on concentrated distribution, where if LLM adoption becomes primarily driven by cheapness and convenience, reinforced then by large-scale government procurement of these foreign LLM vendors and large-scale use in public sphere, may outpace how the institutions can adapt. Malaysia may capture infrastructure investment at the risk of leaving domestic labour and public finances to absorb uncertain adjustment (and safety) costs too.
+
+Given my affinity with technical development + researches, I would like to map these pathways into developing visual advocacy tools and use it for my AI safety public education I am actively doing now, that help then address multilayers stakeholders concretely and easily, as what I tried to do before (paused projects): https://seeding-compute-gov-map--shalomshafa.replit.app/ and https://compute-forecast.pages.dev, and what I am doing now: https://compute-grid-dashboard.pages.dev/ (part of my own AI engineering personal upskilling)
+
+I believe in this project's theory of change where identifying early threshold is important, to allow policy interventions before any economic, social, and governance effects could compound.
