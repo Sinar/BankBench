@@ -175,9 +175,12 @@ that rather than assuming it away:
 - **Intermittent 500s.** The same request that succeeds can return
   `500 Internal server error` a minute later. The console retries 5xx and 429 up
 to three times with backoff before recording a failure.
-- **90-second per-request timeout.** A hung request would otherwise stall the
+- **150-second per-request timeout.** A hung request would otherwise stall the
   whole run. On timeout the step fails with a clear message instead of retrying,
-  because a slow model stays slow and retrying only triples the wait.
+  because a slow model stays slow and retrying only triples the wait. The budget
+  is deliberately generous: context grows with every tool call, so a 6-case
+  lookup scenario reaches step 6 with a far larger prompt than step 1, and a
+  tight timeout would throw away a run that had already spent its tokens.
 - **Step-level progress.** The status line reads
   `Running 2 of 3 — <model> × S01 (step 3/8)…` so a slow run is visibly working
   rather than apparently frozen.

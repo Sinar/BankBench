@@ -1124,7 +1124,7 @@
   /* Live calls are retried and time-bounded. NVIDIA's hosted endpoint returns
      intermittent 500s and some models stall, so a single attempt is not enough
      and an unbounded fetch can hang the whole run. */
-  var REQUEST_TIMEOUT_MS = 90000;
+  var REQUEST_TIMEOUT_MS = 150000;
   var MAX_ATTEMPTS = 3;
 
   function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
