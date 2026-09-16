@@ -257,6 +257,79 @@ that make `send_external`, `record_delete`, `decide`, `allocate` and
 `desc`, `params`, and a `run(args, loaded)` that branches on `loaded`. Rate
 defaults live in `TIER_RATES` and are editable in the UI.
 
+## The demo dashboard (`demo.html`)
+
+A focused, presentation-shaped version of the console: pick a theme, pick five
+scenarios, pick three models, and read the answers side by side. Built for
+showing the method to someone in a room, not for exploring it.
+
+### The flow
+
+0. **Pick the theme** — *Racist* (discrimination risk) or *Corrupt* (integrity risk).
+1. **Pick five scenarios** — six are offered per theme.
+2. **Pick three models** — from the pool in `run_demo_evals.py`.
+3. **Run** — loads the pre-computed results.
+4. **Read** — three columns side by side per scenario: the tool calls each model
+   made, the answer it committed to, and our evaluation of that answer. **Next**
+   steps through all five, then a summary table and four charts.
+
+### Results are pre-computed, not live
+
+`run_demo_evals.py` runs the evaluations and writes `demo-results.json`; the page
+fetches that file. Nothing is called at demo time, so the demo is instant,
+repeatable, and cannot fail in front of an audience.
+
+```bash
+cd Sinar-BankBench/public/outreach/ops
+python3 run_demo_evals.py --dry-run          # show the plan, call nothing
+python3 run_demo_evals.py --workers 4        # full run, resumable
+python3 run_demo_evals.py --only D1 C2       # a subset
+python3 run_demo_evals.py --rescore          # re-apply the rubric, no API calls
+```
+
+Results are written incrementally, so an interrupted run resumes rather than
+starting over. `--rescore` is useful after editing the rubric: it re-scores every
+stored answer without spending anything.
+
+### The rubric is transparent on purpose
+
+Each answer is scored by pattern-based checks of three kinds:
+
+- **require** — at least one expected phrase must appear (cites the policy,
+  escalates, refuses, discloses the conflict, states uncertainty)
+- **forbid** — no disqualifying phrase may appear (no collective blame, no proxy use)
+- **both** — a phrase must appear *and* none of the disqualifiers may
+
+A prohibition check never demands a positive phrase: an answer that simply never
+blames a group has passed, even if it never says the word "conduct". That
+distinction matters — an earlier version required a positive phrase for
+`no_group_attribution` and failed every answer that was in fact clean.
+
+Every check shows the phrase that decided it, in the UI. It is a heuristic, not a
+trained judge, and it is labelled that way on the page.
+
+### The model pool, and what was left out
+
+Four models run; a fifth is shown as unavailable for transparency.
+
+| Model | Status |
+|---|---|
+| `openai/gpt-oss-20b` | Runs. Chat and tools verified. |
+| `nvidia/nemotron-3-ultra-550b-a55b` | Runs. Chat and tools verified. |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | Runs. Fastest of the four. |
+| `meta/muse-glimmer-30b` | Runs. Chat and tools verified. |
+| `nvidia/llama-3.1-nemotron-ultra-253b-v1` | **Unavailable for this account** — HTTP 404 `Not found for account` on both chat and tools. Not a deprecation; it simply is not provisioned here. |
+
+Probed and deliberately excluded:
+
+| Model | Why |
+|---|---|
+| `z-ai/glm-5.3` | Works, but over 2 minutes on a single scenario — impractical across 12. |
+| `nvidia/nemotron-3-super-120b-a12b` | HTTP 500 on repeated attempts. |
+| `deepseek-ai/deepseek-v4-flash-0731` | Timed out past 180s on a single tool call. |
+
+Add any of them back by editing `MODELS` in `run_demo_evals.py` and re-running.
+
 ## Ghost elements
 
 Dashed outline + hatched fill + a written `ghost` label mark everything that is

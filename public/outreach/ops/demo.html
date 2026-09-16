@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eval Demo — Operational Integrity Evals</title>
+<meta name="description" content="Pick a theme, five scenarios and three models. See the models answer side by side, with their tool calls and our evaluation of each.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ops.css">
+<style>
+  /* ── demo dashboard ── */
+  .step-block{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:16px;overflow:hidden;}
+  .step-head{display:flex;align-items:center;gap:12px;padding:14px 22px;background:#fdfcf6;border-bottom:1px solid var(--line);}
+  .step-num{width:24px;height:24px;border-radius:50%;background:var(--basil);color:#F3F0DE;font-family:var(--mono);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step-head h3{margin:0;font-size:14.5px;}
+  .step-head .step-hint{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .step-body{padding:20px 22px;}
+
+  .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .theme-card{text-align:left;background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:20px 22px;cursor:pointer;font-family:var(--sans);transition:.15s;}
+  .theme-card:hover{border-color:var(--fresh);background:#fff;}
+  .theme-card[aria-pressed="true"]{border-color:var(--passata);background:var(--bg-cream);box-shadow:inset 0 0 0 1px var(--passata);}
+  .theme-card .tc-label{font-family:var(--serif);font-size:24px;color:var(--basil-deep);display:block;line-height:1.1;}
+  .theme-card .tc-sub{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--passata);display:block;margin:6px 0 10px;}
+  .theme-card .tc-blurb{font-size:12.5px;color:rgba(59,90,64,.72);line-height:1.55;display:block;}
+
+  .pick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  .pick{display:flex;gap:10px;align-items:flex-start;text-align:left;background:#fdfcf6;border:1px solid var(--line);border-radius:8px;padding:11px 13px;cursor:pointer;font-family:var(--sans);}
+  .pick:hover{border-color:var(--fresh);background:#fff;}
+  .pick[aria-pressed="true"]{border-color:var(--passata);background:var(--bg-cream);}
+  .pick[disabled]{opacity:.55;cursor:not-allowed;background:#f7f6ef;}
+  .pick .tick{font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-shrink:0;margin-top:1px;}
+  .pick[aria-pressed="true"] .tick{color:var(--passata);}
+  .pick .p-t{font-size:12.5px;font-weight:600;color:var(--basil-deep);line-height:1.35;display:block;}
+  .pick .p-d{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);display:block;margin-top:4px;line-height:1.45;}
+  .pick .p-d.bad{color:var(--passata);}
+
+  .run-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 22px;background:#fdfcf6;border-top:1px solid var(--line);}
+  .btn-run{background:var(--passata);color:#fff;border:none;padding:13px 30px;border-radius:5px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font-family:var(--sans);}
+  .btn-run:hover:not(:disabled){background:#B26945;}
+  .btn-run:disabled{opacity:.45;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--basil-deep);border:1px solid var(--basil-deep);padding:11px 18px;border-radius:5px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;font-family:var(--sans);}
+  .btn-ghost:hover:not(:disabled){background:var(--basil-deep);color:#F3F0DE;}
+  .btn-ghost:disabled{opacity:.4;cursor:not-allowed;}
+  .run-status{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+
+  /* stepper */
+  .stepper{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+  .stepper .dots{display:flex;gap:6px;}
+  .stepper .dot{width:26px;height:5px;border-radius:3px;background:var(--minty);cursor:pointer;border:none;padding:0;}
+  .stepper .dot.done{background:var(--fresh);}
+  .stepper .dot.active{background:var(--passata);}
+  .stepper .pos{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+
+  .prompt-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:18px;}
+  .prompt-box .pb-label{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--passata);margin-bottom:8px;}
+  .prompt-box .pb-text{font-size:13.5px;color:var(--basil-deep);line-height:1.6;}
+  .prompt-box .pb-sys{font-size:12.5px;color:rgba(59,90,64,.7);line-height:1.55;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .prompt-box .pb-safe{font-size:12px;color:rgba(59,90,64,.75);background:#fdfcf6;border:1px solid var(--line);border-radius:7px;padding:10px 12px;margin-top:12px;line-height:1.55;}
+  .prompt-box .pb-safe b{color:var(--basil-deep);}
+
+  /* three columns */
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;}
+  .col{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0;}
+  .col-head{padding:13px 16px;background:#fdfcf6;border-bottom:1px solid var(--line);}
+  .col-head .ch-name{font-size:13.5px;font-weight:600;color:var(--basil-deep);display:block;line-height:1.3;}
+  .col-head .ch-meta{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);display:block;margin-top:4px;}
+  .col-body{padding:14px 16px;}
+  .col-sec{margin-bottom:14px;}
+  .col-sec:last-child{margin-bottom:0;}
+  .col-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin-bottom:7px;}
+  .tool-line{border-left:2px solid var(--minty);padding-left:10px;margin-bottom:9px;}
+  .tool-line .tl-name{font-family:var(--mono);font-size:10.5px;color:var(--basil-deep);font-weight:500;}
+  .tool-line .tl-res{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);line-height:1.5;margin-top:3px;word-break:break-word;}
+  .answer{font-size:12px;color:rgba(59,90,64,.85);line-height:1.6;background:#fdfcf6;border:1px solid var(--line);border-radius:7px;padding:11px 12px;max-height:340px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;}
+  .verdict{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;border-radius:20px;padding:4px 11px;border:1px solid var(--line);}
+  .verdict.pass{border-color:var(--fresh);color:var(--fresh);}
+  .verdict.partial{border-color:var(--lemons);color:#8a7a3a;}
+  .verdict.fail{border-color:var(--passata);color:var(--passata);}
+  .verdict.err{border-style:dashed;border-color:var(--ghost-line);color:var(--ink-faint);}
+  .check{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.45;margin-bottom:6px;}
+  .check .ck{font-family:var(--mono);font-size:10px;flex-shrink:0;width:14px;}
+  .check.ok .ck{color:var(--fresh);}
+  .check.no .ck{color:var(--passata);}
+  .check .cl{color:rgba(59,90,64,.8);}
+  .check .ce{font-family:var(--mono);font-size:9px;color:var(--ink-faint);display:block;margin-top:2px;}
+  .col-foot{border-top:1px solid var(--line);padding:10px 16px;background:#fdfcf6;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);display:flex;gap:12px;flex-wrap:wrap;}
+
+  /* summary */
+  .sum-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:620px;}
+  .sum-table thead th{background:var(--basil);color:#F3F0DE;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:11px 14px;font-weight:400;}
+  .sum-table td{padding:11px 14px;border-bottom:1px solid var(--line);color:rgba(59,90,64,.82);}
+  .sum-table tbody tr:last-child td{border-bottom:none;}
+  .sum-table td.num{font-family:var(--mono);font-size:11px;text-align:right;white-space:nowrap;}
+  .sum-table td.mdl{font-weight:600;color:var(--basil-deep);}
+  .chart-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;}
+  .chart-card h4{margin:0 0 4px;font-size:14px;color:var(--basil-deep);}
+  .chart-card .cc-sub{font-size:11.5px;color:var(--ink-faint);margin-bottom:16px;line-height:1.5;}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 54px;gap:10px;align-items:center;margin-bottom:9px;}
+  .bar-row .bl{font-size:11.5px;color:rgba(59,90,64,.8);line-height:1.3;}
+  .bar-track{height:14px;border-radius:4px;background:rgba(59,90,64,.08);overflow:hidden;display:flex;}
+  .bar-seg{height:100%;}
+  .bar-seg.pass{background:var(--fresh);}
+  .bar-seg.partial{background:var(--lemons);}
+  .bar-seg.fail{background:var(--passata);}
+  .bar-row .bv{font-family:var(--mono);font-size:10.5px;text-align:right;color:var(--basil-deep);}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .legend i.pass{background:var(--fresh);}
+  .legend i.partial{background:var(--lemons);}
+  .legend i.fail{background:var(--passata);}
+
+  .empty{font-size:13px;color:var(--ink-faint);padding:30px 0;text-align:center;}
+  .banner{border-radius:8px;padding:13px 16px;font-size:12.5px;line-height:1.6;margin-bottom:18px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--fresh);color:rgba(59,90,64,.85);}
+  .banner.warn{border-left-color:var(--passata);}
+  .banner b{color:var(--basil-deep);}
+  .banner code{font-size:11.5px;}
+
+  @media (max-width:1000px){
+    .cols{grid-template-columns:1fr;}
+    .theme-grid{grid-template-columns:1fr;}
+    .pick-grid{grid-template-columns:1fr;}
+    .bar-row{grid-template-columns:110px 1fr 46px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-box">O</div>
+      <span class="wordmark">Operational Integrity Evals</span>
+      <span class="wordmark-short">OIE</span>
+      <span class="methodology-badge">eval demo · 3 models side by side</span>
+    </a>
+    <div class="nav-links">
+      <a href="#setup">Setup</a>
+      <a href="#results">Results</a>
+      <a href="#summary">Summary</a>
+      <a href="evals.html">Full console</a>
+    </div>
+    <a href="#setup" class="nav-cta">Run the demo</a>
+  </div>
+</nav>
+
+<section class="hero wrap" id="hero">
+  <div class="hero-grid">
+    <div>
+      <p class="kicker">eval demo · two themes · five scenarios · three models</p>
+      <h1>Same scenario. Three models. See what each one actually does with a tool in its hand.</h1>
+      <p class="lede">Pick a theme, pick five scenarios, pick three models, and read the answers side by side — the tool calls each model made, the answer it committed to, and our evaluation of that answer against the behaviour the scenario expects.</p>
+      <p class="lede">Results are pre-computed by <code>run_demo_evals.py</code> and loaded from <code>demo-results.json</code>, so the demo is instant and repeatable. The sandbox tools return <b>loaded</b> records — framed, incomplete, or pre-decided — which is the condition that makes the difference between models visible.</p>
+    </div>
+    <div class="hero-facts">
+      <div class="fact-box">
+        <b>Two themes</b>
+        <p><b>Racist</b> — discrimination risk: protected characteristics and proxies leaking into triage, credibility, eligibility, tone, or escalation. <b>Corrupt</b> — integrity risk: favours, conflicts, quiet handling, record tampering.</p>
+      </div>
+      <div class="fact-box">
+        <b>Our eval is transparent</b>
+        <p>Each answer is scored by a pattern-based rubric, and every check shows the phrase that decided it. It is a heuristic, not a trained judge — deliberately, so you can see why a verdict was reached.</p>
+      </div>
+      <div class="fact-box">
+        <b>What to look for</b>
+        <p>Whether a model checks the policy before acting, whether it escalates, and whether it takes a loaded tool result at face value. Those three separate the models more than answer quality does.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="setup">
+  <div class="section-head">
+    <p class="kicker">setup</p>
+    <h2>Four choices</h2>
+  </div>
+
+  <div class="step-block">
+    <div class="step-head"><span class="step-num">0</span><h3>Pick the theme</h3><span class="step-hint" id="themeHint"></span></div>
+    <div class="step-body"><div class="theme-grid" id="themeGrid"></div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-head"><span class="step-num">1</span><h3>Pick five scenarios</h3><span class="step-hint" id="scHint"></span></div>
+    <div class="step-body">
+      <div class="pick-grid" id="scenarioPick"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        <button type="button" class="btn-ghost" id="scAll">Select all</button>
+        <button type="button" class="btn-ghost" id="scNone">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-head"><span class="step-num">2</span><h3>Pick three models</h3><span class="step-hint" id="mdHint"></span></div>
+    <div class="step-body">
+      <div class="pick-grid" id="modelPick"></div>
+      <p class="sub" id="excludedNote" style="margin-top:14px;"></p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-head"><span class="step-num">3</span><h3>Run</h3><span class="step-hint">loads the pre-computed results</span></div>
+    <div class="run-bar">
+      <button type="button" class="btn-run" id="runBtn">Run evaluation</button>
+      <button type="button" class="btn-ghost" id="resetBtn">Reset</button>
+      <span class="run-status" id="runStatus">Loading results…</span>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="results" style="display:none;">
+  <div class="section-head">
+    <p class="kicker">results · side by side</p>
+    <h2 id="resultsTitle">Scenario</h2>
+  </div>
+
+  <div class="stepper">
+    <button type="button" class="btn-ghost" id="prevBtn">← Previous</button>
+    <div class="dots" id="dots"></div>
+    <button type="button" class="btn-ghost" id="nextBtn">Next →</button>
+    <span class="pos" id="posLabel"></span>
+  </div>
+
+  <div class="prompt-box" id="promptBox"></div>
+  <div class="cols" id="cols"></div>
+</section>
+
+<section class="section wrap" id="summary" style="display:none;">
+  <div class="section-head">
+    <p class="kicker">summary</p>
+    <h2>Across all five scenarios</h2>
+    <p class="lede" id="summaryLede"></p>
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:22px;">
+    <table class="sum-table" id="sumTable">
+      <thead>
+        <tr>
+          <th>Model</th><th>Verdicts (pass / partial / fail)</th>
+          <th style="text-align:right;">Avg score</th><th style="text-align:right;">Avg tool calls</th>
+          <th style="text-align:right;">Policy checked</th><th style="text-align:right;">Escalated</th>
+          <th style="text-align:right;">Tokens in</th><th style="text-align:right;">Tokens out</th>
+          <th style="text-align:right;">Est. cost</th>
+        </tr>
+      </thead>
+      <tbody id="sumBody"></tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <h4>Verdict mix per model</h4>
+      <p class="cc-sub">How each model's five answers were graded. A model that never checks the policy lands in fail.</p>
+      <div id="chartVerdicts"></div>
+      <div class="legend">
+        <span><i class="pass"></i>Pass</span><span><i class="partial"></i>Partial</span><span><i class="fail"></i>Fail</span>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h4>Average score per model</h4>
+      <p class="cc-sub">Mean rubric score across the five scenarios, 0 to 1.</p>
+      <div id="chartScores"></div>
+    </div>
+    <div class="chart-card">
+      <h4>Tool calls per model</h4>
+      <p class="cc-sub">Average number of sandbox calls per scenario. Fewer calls often means the model acted on the first loaded result it saw.</p>
+      <div id="chartTools"></div>
+    </div>
+    <div class="chart-card">
+      <h4>Check pass rate per model</h4>
+      <p class="cc-sub">Which rubric checks each model satisfied, across all five scenarios.</p>
+      <div id="chartChecks"></div>
+    </div>
+  </div>
+
+  <p class="tbl-note" id="rubricNote" style="margin-top:20px;"></p>
+</section>
+
+<footer class="site">
+  <div class="footer-inner">
+    <div class="footer-word">Operational Integrity Evals</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="evals.html">Full console</a>
+      <a href="README.md">README</a>
+      <a href="mailto:hai@shafiranoh.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-note wrap">Demo dashboard. Results are pre-computed by <code>run_demo_evals.py</code> against a faux tool sandbox and scored by a transparent pattern-based rubric — a heuristic, not a trained judge. Scenarios are synthetic and de-identified. Descriptive findings only: the models behaved differently under these controlled conditions, and nothing stronger is claimed.</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var state = {
+    data: null,
+    theme: null,
+    scenarios: [],
+    models: [],
+    view: 0,
+    results: []
+  };
+
+  var el = {
+    themeGrid: document.getElementById('themeGrid'),
+    themeHint: document.getElementById('themeHint'),
+    scenarioPick: document.getElementById('scenarioPick'),
+    scHint: document.getElementById('scHint'),
+    scAll: document.getElementById('scAll'),
+    scNone: document.getElementById('scNone'),
+    modelPick: document.getElementById('modelPick'),
+    mdHint: document.getElementById('mdHint'),
+    excludedNote: document.getElementById('excludedNote'),
+    runBtn: document.getElementById('runBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+    runStatus: document.getElementById('runStatus'),
+    results: document.getElementById('results'),
+    resultsTitle: document.getElementById('resultsTitle'),
+    promptBox: document.getElementById('promptBox'),
+    cols: document.getElementById('cols'),
+    dots: document.getElementById('dots'),
+    posLabel: document.getElementById('posLabel'),
+    prevBtn: document.getElementById('prevBtn'),
+    nextBtn: document.getElementById('nextBtn'),
+    summary: document.getElementById('summary'),
+    summaryLede: document.getElementById('summaryLede'),
+    sumBody: document.getElementById('sumBody'),
+    chartVerdicts: document.getElementById('chartVerdicts'),
+    chartScores: document.getElementById('chartScores'),
+    chartTools: document.getElementById('chartTools'),
+    chartChecks: document.getElementById('chartChecks'),
+    rubricNote: document.getElementById('rubricNote')
+  };
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function money(n){ return '$' + (n || 0).toFixed(4); }
+  function pct(n){ return Math.round((n || 0) * 100) + '%'; }
+  function modelById(id){
+    return (state.data.models || []).filter(function(m){ return m.id === id; })[0] || {id:id, label:id, vendor:''};
+  }
+  function scenariosForTheme(t){
+    return (state.data.scenarios || []).filter(function(s){ return s.theme === t; });
+  }
+  function runFor(scenarioId, modelId){
+    var s = (state.data.scenarios || []).filter(function(x){ return x.id === scenarioId; })[0];
+    if (!s || !s.runs) return null;
+    return s.runs[modelId] || null;
+  }
+
+  /* ── setup rendering ── */
+
+  function renderThemes(){
+    el.themeGrid.innerHTML = (state.data.themes || []).map(function(t){
+      var on = state.theme === t.id;
+      return '<button type="button" class="theme-card" data-theme="' + esc(t.id) + '" aria-pressed="' + on + '">' +
+        '<span class="tc-label">' + esc(t.label) + '</span>' +
+        '<span class="tc-sub">' + esc(t.sub) + '</span>' +
+        '<span class="tc-blurb">' + esc(t.blurb) + '</span>' +
+      '</button>';
+    }).join('');
+    el.themeGrid.querySelectorAll('[data-theme]').forEach(function(b){
+      b.addEventListener('click', function(){
+        state.theme = b.getAttribute('data-theme');
+        var pool = scenariosForTheme(state.theme);
+        state.scenarios = pool.slice(0, 5).map(function(s){ return s.id; });
+        renderThemes(); renderScenarios();
+      });
+    });
+    el.themeHint.textContent = state.theme ? 'selected' : 'choose one';
+  }
+
+  function renderScenarios(){
+    var pool = scenariosForTheme(state.theme);
+    el.scenarioPick.innerHTML = pool.map(function(s){
+      var on = state.scenarios.indexOf(s.id) !== -1;
+      return '<button type="button" class="pick" data-sc="' + esc(s.id) + '" aria-pressed="' + on + '">' +
+        '<span class="tick">' + (on ? '✓' : '☐') + '</span>' +
+        '<span><span class="p-t">' + esc(s.id) + ' · ' + esc(s.title) + '</span>' +
+        '<span class="p-d">' + esc(s.checks.length) + ' rubric checks</span></span>' +
+      '</button>';
+    }).join('');
+    el.scenarioPick.querySelectorAll('[data-sc]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var id = b.getAttribute('data-sc');
+        var i = state.scenarios.indexOf(id);
+        if (i === -1){
+          if (state.scenarios.length >= 5){ el.scHint.textContent = 'five already selected'; return; }
+          state.scenarios.push(id);
+        } else {
+          state.scenarios.splice(i, 1);
+        }
+        renderScenarios();
+      });
+    });
+    el.scHint.textContent = state.scenarios.length + ' of 5 selected';
+  }
+
+  function renderModels(){
+    el.modelPick.innerHTML = (state.data.models || []).map(function(m){
+      var on = state.models.indexOf(m.id) !== -1;
+      var hasData = !!(state.data.scenarios || []).some(function(s){
+        return s.runs && s.runs[m.id] && s.runs[m.id].status === 'ok';
+      });
+      var disabled = !m.available || !hasData;
+      var note = m.note || '';
+      if (!disabled && !hasData) note = 'No results in this run.';
+      return '<button type="button" class="pick" data-md="' + esc(m.id) + '" aria-pressed="' + on + '"' +
+        (disabled ? ' disabled' : '') + '>' +
+        '<span class="tick">' + (on ? '✓' : '☐') + '</span>' +
+        '<span><span class="p-t">' + esc(m.label) + '</span>' +
+        '<span class="p-d' + (disabled ? ' bad' : '') + '">' + esc(m.vendor) + ' · ' + esc(note) + '</span></span>' +
+      '</button>';
+    }).join('');
+    el.modelPick.querySelectorAll('[data-md]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.disabled) return;
+        var id = b.getAttribute('data-md');
+        var i = state.models.indexOf(id);
+        if (i === -1){
+          if (state.models.length >= 3){ el.mdHint.textContent = 'three already selected'; return; }
+          state.models.push(id);
+        } else {
+          state.models.splice(i, 1);
+        }
+        renderModels();
+      });
+    });
+    el.mdHint.textContent = state.models.length + ' of 3 selected';
+
+    var ex = state.data.excluded || [];
+    el.excludedNote.innerHTML = ex.length
+      ? '<b>Probed and left out of this run:</b> ' + ex.map(function(e){
+          return '<code>' + esc(e.id) + '</code> — ' + esc(e.reason);
+        }).join(' ')
+      : '';
+  }
+
+  /* ── results rendering ── */
+
+  function verdictClass(v){
+    if (v === 'PASS') return 'pass';
+    if (v === 'PARTIAL') return 'partial';
+    if (v === 'FAIL') return 'fail';
+    return 'err';
+  }
+
+  function renderResults(){
+    var list = state.results;
+    if (!list.length){ el.results.style.display = 'none'; return; }
+    el.results.style.display = 'block';
+
+    var sc = list[state.view];
+    el.resultsTitle.textContent = sc.id + ' · ' + sc.title;
+    el.posLabel.textContent = 'Scenario ' + (state.view + 1) + ' of ' + list.length;
+
+    el.dots.innerHTML = list.map(function(s, i){
+      var cls = i === state.view ? 'active' : (i < state.view ? 'done' : '');
+      return '<button type="button" class="dot ' + cls + '" data-i="' + i + '" aria-label="Scenario ' + (i+1) + '"></button>';
+    }).join('');
+    el.dots.querySelectorAll('[data-i]').forEach(function(b){
+      b.addEventListener('click', function(){ state.view = parseInt(b.getAttribute('data-i'), 10); renderResults(); });
+    });
+
+    el.prevBtn.disabled = state.view === 0;
+    el.nextBtn.disabled = state.view === list.length - 1;
+
+    el.promptBox.innerHTML =
+      '<div class="pb-label">System prompt</div>' +
+      '<div class="pb-sys">' + esc(sc.system) + '</div>' +
+      '<div class="pb-label">User prompt</div>' +
+      '<div class="pb-text">' + esc(sc.user) + '</div>' +
+      '<div class="pb-safe"><b>What a governed agent should do:</b> ' + esc(sc.safe) + '</div>';
+
+    el.cols.innerHTML = state.models.map(function(mid){
+      var m = modelById(mid);
+      var r = runFor(sc.id, mid);
+      var head = '<div class="col-head">' +
+        '<span class="ch-name">' + esc(m.label) + '</span>' +
+        '<span class="ch-meta">' + esc(m.vendor) + ' · ' + esc(mid) + '</span>' +
+      '</div>';
+
+      if (!r){
+        return '<div class="col">' + head + '<div class="col-body"><p class="empty">No result for this model.</p></div></div>';
+      }
+      if (r.status !== 'ok'){
+        return '<div class="col">' + head +
+          '<div class="col-body"><span class="verdict err">error</span>' +
+          '<div class="answer" style="margin-top:12px;">' + esc(r.error || 'run failed') + '</div></div></div>';
+      }
+
+      var tools = (r.tool_calls || []).map(function(t){
+        var res = JSON.stringify(t.result);
+        if (res.length > 220) res = res.slice(0, 220) + '…';
+        return '<div class="tool-line">' +
+          '<div class="tl-name">' + esc(t.name) + '(' + esc(JSON.stringify(t.args)) + ')</div>' +
+          '<div class="tl-res">' + esc(res) + '</div>' +
+        '</div>';
+      }).join('') || '<div class="tl-res">No tool calls — the model answered without using the sandbox.</div>';
+
+      var checks = ((r.eval && r.eval.checks) || []).map(function(c){
+        return '<div class="check ' + (c.pass ? 'ok' : 'no') + '">' +
+          '<span class="ck">' + (c.pass ? '✓' : '✗') + '</span>' +
+          '<span class="cl">' + esc(c.label) +
+            '<span class="ce">' + esc(c.evidence) + '</span>' +
+          '</span>' +
+        '</div>';
+      }).join('');
+
+      var v = (r.eval && r.eval.verdict) || 'FAIL';
+      var score = (r.eval && r.eval.score) || 0;
+
+      return '<div class="col">' + head +
+        '<div class="col-body">' +
+          '<div class="col-sec">' +
+            '<div class="col-label">Tool calls (' + (r.tool_calls || []).length + ')</div>' + tools +
+          '</div>' +
+          '<div class="col-sec">' +
+            '<div class="col-label">Answer</div>' +
+            '<div class="answer">' + esc(r.output) + '</div>' +
+          '</div>' +
+          '<div class="col-sec">' +
+            '<div class="col-label">Our eval</div>' +
+            '<span class="verdict ' + verdictClass(v) + '">' + esc(v) + ' · ' + pct(score) + '</span>' +
+            '<div style="margin-top:10px;">' + checks + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="col-foot">' +
+          '<span>steps ' + r.steps + '</span>' +
+          '<span>in ' + (r.usage ? r.usage.in.toLocaleString() : 0) + '</span>' +
+          '<span>out ' + (r.usage ? r.usage.out.toLocaleString() : 0) + '</span>' +
+          '<span>' + money(r.cost) + '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* ── summary + charts ── */
+
+  function renderSummary(){
+    var list = state.results;
+    if (!list.length){ el.summary.style.display = 'none'; return; }
+    el.summary.style.display = 'block';
+
+    var stats = state.models.map(function(mid){
+      var s = {id:mid, m:modelById(mid), pass:0, partial:0, fail:0, err:0, score:0, n:0,
+               tools:0, tin:0, tout:0, cost:0, checks:{}};
+      list.forEach(function(sc){
+        var r = runFor(sc.id, mid);
+        if (!r) return;
+        if (r.status !== 'ok'){ s.err++; return; }
+        var v = (r.eval && r.eval.verdict) || 'FAIL';
+        if (v === 'PASS') s.pass++; else if (v === 'PARTIAL') s.partial++; else s.fail++;
+        s.score += (r.eval && r.eval.score) || 0;
+        s.n++;
+        s.tools += (r.tool_calls || []).length;
+        s.tin += (r.usage && r.usage.in) || 0;
+        s.tout += (r.usage && r.usage.out) || 0;
+        s.cost += r.cost || 0;
+        ((r.eval && r.eval.checks) || []).forEach(function(c){
+          if (!s.checks[c.id]) s.checks[c.id] = {pass:0, n:0};
+          s.checks[c.id].n++;
+          if (c.pass) s.checks[c.id].pass++;
+        });
+      });
+      s.avgScore = s.n ? s.score / s.n : 0;
+      s.avgTools = s.n ? s.tools / s.n : 0;
+      return s;
+    });
+
+    el.summaryLede.textContent = 'Five scenarios, three models, ' + list.length * state.models.length +
+      ' runs. The rubric is applied identically to every answer.';
+
+    el.sumBody.innerHTML = stats.map(function(s){
+      var policy = s.checks.cites_policy, esc_ = s.checks.escalates;
+      return '<tr>' +
+        '<td class="mdl">' + esc(s.m.label) + '</td>' +
+        '<td>' + s.pass + ' / ' + s.partial + ' / ' + s.fail + (s.err ? ' (+' + s.err + ' err)' : '') + '</td>' +
+        '<td class="num">' + pct(s.avgScore) + '</td>' +
+        '<td class="num">' + s.avgTools.toFixed(1) + '</td>' +
+        '<td class="num">' + (policy ? pct(policy.pass / policy.n) : '—') + '</td>' +
+        '<td class="num">' + (esc_ ? pct(esc_.pass / esc_.n) : '—') + '</td>' +
+        '<td class="num">' + s.tin.toLocaleString() + '</td>' +
+        '<td class="num">' + s.tout.toLocaleString() + '</td>' +
+        '<td class="num">' + money(s.cost) + '</td>' +
+      '</tr>';
+    }).join('');
+
+    // verdict mix
+    el.chartVerdicts.innerHTML = stats.map(function(s){
+      var total = Math.max(1, s.pass + s.partial + s.fail + s.err);
+      var seg = function(cls, n){ return n ? '<span class="bar-seg ' + cls + '" style="width:' + (n/total*100) + '%"></span>' : ''; };
+      return '<div class="bar-row">' +
+        '<span class="bl">' + esc(s.m.label) + '</span>' +
+        '<span class="bar-track">' + seg('pass', s.pass) + seg('partial', s.partial) + seg('fail', s.fail) + '</span>' +
+        '<span class="bv">' + s.pass + '/' + total + '</span>' +
+      '</div>';
+    }).join('');
+
+    // avg score
+    el.chartScores.innerHTML = stats.map(function(s){
+      return '<div class="bar-row">' +
+        '<span class="bl">' + esc(s.m.label) + '</span>' +
+        '<span class="bar-track"><span class="bar-seg pass" style="width:' + (s.avgScore*100) + '%"></span></span>' +
+        '<span class="bv">' + pct(s.avgScore) + '</span>' +
+      '</div>';
+    }).join('');
+
+    // tool calls
+    var maxTools = Math.max.apply(null, stats.map(function(s){ return s.avgTools; }).concat([1]));
+    el.chartTools.innerHTML = stats.map(function(s){
+      return '<div class="bar-row">' +
+        '<span class="bl">' + esc(s.m.label) + '</span>' +
+        '<span class="bar-track"><span class="bar-seg partial" style="width:' + (s.avgTools/maxTools*100) + '%"></span></span>' +
+        '<span class="bv">' + s.avgTools.toFixed(1) + '</span>' +
+      '</div>';
+    }).join('');
+
+    // check pass rate
+    var allChecks = {};
+    stats.forEach(function(s){ Object.keys(s.checks).forEach(function(k){ allChecks[k] = true; }); });
+    el.chartChecks.innerHTML = Object.keys(allChecks).map(function(cid){
+      var label = cid;
+      list.some(function(sc){
+        return ((sc.checks) || []).some(function(c){
+          if (c === cid){ label = cid; return true; }
+          return false;
+        });
+      });
+      var rows = stats.map(function(s){
+        var c = s.checks[cid];
+        var rate = c && c.n ? c.pass / c.n : 0;
+        return '<div class="bar-row">' +
+          '<span class="bl">' + esc(s.m.label) + '</span>' +
+          '<span class="bar-track"><span class="bar-seg ' + (rate >= 0.6 ? 'pass' : (rate > 0 ? 'partial' : 'fail')) + '" style="width:' + (rate*100) + '%"></span></span>' +
+          '<span class="bv">' + pct(rate) + '</span>' +
+        '</div>';
+      }).join('');
+      return '<div style="margin-bottom:16px;"><div class="col-label">' + esc(cid.replace(/_/g,' ')) + '</div>' + rows + '</div>';
+    }).join('');
+
+    el.rubricNote.textContent = (state.data.rubric_note || '') +
+      ' Generated ' + (state.data.generated_at || '') + '. Sandbox: ' + (state.data.sandbox || '') +
+      ', harness: ' + (state.data.harness || '') + '.';
+  }
+
+  /* ── run ── */
+
+  function run(){
+    if (!state.theme){ el.runStatus.textContent = 'Pick a theme first.'; return; }
+    if (state.scenarios.length !== 5){ el.runStatus.textContent = 'Pick exactly five scenarios.'; return; }
+    if (state.models.length !== 3){ el.runStatus.textContent = 'Pick exactly three models.'; return; }
+
+    var order = scenariosForTheme(state.theme).map(function(s){ return s.id; })
+      .filter(function(id){ return state.scenarios.indexOf(id) !== -1; });
+    state.results = order.map(function(id){
+      return (state.data.scenarios || []).filter(function(s){ return s.id === id; })[0];
+    }).filter(Boolean);
+
+    state.view = 0;
+    renderResults();
+    renderSummary();
+    el.runStatus.textContent = 'Loaded ' + state.results.length + ' scenarios × ' + state.models.length + ' models.';
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  el.runBtn.addEventListener('click', run);
+  el.resetBtn.addEventListener('click', function(){
+    state.theme = null; state.scenarios = []; state.models = []; state.results = [];
+    el.results.style.display = 'none'; el.summary.style.display = 'none';
+    el.runStatus.textContent = 'Reset.';
+    renderThemes(); renderScenarios(); renderModels();
+  });
+  el.scAll.addEventListener('click', function(){
+    state.scenarios = scenariosForTheme(state.theme).slice(0, 5).map(function(s){ return s.id; });
+    renderScenarios();
+  });
+  el.scNone.addEventListener('click', function(){ state.scenarios = []; renderScenarios(); });
+  el.prevBtn.addEventListener('click', function(){ if (state.view > 0){ state.view--; renderResults(); } });
+  el.nextBtn.addEventListener('click', function(){ if (state.view < state.results.length - 1){ state.view++; renderResults(); } });
+
+  /* ── init ── */
+
+  fetch('demo-results.json', {cache:'no-store'})
+    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){
+      state.data = d;
+      state.theme = (d.themes && d.themes[0] && d.themes[0].id) || null;
+      state.scenarios = scenariosForTheme(state.theme).slice(0, 5).map(function(s){ return s.id; });
+      var usable = (d.models || []).filter(function(m){
+        return m.available && (d.scenarios || []).some(function(s){
+          return s.runs && s.runs[m.id] && s.runs[m.id].status === 'ok';
+        });
+      });
+      state.models = usable.slice(0, 3).map(function(m){ return m.id; });
+      renderThemes(); renderScenarios(); renderModels();
+      el.runStatus.textContent = 'Ready — ' + (d.scenarios || []).length + ' scenarios loaded from demo-results.json.';
+    })
+    .catch(function(err){
+      el.runStatus.textContent = 'Could not load demo-results.json (' + err.message +
+        '). Run: python3 run_demo_evals.py';
+    });
+})();
+</script>
+
+</body>
+</html>
