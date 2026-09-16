@@ -94,9 +94,13 @@ set the proxy base URL to
 `https://bankbench-nvidia-proxy.<your-subdomain>.workers.dev/v1`. Leave the
 API-key field **empty**: the Worker supplies the key.
 
-To make that the default for everyone, set `MODE_BASE.hosted` in `evals.html` to
-your real URL. A caller-supplied key always overrides the Worker secret, so you
-can still point the page at it with a different key to compare accounts.
+This deployment is already wired up: `MODE_BASE.hosted` in `evals.html` points at
+`https://bankbench-nvidia-proxy.shalomshafa.workers.dev/v1`, so **Live ·
+Cloudflare** works out of the box. Change that value if you rename the Worker or
+deploy it under a different account.
+
+A caller-supplied key always overrides the Worker secret, so you can still point
+the page at it with a different key to compare accounts.
 
 **c · Deploy the site.** Pushing to `main` triggers
 `.github/workflows/deploy.yml`, which now assembles this folder into
@@ -122,8 +126,13 @@ These are easy to conflate, and they are different things:
 | `CLOUDFLARE_ACCOUNT_ID` | **GitHub Actions** repo secret | same | same |
 
 Cloudflare Pages itself serves static files and never needs the NVIDIA key. Both
-Cloudflare values are already in `~/.hermes/.env`, which `deploy.sh` sources
+Cloudflare values are already in the repo-root `.env`, which `deploy.sh` sources
 automatically when you deploy by hand.
+
+Deployed state as of 2026-09-16:
+
+- Worker: `https://bankbench-nvidia-proxy.shalomshafa.workers.dev` (secret set)
+- Site: `https://bankbench-sinar.pages.dev/outreach/ops/`
 
 ## The demo
 
