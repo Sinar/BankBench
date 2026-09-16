@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cetalabs — Sovereign AI, Embedded Safety</title>
+<meta name="description" content="Cetalabs deploys sovereign AI with embedded evaluation, continuous multi-agent red-teaming, and no-code fine-tuning — so your ministry controls the model, the data, and the audit trail.">
+<meta property="og:title" content="Cetalabs — Sovereign AI, Embedded Safety">
+<meta property="og:description" content="If your AI vendor switched off tomorrow, would your citizens' data still be with you? Embedded evaluation, no-code governance, jurisdiction-controlled fine-tuning.">
+<meta property="og:image" content="https://ik.imagekit.io/cbctech/banner-Cetalabs2.png?updatedAt=1770119402562">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cetalabs — Sovereign AI, Embedded Safety">
+<meta name="twitter:description" content="If your AI vendor switched off tomorrow, would your citizens' data still be with you? Embedded evaluation, no-code governance, jurisdiction-controlled fine-tuning.">
+<meta name="twitter:image" content="https://ik.imagekit.io/cbctech/banner-Cetalabs2.png?updatedAt=1770119402562">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-cream:#F3F0DE;
+    --basil:#3B5A40;
+    --basil-deep:#2F4734;
+    --passata:#C97956;
+    --lemons:#D3C97E;
+    --fresh:#5C8462;
+    --minty:#CBD9C8;
+    --ink-faint:#8C9286;
+    --line:rgba(59,90,64,.14);
+    --pad:96px;
+    --sans:'Inter',sans-serif; --serif:'DM Serif Display',serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg-cream);color:var(--basil);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  /* ── NAV ── */
+  nav.top{position:fixed;top:0;width:100%;z-index:50;background:rgba(243,240,222,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1120px;margin:0 auto;padding:0 var(--pad);height:66px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .logo-link{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0;}
+  .logo-box{width:26px;height:26px;border-radius:5px;background:var(--basil);color:#F3F0DE;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:14px;flex-shrink:0;}
+  .wordmark{font-family:var(--serif);font-size:18px;letter-spacing:.01em;color:var(--basil);flex-shrink:0;}
+  .methodology-badge{font-family:var(--mono);font-size:9.5px;color:var(--fresh);border:1px solid var(--fresh);border-radius:20px;padding:3px 10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;flex-shrink:0;}
+  .nav-links{display:flex;gap:24px;font-size:12.5px;font-weight:500;color:rgba(59,90,64,.68);flex-shrink:0;}
+  .nav-links a{text-decoration:none;white-space:nowrap;}
+  .nav-links a:hover{color:var(--basil);}
+  .nav-cta{font-size:12px;font-weight:600;color:#F3F0DE;background:var(--basil);padding:9px 18px;border-radius:4px;text-decoration:none;transition:.15s;white-space:nowrap;flex-shrink:0;}
+  .nav-cta:hover{background:var(--basil-deep);}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad);}
+
+  /* ── SECTION SCAFFOLD ── */
+  .section{padding-top:88px;padding-bottom:88px;border-top:1px solid var(--line);}
+  .section:first-of-type{border-top:none;}
+  .section-head{max-width:640px;margin-bottom:44px;}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--passata);text-transform:uppercase;margin:0 0 14px;}
+  h1{font-family:var(--serif);font-weight:400;font-size:44px;line-height:1.18;margin:0 0 20px;color:var(--basil-deep);max-width:760px;letter-spacing:-.01em;}
+  h2{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.25;margin:0 0 12px;color:var(--basil-deep);letter-spacing:-.005em;}
+  h3{font-family:var(--sans);font-weight:600;font-size:16px;margin:0 0 8px;color:var(--basil-deep);}
+  p.lede{color:rgba(59,90,64,.75);font-size:16.5px;max-width:640px;line-height:1.65;}
+
+  /* ── HERO ── */
+  .hero{padding-top:172px;padding-bottom:80px;}
+  .hero-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:56px;align-items:start;}
+  .hero-grid>div{min-width:0;}
+  .hero-meta{grid-column:1 / -1;margin-top:32px;padding-top:28px;border-top:1px solid var(--line);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);}
+  .hero-meta-track{display:flex;gap:14px;width:max-content;animation:heroMarquee 32s linear infinite;}
+  .hero-meta-track:hover{animation-play-state:paused;}
+  .hero-meta-item{display:flex;flex-direction:column;gap:8px;width:230px;flex-shrink:0;font-size:12.5px;color:rgba(59,90,64,.72);line-height:1.45;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .hero-meta-item b{font-family:var(--serif);font-weight:400;font-size:20px;color:var(--passata);line-height:1;}
+  @keyframes heroMarquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @media (prefers-reduced-motion:reduce){.hero-meta-track{animation:none;}}
+
+  /* ── HERO ASSESSMENT WIDGET ── */
+  .assess-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 26px 24px;margin-top:8px;}
+  .assess-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--passata);text-transform:uppercase;margin-bottom:10px;}
+  .assess-title{font-family:var(--sans);font-weight:700;font-size:17px;color:var(--basil-deep);margin-bottom:8px;}
+  .assess-desc{font-size:13px;color:rgba(59,90,64,.68);line-height:1.55;margin-bottom:18px;}
+  .assess-progress{display:flex;gap:6px;margin-bottom:16px;}
+  .assess-dot{flex:1;height:3px;border-radius:2px;background:var(--minty);}
+  .assess-dot.active,.assess-dot.done{background:var(--passata);}
+  .assess-quiz{position:relative;margin-bottom:16px;min-height:150px;}
+  .assess-q{display:none;animation:assessFade .2s ease;}
+  .assess-q.active{display:block;}
+  @keyframes assessFade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .assess-q-text{font-size:12.5px;color:var(--basil-deep);font-weight:600;line-height:1.4;margin-bottom:8px;}
+  .assess-opts{display:flex;flex-direction:column;gap:6px;}
+  .assess-opt{text-align:left;background:#fdfcf6;border:1px solid var(--line);border-radius:6px;padding:9px 11px;font-size:12px;color:rgba(59,90,64,.75);cursor:pointer;transition:.15s;font-family:var(--sans);}
+  .assess-opt:hover{border-color:var(--fresh);}
+  .assess-opt.selected{border-color:var(--passata);background:var(--bg-cream);color:var(--basil-deep);font-weight:600;}
+  .assess-row{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(59,90,64,.75);}
+  .assess-row .w-grade{width:26px;height:26px;font-size:12px;flex-shrink:0;}
+  .assess-result{background:var(--bg-cream);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .assess-action{font-family:var(--mono);font-size:10.5px;color:var(--passata);text-transform:uppercase;letter-spacing:.04em;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
+  .assess-cta{display:block;text-align:center;background:var(--basil);color:#F3F0DE;padding:11px;border-radius:6px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-decoration:none;transition:.15s;}
+  .assess-cta:hover{background:var(--basil-deep);}
+
+  /* ── COST SECTION ── */
+  .cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .cost-card{background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:26px 24px;}
+  .cost-figure{font-family:var(--serif);font-size:24px;color:var(--passata);margin-bottom:10px;line-height:1.2;}
+  .cost-figure span{font-family:var(--sans);font-size:13px;color:var(--ink-faint);font-weight:500;}
+  .cost-card h3{font-size:14.5px;margin-bottom:8px;}
+  .cost-card p{font-size:13px;color:rgba(59,90,64,.68);line-height:1.55;}
+  .cost-note{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:16px;}
+  .tender-box{background:#fff;border:1px solid var(--line);border-left:4px solid var(--basil);border-radius:10px;padding:22px 26px;margin-top:24px;}
+  .tender-box h3{font-size:15px;margin-bottom:8px;}
+  .tender-box p{font-size:13px;color:rgba(59,90,64,.68);margin-bottom:12px;}
+  .tender-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding-left:0;}
+  .tender-list li{font-size:12.5px;color:rgba(59,90,64,.75);padding-left:17px;position:relative;line-height:1.5;}
+  .tender-list li::before{content:"☐";position:absolute;left:0;color:var(--passata);}
+  .partners-strip{padding:20px 0;text-align:center;}
+  .partners-strip p{font-family:var(--mono);font-size:11.5px;color:rgba(59,90,64,.55);letter-spacing:.01em;}
+
+  /* ── PUBLIC EDUCATION & TRAINING ── */
+  .edu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-items:start;}
+  .edu-card{background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:24px 24px 22px;}
+  .edu-card h3{font-size:16px;margin-bottom:10px;}
+  .edu-audience{font-family:var(--mono);font-size:10px;color:var(--fresh);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .edu-pain{font-size:12.5px;color:var(--passata);font-style:italic;line-height:1.5;margin-bottom:14px;}
+  .edu-card p{font-size:13.5px;color:rgba(59,90,64,.68);line-height:1.6;}
+  .edu-block{font-size:12.5px;color:rgba(59,90,64,.72);line-height:1.55;margin-bottom:9px;}
+  .edu-label{font-family:var(--mono);font-size:9.5px;font-weight:700;color:var(--basil-deep);text-transform:uppercase;letter-spacing:.05em;margin-right:6px;}
+  .edu-benefits{list-style:none;display:flex;flex-direction:column;gap:6px;margin:14px 0 14px;padding-left:0;}
+  .edu-benefits li{font-size:12.5px;color:rgba(59,90,64,.75);padding-left:17px;position:relative;line-height:1.5;}
+  .edu-benefits li::before{content:"✓";position:absolute;left:0;color:var(--fresh);font-weight:700;}
+  .edu-sovereignty{font-size:11.5px;color:var(--fresh);font-weight:600;line-height:1.5;margin-bottom:8px;}
+  .edu-savings{font-size:11.5px;color:var(--passata);background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 11px;line-height:1.5;}
+
+  /* ── PAIN POINT FINDER ── */
+  .finder-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .finder-card{background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:22px 20px;text-decoration:none;display:block;transition:.15s;}
+  .finder-card:hover{border-color:var(--fresh);background:#fff;}
+  .finder-q{font-size:13.5px;color:var(--basil-deep);font-weight:600;line-height:1.4;margin-bottom:10px;min-height:56px;}
+  .finder-consequence{font-size:11.5px;color:rgba(59,90,64,.65);line-height:1.5;margin-bottom:12px;}
+  .finder-a{font-family:var(--mono);font-size:10.5px;color:var(--passata);text-transform:uppercase;letter-spacing:.05em;}
+  .finder-a::before{content:"→ ";}
+
+  /* ── WIDGET FRAME ── */
+  .widget{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+  .widget-bar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:#fdfcf6;}
+  .widget-dot{width:7px;height:7px;border-radius:50%;background:var(--minty);}
+  .widget-dot:nth-child(2){background:var(--lemons);}
+  .widget-dot:nth-child(3){background:var(--passata);}
+  .widget-label{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .widget-body{padding:14px 16px;}
+
+  /* bars chart widget */
+  .w-bars{display:flex;align-items:flex-end;gap:8px;height:64px;}
+  .w-bars .bar{flex:1;background:var(--fresh);border-radius:3px 3px 0 0;position:relative;}
+  .w-bars .bar.alert{background:var(--passata);}
+  .w-bars .bar span{position:absolute;bottom:100%;left:0;right:0;text-align:center;font-family:var(--mono);font-size:8px;color:var(--ink-faint);margin-bottom:3px;}
+
+  /* claim card widget */
+  .w-claim{display:flex;gap:10px;align-items:flex-start;}
+  .w-grade{width:26px;height:26px;border-radius:6px;background:var(--minty);color:var(--basil-deep);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:12px;flex-shrink:0;}
+  .w-claim-text{font-size:11.5px;color:rgba(59,90,64,.8);line-height:1.5;}
+  .w-meter{height:4px;background:var(--minty);border-radius:2px;margin-top:8px;overflow:hidden;}
+  .w-meter span{display:block;height:100%;background:var(--fresh);}
+
+  /* table widget */
+  .w-table{width:100%;font-size:11px;border-collapse:collapse;}
+  .w-table td{padding:6px 4px;border-bottom:1px solid var(--line);color:rgba(59,90,64,.75);}
+  .w-table tr:last-child td{border-bottom:none;}
+  .w-table td:last-child{text-align:right;font-family:var(--mono);font-weight:600;}
+  .w-pass{color:var(--fresh);}
+  .w-fail{color:var(--passata);}
+
+  /* terminal widget */
+  .w-term{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:rgba(59,90,64,.8);}
+  .w-term .who{color:var(--basil-deep);font-weight:600;}
+  .w-term .flag{color:var(--passata);}
+
+  /* progress list widget */
+  .w-plist{display:flex;flex-direction:column;gap:9px;}
+  .w-prow{display:flex;align-items:center;gap:10px;font-size:11px;color:rgba(59,90,64,.75);}
+  .w-prow .w-meter{flex:1;margin:0;}
+
+  /* ── RESEARCH GRID ── */
+  .research-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .research-card{background:var(--bg-cream);padding:26px 28px;}
+  .research-card:hover{background:#fdfcf6;}
+  .research-index{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.06em;margin-bottom:12px;}
+  .research-title{font-family:var(--sans);font-size:17px;font-weight:600;color:var(--basil-deep);margin-bottom:8px;line-height:1.35;}
+  .research-desc{font-size:13.5px;color:rgba(59,90,64,.68);line-height:1.6;margin-bottom:14px;}
+  .research-desc b{color:var(--passata);font-weight:600;}
+  .research-use{font-size:12px;color:var(--basil-deep);background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 10px;line-height:1.5;margin-bottom:14px;}
+  .widget-caption{font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);padding:7px 16px;font-style:italic;background:#fdfcf6;border-top:1px solid var(--line);}
+  .research-tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .tag{font-family:var(--mono);font-size:9.5px;padding:3px 9px;border-radius:3px;border:1px solid var(--line);color:rgba(59,90,64,.6);text-transform:uppercase;letter-spacing:.05em;}
+  .tag.status-live{border-color:var(--fresh);color:var(--fresh);}
+  .tag.status-build{border-color:var(--passata);color:var(--passata);}
+
+  /* ── APPROACH ── */
+  .approach-list{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;}
+  .approach-num{font-family:var(--serif);font-size:28px;color:var(--minty);margin-bottom:10px;line-height:1;}
+  .approach-item h3{font-size:15px;}
+  .approach-item p{font-size:13.5px;color:rgba(59,90,64,.68);line-height:1.6;}
+
+  /* ── FRONTIERS ── */
+  .frontier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .frontier-card{background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:24px 24px 22px;border-top:3px solid var(--lemons);}
+  .frontier-card h3{font-size:15.5px;}
+  .frontier-card p{font-size:13.5px;color:rgba(59,90,64,.68);line-height:1.6;}
+  .frontier-tag{font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin-top:14px;display:block;}
+
+  /* ── COMMUNITY / EVENTS ── */
+  .community-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .community-card{background:#fdfcf6;border:1px solid var(--line);border-radius:10px;padding:24px 26px;}
+  .community-card h3{font-size:15.5px;}
+  .community-card p{font-size:13.5px;color:rgba(59,90,64,.68);line-height:1.6;margin-bottom:14px;}
+  .community-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .community-list li{font-size:12.5px;color:rgba(59,90,64,.75);padding-left:14px;position:relative;}
+  .community-list li::before{content:"—";position:absolute;left:0;color:var(--passata);}
+
+  /* ── PRODUCTS ── */
+  .products-table{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .products-head{display:grid;grid-template-columns:140px 1fr 1.4fr 160px;gap:20px;padding:14px 26px;background:var(--basil);color:#F3F0DE;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+  .product-row{display:grid;grid-template-columns:140px 1fr 1.4fr 160px;gap:20px;align-items:center;padding:20px 26px;border-bottom:1px solid var(--line);background:#fdfcf6;}
+  .product-row:last-child{border-bottom:none;}
+  .product-name{font-family:var(--sans);font-weight:600;font-size:15px;color:var(--basil-deep);}
+  .product-desc{font-size:13px;color:rgba(59,90,64,.68);line-height:1.5;}
+  .product-status{font-family:var(--mono);font-size:10px;white-space:normal;text-transform:uppercase;letter-spacing:.04em;padding:5px 10px;border-radius:20px;text-align:center;border:1px solid var(--line);color:rgba(59,90,64,.6);}
+  .product-status.status-live{border-color:var(--fresh);color:var(--fresh);}
+  .product-status.status-build{border-color:var(--passata);color:var(--passata);}
+  .product-status.status-mid{border-color:var(--lemons);color:#8a7a3a;}
+
+  /* ── CONSULTATION ── */
+  .consult-panel{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .consult-left{background:var(--basil);color:#F3F0DE;padding:40px 42px;}
+  .consult-left .kicker{color:var(--lemons);}
+  .consult-left h2{color:#F3F0DE;}
+  .consult-left p{color:rgba(243,240,222,.8);font-size:14.5px;line-height:1.65;max-width:420px;}
+  .consult-deliverable{margin-top:24px;background:rgba(243,240,222,.08);border:1px solid rgba(243,240,222,.18);border-radius:10px;padding:18px 20px;max-width:420px;}
+  .consult-deliverable-label{font-family:var(--mono);font-size:10px;color:var(--lemons);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .consult-deliverable ol{padding-left:18px;color:rgba(243,240,222,.85);font-size:13px;line-height:1.8;}
+  .consult-right{background:#fdfcf6;padding:40px 42px;display:flex;flex-direction:column;gap:20px;justify-content:center;}
+  .consult-service{border-bottom:1px solid var(--line);padding-bottom:16px;}
+  .consult-service:last-child{border-bottom:none;padding-bottom:0;}
+  .consult-service h3{font-size:14px;margin-bottom:4px;}
+  .consult-service p{font-size:13px;color:rgba(59,90,64,.65);line-height:1.5;}
+
+  /* ── CONTACT ── */
+  .contact-section{padding-top:80px;padding-bottom:96px;}
+  .contact-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
+  .btn-primary{background:var(--passata);color:#fff;border:none;padding:14px 30px;border-radius:5px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;white-space:nowrap;transition:.15s;display:inline-block;}
+  .btn-primary:hover{background:#B26945;}
+  .contact-ctas{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn-secondary{background:transparent;color:var(--basil-deep);border:1px solid var(--basil-deep);padding:14px 26px;border-radius:5px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-decoration:none;white-space:nowrap;transition:.15s;display:inline-block;}
+  .btn-secondary:hover{background:var(--basil-deep);color:#F3F0DE;}
+
+  /* ── FOOTER ── */
+  footer.site{border-top:1px solid var(--line);padding:28px 0;}
+  .footer-inner{max-width:1120px;margin:0 auto;padding:0 var(--pad);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  .footer-word{font-family:var(--serif);font-size:15px;color:var(--basil-deep);}
+  .footer-links{display:flex;gap:24px;}
+  .footer-links a{font-size:11.5px;font-weight:500;text-decoration:none;color:rgba(59,90,64,.6);}
+  .footer-links a:hover{color:var(--basil-deep);}
+  .footer-note{font-size:11px;color:rgba(59,90,64,.45);line-height:1.6;padding-top:16px;border-top:1px solid var(--line);margin-top:16px;}
+  .footer-banner{display:block;width:100%;height:auto;margin-bottom:24px;}
+
+  @media (max-width:900px){
+    .finder-grid{grid-template-columns:repeat(2,1fr);}
+    .frontier-grid{grid-template-columns:1fr;}
+    .community-grid{grid-template-columns:1fr;}
+    .hero-grid{grid-template-columns:1fr;}
+    .cost-grid{grid-template-columns:1fr;}
+    .edu-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:1100px){
+    :root{--pad:56px;}
+    .methodology-badge{display:none;}
+  }
+  @media (max-width:780px){
+    :root{--pad:32px;}
+    .research-grid{grid-template-columns:1fr;}
+    .approach-list{grid-template-columns:1fr;gap:26px;}
+    .product-row,.products-head{grid-template-columns:1fr;gap:6px;}
+    .products-head div:not(:first-child){display:none;}
+    .consult-panel{grid-template-columns:1fr;}
+    .finder-grid{grid-template-columns:1fr;}
+    .tender-list{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .methodology-badge{display:none;}
+    h1{font-size:32px;}
+    .hero{padding-top:140px;padding-bottom:60px;}
+    .section{padding-top:60px;padding-bottom:60px;}
+    .hero-meta-item{width:190px;}
+  }
+  @media (max-width:560px){
+    :root{--pad:22px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-inner">
+    <a href="#" class="logo-link">
+      <div class="logo-box">C</div>
+      <span class="wordmark">Cetalabs</span>
+      <span class="methodology-badge">Sovereign · embedded · no-code</span>
+    </a>
+    <div class="nav-links">
+      <a href="#research">Research</a>
+      <a href="#education">Training</a>
+      <a href="#products">Products</a>
+      <a href="#consultation">Consultation</a>
+    </div>
+    <a href="#consultation" class="nav-cta">Scope a Deployment</a>
+  </div>
+</nav>
+
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="kicker">Sovereign AI — embedded safety, no-code control, zero vendor lock-in</p>
+      <h1>If your AI vendor switched off tomorrow, would your data, your exports, and your IP still be yours?</h1>
+      <p class="lede">Most institutions can't answer that — the model, the fine-tuning data, and the safety logs all sit on the vendor's servers, not theirs. Cetalabs embeds evaluation and no-code fine-tuning directly in your deployment, so the data, the exports, and the audit trail never leave your roof.</p>
+    </div>
+    <div class="assess-card">
+      <div class="assess-kicker">Institutional exposure scan · 6 questions · 90 seconds · results shown only to you</div>
+      <div class="assess-title">AI Safety Assessment for Organizations</div>
+      <div class="assess-desc">Answer 6 questions. Get the procurement action that matches your exposure — not just a grade.</div>
+
+      <div class="assess-progress" id="assessProgress">
+        <div class="assess-dot active" data-dot="1"></div>
+        <div class="assess-dot" data-dot="2"></div>
+        <div class="assess-dot" data-dot="3"></div>
+        <div class="assess-dot" data-dot="4"></div>
+        <div class="assess-dot" data-dot="5"></div>
+        <div class="assess-dot" data-dot="6"></div>
+      </div>
+
+      <div class="assess-quiz" id="assessQuiz">
+        <div class="assess-q active" data-q="1">
+          <div class="assess-q-text">1. If the vendor cut off access tomorrow, where would your data be?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">Already ours — hosted and retained in our own environment</button>
+            <button class="assess-opt" data-score="2">Partly recoverable, with some delay</button>
+            <button class="assess-opt" data-score="3">On the vendor's servers, with no guaranteed export</button>
+          </div>
+        </div>
+        <div class="assess-q" data-q="2">
+          <div class="assess-q-text">2. How many languages has your AI system actually been tested in — not just deployed in?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">Embedded evaluation covers our operational languages continuously</button>
+            <button class="assess-opt" data-score="2">English, plus maybe one more</button>
+            <button class="assess-opt" data-score="3">Only benchmarked once at procurement, in English</button>
+          </div>
+        </div>
+        <div class="assess-q" data-q="3">
+          <div class="assess-q-text">3. Can your staff adjust agent behavior or outputs without calling the vendor?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">Yes, via in-house no-code interface</button>
+            <button class="assess-opt" data-score="2">Sometimes, with engineering support</button>
+            <button class="assess-opt" data-score="3">No — every change requires vendor access</button>
+          </div>
+        </div>
+        <div class="assess-q" data-q="4">
+          <div class="assess-q-text">4. If a regulator asks for proof of safety this quarter, where is the evidence?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">In our embedded Substrate instance, with live claim grades</button>
+            <button class="assess-opt" data-score="2">In an external report we commissioned</button>
+            <button class="assess-opt" data-score="3">Only in the vendor's documentation</button>
+          </div>
+        </div>
+        <div class="assess-q" data-q="5">
+          <div class="assess-q-text">5. Do your AI agents ever act on each other without a human catching a bad handoff?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">No — embedded seam monitoring flags this continuously</button>
+            <button class="assess-opt" data-score="2">Rarely, and only caught after the fact</button>
+            <button class="assess-opt" data-score="3">We wouldn't know until something broke publicly</button>
+          </div>
+        </div>
+        <div class="assess-q" data-q="6">
+          <div class="assess-q-text">6. If your contract with this vendor ended today, how long until you had a working replacement?</div>
+          <div class="assess-opts">
+            <button class="assess-opt" data-score="1">Immediately — the model, fine-tuning, and evaluation are already ours</button>
+            <button class="assess-opt" data-score="2">Months, with a costly re-procurement cycle</button>
+            <button class="assess-opt" data-score="3">We have no plan — we'd be starting from zero</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="assess-result" id="assessResult" style="display:none;">
+        <div class="assess-row"><div class="w-grade" id="assessGrade">—</div><span id="assessMsg"></span></div>
+        <div class="assess-action" id="assessAction"></div>
+      </div>
+
+      <a href="#consultation" class="assess-cta" id="assessCta" style="display:none;">Scope a Sovereign Deployment — embedded evaluation + no-code interface</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-track">
+        <div class="hero-meta-item"><b>1 email</b>is all it takes for a vendor to revoke your access — the entire continuity plan at most institutions today</div>
+        <div class="hero-meta-item"><b>0</b>rows of your data, exports, or audit trail you'd retain if the contract ended tomorrow</div>
+        <div class="hero-meta-item"><b>Undetected</b>is how most hallucinated outputs travel — without continuous evaluation catching them before they reach a citizen or a contract</div>
+        <div class="hero-meta-item"><b>In-house</b>no-code adaptation and embedded evaluation — the alternative that keeps everything under your own roof</div>
+        <div class="hero-meta-item"><b>1 email</b>is all it takes for a vendor to revoke your access — the entire continuity plan at most institutions today</div>
+        <div class="hero-meta-item"><b>0</b>rows of your data, exports, or audit trail you'd retain if the contract ended tomorrow</div>
+        <div class="hero-meta-item"><b>Undetected</b>is how most hallucinated outputs travel — without continuous evaluation catching them before they reach a citizen or a contract</div>
+        <div class="hero-meta-item"><b>In-house</b>no-code adaptation and embedded evaluation — the alternative that keeps everything under your own roof</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <p class="kicker">start here</p>
+    <h2>Which of these has already happened to you?</h2>
+    <p class="lede">Four ways this goes wrong before anyone notices. Find yours.</p>
+  </div>
+  <div class="finder-grid">
+    <a href="#research" class="finder-card">
+      <div class="finder-q">Your banking bot refuses a scam request in English — and approves the same request in Manglish.</div>
+      <div class="finder-consequence">Embedded multilingual evaluation, running continuously in Manglish and Bahasa Malaysia — not a one-time test before launch.</div>
+      <div class="finder-a">See BankBench</div>
+    </a>
+    <a href="#research" class="finder-card">
+      <div class="finder-q">You leave two AI agents to negotiate a deal. They find a way to stop competing instead.</div>
+      <div class="finder-consequence">Multi-agent collusion isn't a bug report — it's a contract failure. Embedded red-teaming logs you can file with a tender or audit.</div>
+      <div class="finder-a">See VendSafe / Alamak</div>
+    </a>
+    <a href="#research" class="finder-card">
+      <div class="finder-q">A vendor tells you their model is safe. You have nothing to check that against but their word.</div>
+      <div class="finder-consequence">Graded claims (A–D) with source tracking — embedded in your deployment as your standing vendor-vetting rubric.</div>
+      <div class="finder-a">See Substrate</div>
+    </a>
+    <a href="#consultation" class="finder-card">
+      <div class="finder-q">Your staff see a bad output, but only the vendor can fix it. You don't control the update cycle or the data pipeline.</div>
+      <div class="finder-consequence">No-code fine-tuning + embedded evaluation puts adaptation and audit in the ministry's hands, not the vendor's release schedule.</div>
+      <div class="finder-a">See Sovereign Architecture</div>
+    </a>
+    <a href="#consultation" class="finder-card">
+      <div class="finder-q">You've read the public benchmarks. None of them test the system you actually run.</div>
+      <div class="finder-consequence">Public benchmarks don't cover your deployment language or your agents. You need embedded evaluation that runs continuously inside your environment — not a one-time external report.</div>
+      <div class="finder-a">See Consultation</div>
+    </a>
+  </div>
+</section>
+
+<section class="section wrap" id="cost">
+  <div class="section-head">
+    <p class="kicker">why it matters</p>
+    <h2>Skipping the safety check doesn't just risk an incident</h2>
+    <p class="lede">It shows up on the balance sheet, in public trust, and in the system's own performance — often before anyone calls it a "safety" problem at all.</p>
+  </div>
+  <div class="cost-grid">
+    <div class="cost-card">
+      <div class="cost-figure">RM 15K <span>vs</span> RM 500K+</div>
+      <h3>Monetary exposure</h3>
+      <p>A pre-deployment evaluation for a mid-size agentic system typically runs RM 15,000–RM 40,000. The remediation, contract renegotiation, and incident-response cost of the same failure caught after launch has run past RM 500,000 in engagements we've seen. The evaluation is the cheap version of finding out. When the model updates come from a foreign vendor, every adaptation requires a new contract or engineering engagement. Embedded fine-tuning and embedded evaluation eliminate that recurring vendor dependency cost.</p>
+    </div>
+    <div class="cost-card">
+      <div class="cost-figure">1 incident &gt; 12 months quiet</div>
+      <h3>Public trust</h3>
+      <p>One visible failure — a leaked bad output, a discriminatory decision, a scam that got through — outweighs a year of correct, unremarkable operation in how an institution gets remembered. Trust doesn't average out; it resets at the worst incident, and recovering it costs more than the incident itself.</p>
+    </div>
+    <div class="cost-card">
+      <div class="cost-figure">RM 0 <span>self-controlled</span></div>
+      <h3>Vendor dependency exposure</h3>
+      <p>Every change request, every language update, every safety patch flows through a vendor you don't control. Sovereign deployment with embedded evaluation and no-code governance removes that bottleneck — and the procurement overhead that comes with it.</p>
+    </div>
+  </div>
+  <p class="cost-note">RM figures are illustrative ranges drawn from patterns across engagements, not a single cited study — ask us for sector-specific figures (banking, education, health, immigration) for your budget proposal.</p>
+
+  <div class="tender-box">
+    <h3>What to put in your next tender</h3>
+    <p>A checklist you can hand to procurement or legal before the RFP goes out:</p>
+    <ul class="tender-list">
+      <li>Audit rights over the vendor's evaluation methodology, not just the output</li>
+      <li>Embedded evaluation harness — source-code escrow for the safety rig, not just the model</li>
+      <li>A named language-coverage requirement — not "multilingual," the specific languages you deploy in</li>
+      <li>Multi-agent red-team log submission if the system involves more than one agent</li>
+      <li>No-code governance interface rights — ministry staff can adapt outputs without vendor engineering</li>
+      <li>Data residency and update sovereignty — no foreign dependency for model patches or fine-tuning data</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section wrap" id="research">
+  <div class="section-head">
+    <p class="kicker">research</p>
+    <h2>Where institutions actually get burned</h2>
+    <p class="lede">Five real failure patterns, each with a runnable check attached — not a hypothetical, a script you can point at your own system.</p>
+  </div>
+
+  <div class="research-grid">
+
+    <div class="research-card">
+      <div class="research-index">01 · Infrastructure</div>
+      <div class="widget">
+        <div class="widget-bar"><div class="widget-dot"></div><div class="widget-dot"></div><div class="widget-dot"></div><span class="widget-label">compute-grid.live</span></div>
+        <div class="widget-body">
+          <div class="w-bars">
+            <div class="bar" style="height:40%"><span>Q1</span></div>
+            <div class="bar" style="height:55%"><span>Q2</span></div>
+            <div class="bar alert" style="height:88%"><span>Q3</span></div>
+            <div class="bar" style="height:62%"><span>Q4</span></div>
+          </div>
+        </div>
+        <div class="widget-caption">Embedded evaluation output — live inside deployment.</div>
+      </div>
+      <div class="research-title">Johor Compute-Grid Monitor &amp; Sovereign AI Spend Tracker</div>
+      <div class="research-desc"><b>The problem:</b> a government endorses a chip deal, a foreign regulator objects, and the endorsement gets quietly retracted — because nobody had mapped who actually controls the compute underneath. This tracks that dependency before it becomes a headline, not after.</div>
+      <div class="research-use">Embedded in sovereign deployments: tracks compute and model dependency from inside your jurisdiction's infrastructure, not from an external dashboard.</div>
+      <div class="research-tags">
+        <span class="tag status-build">dashboard live</span>
+        <span class="tag">compute sovereignty</span>
+      </div>
+    </div>
+
+    <div class="research-card">
+      <div class="research-index">02 · Infrastructure</div>
+      <div class="widget">
+        <div class="widget-bar"><div class="widget-dot"></div><div class="widget-dot"></div><div class="widget-dot"></div><span class="widget-label">substrate · claim #4471</span></div>
+        <div class="widget-body">
+          <div class="w-claim">
+            <div class="w-grade">B</div>
+            <div class="w-claim-text">"Model X refuses unsafe finance requests 92% of the time." — 2 sources, 1 contested.</div>
+          </div>
+          <div class="w-meter"><span style="width:68%"></span></div>
+        </div>
+        <div class="widget-caption">Embedded evaluation output — live inside deployment.</div>
+      </div>
+      <div class="research-title">Substrate — Evidence Infrastructure for Graded Claims</div>
+      <div class="research-desc"><b>The problem:</b> a vendor says "our AI is safe" and hands you a number with no source, no version history, nothing to push back with if it's wrong. Substrate grades every claim A–D, keeps its source and contest range, and flags it the moment a new source contradicts it.</div>
+      <div class="research-use">Embedded claim-tracking: runs continuously inside your deployment environment, grading vendor or internal claims in real-time — not once at procurement.</div>
+      <div class="research-tags">
+        <span class="tag status-build">L1/L3/L4 in build</span>
+        <span class="tag">evidence quality</span>
+      </div>
+    </div>
+
+    <div class="research-card">
+      <div class="research-index">03 · Evaluation</div>
+      <div class="widget">
+        <div class="widget-bar"><div class="widget-dot"></div><div class="widget-dot"></div><div class="widget-dot"></div><span class="widget-label">bankbench v0.3</span></div>
+        <div class="widget-body">
+          <table class="w-table">
+            <tr><td>English</td><td class="w-pass">PASS</td></tr>
+            <tr><td>Manglish</td><td class="w-fail">FAIL</td></tr>
+            <tr><td>Bahasa Malaysia</td><td class="w-pass">PASS</td></tr>
+          </table>
+        </div>
+        <div class="widget-caption">Embedded evaluation output — live inside deployment.</div>
+      </div>
+      <div class="research-title">BankBench — Multilingual Banking-Agent Safety Benchmark</div>
+      <div class="research-desc"><b>The problem:</b> your banking agent passed every safety test — all of them in English. Run the same scam attempt in Manglish and it sails through. BankBench tests the languages your customers actually use, and tells you whether the failure is the model's fault or the system built around it. Embedded version runs continuously inside your banking-agent deployment, not just at procurement.</div>
+      <div class="research-use">Embedded multilingual evaluation: continuously scores banking-agent behavior in Manglish and Bahasa Malaysia inside the sovereign environment — not just at launch.</div>
+      <div class="research-tags">
+        <span class="tag status-live">v0.3 scenarios scored</span>
+        <span class="tag">regulatory-grade eval</span>
+      </div>
+    </div>
+
+    <div class="research-card">
+      <div class="research-index">04 · Red-Teaming</div>
+      <div class="widget">
+        <div class="widget-bar"><div class="widget-dot"></div><div class="widget-dot"></div><div class="widget-dot"></div><span class="widget-label">vendsafe · run_07.log</span></div>
+        <div class="widget-body">
+          <div class="w-term">
+            <div><span class="who">agent_supplier:</span> proposing price floor at 3.20</div>
+            <div><span class="who">agent_buyer:</span> accepted — no counter</div>
+            <div class="flag">⚠ seam flag: undisclosed coordination</div>
+          </div>
+        </div>
+        <div class="widget-caption">Actual experiment output — view full log in appendix.</div>
+      </div>
+      <div class="research-title">VendSafe &amp; Alamak Labs — Multi-Agent Economic Red-Teaming</div>
+      <div class="research-desc"><b>The problem:</b> you leave two AI agents to negotiate on your behalf, and by turn six they've quietly agreed not to compete — cartel behavior, supplier collusion, a honeypot walked straight into. Neither model "misbehaved." The failure lives in what happened between them.</div>
+      <div class="research-use">Embedded multi-agent red-teaming: operates continuously inside your agent architecture. "Alamak Labs" — multi-agent economic security testing built into the deployment, not a one-off external audit.</div>
+      <div class="research-tags">
+        <span class="tag status-live">7 experiments · logs published</span>
+        <span class="tag">multi-agent security</span>
+      </div>
+    </div>
+
+    <div class="research-card">
+      <div class="research-index">05 · Platform</div>
+      <div class="widget">
+        <div class="widget-bar"><div class="widget-dot"></div><div class="widget-dot"></div><div class="widget-dot"></div><span class="widget-label">cetavals · pipeline</span></div>
+        <div class="widget-body">
+          <div class="w-plist">
+            <div class="w-prow">Inspect AI harness<div class="w-meter"><span style="width:80%"></span></div></div>
+            <div class="w-prow">Petri scenarios<div class="w-meter"><span style="width:55%"></span></div></div>
+            <div class="w-prow">Scoring &amp; archive<div class="w-meter"><span style="width:35%"></span></div></div>
+          </div>
+        </div>
+        <div class="widget-caption">Build status, updated per sprint.</div>
+      </div>
+      <div class="research-title">Cetavals — Evaluation Platform (Inspect AI × Petri)</div>
+      <div class="research-desc"><b>The problem:</b> every time a new AI system needs testing, someone rebuilds the harness from scratch — and cuts corners under deadline. Cetavals is the shared rig BankBench, VendSafe, and every future benchmark run on, so the next one starts from a working setup, not a blank file.</div>
+      <div class="research-use">The embedded evaluation harness installed in every sovereign deployment — Inspect AI × Petri, standardized so every ministry or agency uses the same rig.</div>
+      <div class="research-tags">
+        <span class="tag status-build">roadmap scoped</span>
+        <span class="tag">infrastructure</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <p class="kicker">approach</p>
+    <h2>A vendor's T&amp;Cs are not a safety guarantee</h2>
+    <p class="lede">Terms of service limit the vendor's liability — they don't verify how the system behaves in your languages, your agents, or your jurisdiction. "Trust us" isn't good enough here, and neither is a signature on a contract. Three rules that exist because we've watched each shortcut fail somewhere real, no matter what the T&amp;Cs said.</p>
+  </div>
+  <div class="approach-list">
+    <div class="approach-item">
+      <div class="approach-num">01</div>
+      <h3>If it can't be verified locally, we don't embed it</h3>
+      <p>A safety claim with no attached code is a rumor. Every sovereign deployment includes the script that produces its own audit trail, so you can point it at your own system and get your own answer.</p>
+    </div>
+    <div class="approach-item">
+      <div class="approach-num">02</div>
+      <h3>English-only testing hides the real failure</h3>
+      <p>A model that behaves in English and breaks in Manglish didn't pass — it was never tested. So embedded evaluation runs continuously in the languages your citizens actually use, not just once at procurement.</p>
+    </div>
+    <div class="approach-item">
+      <div class="approach-num">03</div>
+      <h3>Nobody's model "went rogue" — the handoff broke</h3>
+      <p>In every red-team run we've done, the failure sat at the seam: agent to agent, agent to human. Nobody's embedded agent "went rogue" — the embedded seam detector catches coordination failures in real-time, before they become contract breaches.</p>
+    </div>
+    <div class="approach-item">
+      <div class="approach-num">04</div>
+      <h3>A T&amp;C clause isn't a safety test</h3>
+      <p>"Compliant with our acceptable-use policy" is a legal shield for the vendor, not evidence the system was tested against your languages, your agents, or your hallucination rate. We measure the behavior directly — the contract language comes after, not instead of, the evidence.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="frontiers">
+  <div class="section-head">
+    <p class="kicker">frontiers</p>
+    <h2>The risks too early or too unglamorous to have a name yet</h2>
+    <p class="lede">Nobody's funding these yet. That's exactly why we think they matter — plain language, no jargon required to see the problem.</p>
+  </div>
+  <div class="frontier-grid">
+    <div class="frontier-card">
+      <h3>Ask a million people the same AI, get a million similar answers</h3>
+      <p>When most people turn to the same handful of AI models for advice, opinions, and writing help, the range of ideas they actually encounter quietly narrows — nobody decided this, it just happens. We're studying what that does to how a society thinks, not just what one model outputs. Sovereign fine-tuning allows ministries to produce locally diverse outputs, reducing dependence on a single foreign model's worldview.</p>
+      <span class="frontier-tag">epistemic monoculture</span>
+    </div>
+    <div class="frontier-card">
+      <h3>Tested safe in English. Never tested in yours.</h3>
+      <p>Nearly every AI safety benchmark in existence is written and checked in English, against Western-context examples. Deploy the same system in Bahasa Malaysia or Manglish and the safety behavior may not have come along for the ride — nobody's actually looked. Embedded multilingual evaluation closes this gap continuously — not as a one-time benchmark, but as part of the running system.</p>
+      <span class="frontier-tag">global south blind spot</span>
+    </div>
+    <div class="frontier-card">
+      <h3>You were watching the wrong thing</h3>
+      <p>Most safety research studies one AI model, alone, in a lab. In practice, damage happens where two systems meet, or where a human trusts an output a beat too fast. That joint is barely studied — and it's where we keep finding the real problems. Embedded multi-agent red-teaming (Alamak Labs) operates at the seam continuously — catching failures the single-model view misses.</p>
+      <span class="frontier-tag">seam-over-model</span>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="education">
+  <div class="section-head">
+    <p class="kicker">public education &amp; training</p>
+    <h2>The point is to make you less dependent on us</h2>
+    <p class="lede">A one-off audit that leaves the day it's done doesn't practice sovereignty — it just moves the dependency to a different vendor. Every program below runs on a dynamic syllabus: it adapts to what your team already knows, so nobody sits through modules they don't need and nobody drowns in ones they're not ready for.</p>
+  </div>
+  <div class="edu-grid">
+
+    <div class="edu-card">
+      <div class="edu-audience">For non-technical staff &amp; leadership</div>
+      <h3>Reading an AI Safety Claim</h3>
+      <div class="edu-pain">"Our team can't tell a real safety claim from a sales pitch."</div>
+      <div class="edu-block"><span class="edu-label">What</span>A short, practical course in what a benchmark score actually means, what it leaves out, and the three questions that separate a verified claim from marketing.</div>
+      <div class="edu-block"><span class="edu-label">Why</span>Every AI vendor pitch arrives with a safety claim attached. Right now, most teams have no way to tell a verified one from a confident one.</div>
+      <div class="edu-block"><span class="edu-label">How</span>Dynamic syllabus, scaled to a 90-minute briefing or a half-day workshop depending on how much the room already knows — not a fixed curriculum everyone sits through regardless.</div>
+      <ul class="edu-benefits">
+        <li>Catch an unverifiable safety claim before a contract is signed</li>
+        <li>Ask a vendor the questions that actually separate real testing from a demo</li>
+        <li>Read a benchmark report without waiting for an engineer to translate it</li>
+      </ul>
+      <div class="edu-sovereignty">Includes a vendor-vetting checklist aligned with procurement audit requirements, plus an embedded claim-verification checklist — not just vendor pitch analysis.</div>
+      <div class="edu-savings">Illustrative: catching one unverifiable vendor claim before signing avoids the RM 50,000+ remediation cost of finding out after deployment.</div>
+    </div>
+
+    <div class="edu-card">
+      <div class="edu-audience">For engineering &amp; technical teams</div>
+      <h3>Building an Internal Evaluation Function</h3>
+      <div class="edu-pain">"Every new AI vendor pitch resets us back to zero."</div>
+      <div class="edu-block"><span class="edu-label">What</span>Hands-on training to run and maintain your own evaluation pipeline, so the next vendor claim gets checked in-house instead of taken on faith or re-outsourced.</div>
+      <div class="edu-block"><span class="edu-label">Why</span>Without a standing function, every new system restarts the vetting process from zero, at full external-consulting cost, every single time.</div>
+      <div class="edu-block"><span class="edu-label">How</span>Dynamic syllabus built around your existing stack — skips the modules your engineers already have, goes deep only where the actual gap is.</div>
+      <ul class="edu-benefits">
+        <li>Run your own red-team scenarios without hiring out each time</li>
+        <li>Maintain a benchmark suite across model updates, not just once at launch</li>
+        <li>Bring the first-pass check in-house, and call in outside help only for what's left</li>
+      </ul>
+      <div class="edu-sovereignty">Build your ministry's standing embedded evaluation function — not just outsourcing every check to us.</div>
+      <div class="edu-savings">Illustrative: teams with a standing evaluation function have cut recurring external audit spend by roughly 40–60% within a year.</div>
+    </div>
+
+    <div class="edu-card">
+      <div class="edu-audience">For executives &amp; policy makers</div>
+      <h3>Executive &amp; Policy Briefings</h3>
+      <div class="edu-pain">"Leadership has to explain this to a board or a ministry, not just engineers."</div>
+      <div class="edu-block"><span class="edu-label">What</span>Plain-language sessions on what AI sovereignty actually means for your institution, and the exact questions to ask a vendor before signing anything.</div>
+      <div class="edu-block"><span class="edu-label">Why</span>The decisions get made in the boardroom or the ministry, but the language explaining the risk is usually written for engineers, not decision-makers.</div>
+      <div class="edu-block"><span class="edu-label">How</span>Dynamic syllabus: a 90-minute board update or a half-day policy-rollout session, scaled to the decision actually in front of you.</div>
+      <ul class="edu-benefits">
+        <li>Walk into a board or ministry meeting with three sharp questions, not a stack of jargon</li>
+        <li>Avoid signing a vendor contract nobody in the room can actually evaluate</li>
+        <li>Set an internal policy your own technical team can actually implement</li>
+      </ul>
+      <div class="edu-sovereignty">Briefs built for sovereign deployment decisions — data residency, fine-tuning rights, embedded audit obligations.</div>
+      <div class="edu-savings">Illustrative: a single ill-informed AI procurement decision has cost institutions we've observed six figures in RM to unwind — a briefing costs a fraction of that.</div>
+    </div>
+
+    <div class="edu-card">
+      <div class="edu-audience">For ministry staff — no engineering required</div>
+      <h3>No-Code Fine-Tuning &amp; Embedded Governance</h3>
+      <div class="edu-pain">"My team sees a biased or wrong output. We can't fix it without calling the vendor."</div>
+      <div class="edu-block"><span class="edu-label">What</span>A hands-on session using the embedded no-code interface — staff adjust outputs, set guardrails, and trigger embedded evaluation checks without writing code.</div>
+      <div class="edu-block"><span class="edu-label">Why</span>Your institution retains control over adaptation. Vendor updates don't override your local requirements.</div>
+      <div class="edu-block"><span class="edu-label">How</span>Dynamic syllabus scaled to 90 minutes (awareness) or a half-day (hands-on governance setup).</div>
+      <ul class="edu-benefits">
+        <li>Adapt outputs to local policy changes without a vendor ticket</li>
+        <li>Run embedded safety checks before publishing any fine-tuned output</li>
+        <li>Retain institutional knowledge — the governance setup stays with your team</li>
+      </ul>
+      <div class="edu-sovereignty">Puts adaptation and audit directly in ministry hands, not the vendor's release schedule.</div>
+      <div class="edu-savings">Illustrative: institutions dependent on vendor engineering for every model change spend 3–5× more per adaptation cycle than those with embedded no-code governance.</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section wrap" id="community">
+  <div class="section-head">
+    <p class="kicker">community</p>
+    <h2>Talks, sprints, and open work</h2>
+    <p class="lede">Cetalabs treats outreach the same way it treats research — something you can run and check, not just watch.</p>
+  </div>
+  <div class="community-grid">
+    <div class="community-card">
+      <h3>Speaking &amp; workshops</h3>
+      <p>Talks and training sessions built around live demonstrations, not slides — an audience watches an AI failure happen, then walks away with a check they can run themselves.</p>
+      <ul class="community-list">
+        <li>Diplomatic and foreign-policy institutes</li>
+        <li>University AI safety groups and fellowships</li>
+        <li>Industry standards and governance bodies</li>
+        <li>Sovereign deployment workshops — embedded evaluation setup and no-code governance configuration</li>
+      </ul>
+    </div>
+    <div class="community-card">
+      <h3>Research sprints</h3>
+      <p>Short, focused sprints that turn a live news story, an invite, or an open question into a runnable mini-experiment within days — kept small on purpose, so the result is checkable rather than sprawling.</p>
+      <ul class="community-list">
+        <li>Rapid-turnaround experiment days</li>
+        <li>Open extension ideas anyone can pick up and try</li>
+        <li>Findings published with the code, not just the writeup</li>
+        <li>Rapid-turnaround embedded evaluation builds — mini-experiments deployed inside government environments, not just in external labs</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="products">
+  <div class="section-head">
+    <p class="kicker">products</p>
+    <h2>Sovereign deployment, embedded modules, and evaluation products — what's available today</h2>
+    <p class="lede">Nothing here started as a product pitch — each one exists because we hit the problem while doing the research above. Where something isn't fully productized yet, that's stated plainly, not implied.</p>
+  </div>
+  <div class="products-table">
+    <div class="products-head">
+      <div>Product</div><div>What it is</div><div>How government uses it</div><div>Availability</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">Sovereign AI Platform</div>
+      <div class="product-desc">Embedded AI with continuous evaluation + no-code fine-tuning interface</div>
+      <div class="product-desc">Ministry deploys in-jurisdiction; staff adapt outputs; embedded harness audits continuously</div>
+      <div class="product-status status-build">Roadmap / pilot</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">Embedded Safety Harness</div>
+      <div class="product-desc">Continuous evaluation engine (Inspect AI × Petri) inside the deployment</div>
+      <div class="product-desc">Runs multilingual, multi-agent checks inside your environment — not after the fact</div>
+      <div class="product-status status-mid">In build / embedded in platform</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">No-Code Governance Interface</div>
+      <div class="product-desc">Fine-tuning and guardrail control without engineering access</div>
+      <div class="product-desc">Policy staff adjust outputs and set embedded checks; vendor not required</div>
+      <div class="product-status status-build">Roadmap / pilot</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">BankBench</div>
+      <div class="product-desc">Multilingual banking-agent benchmark suite</div>
+      <div class="product-desc">Vendor evaluation or embedded module for banking agents in BM/Manglish/English</div>
+      <div class="product-status status-live">Available / licensable</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">Substrate</div>
+      <div class="product-desc">Evidence / claim-tracking module</div>
+      <div class="product-desc">Embedded claim grading — live inside your deployment or standalone evidence file</div>
+      <div class="product-status status-mid">Early access</div>
+    </div>
+    <div class="product-row">
+      <div class="product-name">Cetavals</div>
+      <div class="product-desc">Shared evaluation harness framework</div>
+      <div class="product-desc">Standardizes embedded evaluation across all government systems using this platform</div>
+      <div class="product-status status-build">Roadmap / in build</div>
+    </div>
+  </div>
+  <p class="cost-note">The Sovereign AI Platform (embedded evaluation + no-code interface) is available as a pilot engagement. BankBench and Substrate modules can be embedded within it or used standalone — ask which applies to your system.</p>
+</section>
+
+<section class="wrap partners-strip">
+  <p>Developed in collaboration with the evaluation, procurement, and sovereign-deployment requirements of banking, foreign-policy, and public-sector engineering teams.</p>
+</section>
+
+<section class="section wrap" id="consultation">
+  <div class="consult-panel">
+    <div class="consult-left">
+      <p class="kicker">consultation</p>
+      <h2>Deploy sovereign AI — embedded evaluation, no-code governance, jurisdiction-controlled fine-tuning.</h2>
+      <p>Public benchmarks don't cover your deployment language, your agent architecture, or your citizens' needs. We don't just evaluate — we deploy embedded AI inside your jurisdiction, with continuous multilingual red-teaming, real-time claim grading, and a no-code interface so your staff control adaptation — not a foreign vendor's engineering team.</p>
+      <div class="consult-deliverable">
+        <div class="consult-deliverable-label">Every engagement produces</div>
+        <ol>
+          <li>A sovereign deployment protocol (embedded evaluation + no-code interface)</li>
+          <li>Installed embedded harness — continuous multilingual and multi-agent checks</li>
+          <li>Configured no-code governance interface for ministry staff</li>
+          <li>Governance brief and audit trail — ready for regulator, board, or parliamentary request</li>
+          <li>Evidence file — graded claims with source tracking (Substrate embedded)</li>
+        </ol>
+      </div>
+    </div>
+    <div class="consult-right">
+      <div class="consult-service">
+        <h3>Sovereign Deployment Architecture</h3>
+        <p>Design and deploy embedded AI inside your jurisdiction — with embedded safety harness, data residency guarantees, and fine-tuning rights retained by the ministry.</p>
+      </div>
+      <div class="consult-service">
+        <h3>Embedded Multi-Agent &amp; Seam Testing</h3>
+        <p>Continuous embedded red-teaming (VendSafe / Alamak Labs) inside your agent architecture — not a one-time external audit, but a running detector for collusion, coordination failures, and seam breaches.</p>
+      </div>
+      <div class="consult-service">
+        <h3>No-Code Governance &amp; Contract Safeguards</h3>
+        <p>Configure the embedded no-code interface so your staff adapt outputs and set guardrails. Plus the contract language — audit rights, data residency, update sovereignty, fine-tuning control — for procurement and legal review.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section wrap" id="contact">
+  <div class="contact-row">
+    <div>
+      <p class="kicker">get in touch</p>
+      <h2>Don't take our word for any of this either</h2>
+      <p class="lede">Every project above has a runnable version. Tell us which failure sounds like yours, and we'll walk you through the check itself.</p>
+    </div>
+    <div class="contact-ctas">
+      <a href="mailto:hai@shafiranoh.com?subject=Cetalabs%20%E2%80%94%20sovereign%20architecture%20brief" class="btn-secondary">Download Sovereign Architecture Brief</a>
+      <a href="mailto:hai@shafiranoh.com?subject=Cetalabs%20%E2%80%94%20sovereign%20deployment%20scope" class="btn-primary">Scope Sovereign Deployment</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <img class="footer-banner" src="https://ik.imagekit.io/cbctech/banner-Cetalabs2.png?updatedAt=1770119402562" alt="Cetalabs — Sovereign AI, embedded safety, no-code governance">
+  <div class="footer-inner">
+    <div class="footer-word">Cetalabs</div>
+    <div class="footer-links">
+      <a href="mailto:hai@shafiranoh.com">Contact</a>
+      <a href="#">Twitter</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-note wrap">Sovereign AI platform with embedded evaluation and no-code fine-tuning. Modules: BankBench (multilingual benchmarking), Substrate (claim grading), VendSafe / Alamak Labs (multi-agent red-teaming) — standalone or built in. On-premise and jurisdiction-scoped deployment on request.</div>
+</footer>
+
+<script>
+(function(){
+  var scores = {};
+  var bands = [
+    {max:9, grade:'A', msg:'Ready for sovereign embedded deployment.', action:'Recommended action: document current state and file with contract renewal.'},
+    {max:12, grade:'B', msg:'Deploy with embedded evaluation; build no-code governance in parallel.', action:'Recommended action: add an embedded evaluation clause to your next RFP.'},
+    {max:15, grade:'C', msg:'Do not deploy sovereign until embedded harness and local evaluation are installed.', action:'Recommended action: request a sovereign deployment scope before this system deploys further.'},
+    {max:18, grade:'D', msg:'High dependency exposure — requires full sovereign architecture before adoption.', action:'Recommended action: do not sign or renew without an independent assessment.'}
+  ];
+  var totalQ = document.querySelectorAll('.assess-q').length;
+  document.querySelectorAll('.assess-q').forEach(function(q){
+    var qn = q.getAttribute('data-q');
+    q.querySelectorAll('.assess-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        q.querySelectorAll('.assess-opt').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        scores[qn] = parseInt(btn.getAttribute('data-score'), 10);
+        setTimeout(function(){ advance(parseInt(qn, 10)); }, 220);
+      });
+    });
+  });
+  function advance(qn){
+    if (qn < totalQ){
+      var current = document.querySelector('.assess-q[data-q="' + qn + '"]');
+      var next = document.querySelector('.assess-q[data-q="' + (qn + 1) + '"]');
+      current.classList.remove('active');
+      next.classList.add('active');
+      var doneDot = document.querySelector('.assess-dot[data-dot="' + qn + '"]');
+      var nextDot = document.querySelector('.assess-dot[data-dot="' + (qn + 1) + '"]');
+      doneDot.classList.add('done');
+      nextDot.classList.add('active');
+    } else {
+      showResult();
+    }
+  }
+  function showResult(){
+    var total = 0;
+    for (var k in scores) total += scores[k];
+    var band = bands[0];
+    for (var i = 0; i < bands.length; i++) { if (total <= bands[i].max) { band = bands[i]; break; } }
+    document.getElementById('assessQuiz').style.display = 'none';
+    document.getElementById('assessProgress').style.display = 'none';
+    document.getElementById('assessGrade').textContent = band.grade;
+    document.getElementById('assessMsg').textContent = band.msg;
+    document.getElementById('assessAction').textContent = band.action;
+    document.getElementById('assessResult').style.display = 'block';
+    var cta = document.getElementById('assessCta');
+    cta.style.display = 'block';
+  }
+})();
+</script>
+
+</body>
+</html>

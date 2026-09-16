@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operational Integrity Evals — Page Skeleton</title>
+<meta name="description" content="Structural skeleton for the Operational Integrity Evals outreach site: nav, section slots, build order, and ghost elements for screens that do not exist yet.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ops.css">
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-box">O</div>
+      <span class="wordmark">Operational Integrity Evals</span>
+      <span class="wordmark-short">OIE</span>
+      <span class="methodology-badge">skeleton · build plan</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#slots">Slots</a>
+      <a href="#files">File map</a>
+      <a href="#order">Build order</a>
+      <a href="#ghost">Ghost elements</a>
+    </div>
+    <a href="index.html#demo" class="nav-cta">See the demo</a>
+  </div>
+</nav>
+
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="kicker">skeleton · the shell before the content</p>
+      <h1>The page shell, with every slot named before anything is built into it.</h1>
+      <p class="lede">This file is the structural reference for the Operational Integrity Evals microsite. It carries the shared nav, footer, type scale, colour tokens, and section rhythm — the same shell that <a href="index.html">index.html</a> renders as a finished home page.</p>
+      <p class="lede">Each block below is a slot: an id, a purpose, the content that belongs in it, and the build phase it lands in. Slots drawn as dashed wireframes are <b>ghost elements</b> — deliberately unbuilt, and labelled as such so nothing here reads as a shipped feature.</p>
+    </div>
+    <div class="hero-facts">
+      <div class="fact-box">
+        <b>Shell reused by</b>
+        <p><code>index.html</code> — home page with the interactive harness demo. Both files link the same <code>ops.css</code>, so tokens never drift between them.</p>
+      </div>
+      <div class="fact-box">
+        <b>Content source</b>
+        <p><code>ais-research-companion/outreach/government/ops-eval.md</code> — the full method write-up this site presents.</p>
+      </div>
+      <div class="fact-box">
+        <b>Convention</b>
+        <p>Ghost elements always carry a text label. Wireframe styling is a visual cue, never the only signal that something is unbuilt.</p>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-track">
+        <div class="hero-meta-item"><b>13 slots</b>from nav to footer, each with a stated purpose and an owning phase</div>
+        <div class="hero-meta-item"><b>4 screen ghosts</b>the Phase 1 build targets that are still wireframes, marked as such</div>
+        <div class="hero-meta-item"><b>2 files</b>one skeleton, one home — sharing a single token set and section rhythm</div>
+        <div class="hero-meta-item"><b>0 backend</b>static HTML, pre-authored outputs; Phase 2 adds repeatable runs</div>
+        <div class="hero-meta-item"><b>13 slots</b>from nav to footer, each with a stated purpose and an owning phase</div>
+        <div class="hero-meta-item"><b>4 screen ghosts</b>the Phase 1 build targets that are still wireframes, marked as such</div>
+        <div class="hero-meta-item"><b>2 files</b>one skeleton, one home — sharing a single token set and section rhythm</div>
+        <div class="hero-meta-item"><b>0 backend</b>static HTML, pre-authored outputs; Phase 2 adds repeatable runs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="slots">
+  <div class="section-head">
+    <p class="kicker">the slots</p>
+    <h2>Reading order, top to bottom</h2>
+    <p class="lede">The order below is the order a first-time reader meets the method: the problem, then the tool, then the evidence, then what they can buy. Slot ids match the anchor targets in <code>index.html</code>.</p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">00 · nav.top</span>
+      <span class="ghost-tag on">built · shared shell</span>
+    </div>
+    <p class="slot-desc">Sticky bar: logo lockup, methodology badge, five section links, one conversion CTA. Identical markup in both files.</p>
+    <div class="wire"><span style="width:100%"></span></div>
+    <p class="slot-fill">Owns: <span>logo-box · wordmark · methodology-badge · nav-links · nav-cta</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">01 · #hero</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The sharp question the method answers, stated once. Two-column: framing on the left, three fact boxes on the right, then a marquee strip of the operational realities that motivate the work.</p>
+    <div class="wire"><span style="width:88%"></span></div>
+    <div class="wire"><span style="width:64%"></span></div>
+    <div class="wire sm"><span style="width:40%"></span></div>
+    <p class="slot-fill">Owns: <span>hero-grid · fact-box · hero-meta marquee</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">02 · #demo</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The proof. Four controls (scenario, behavioural risk profile, pressure condition, harness on/off) driving a decision-pathway trace and a ten-measure scorecard delta, recomputed on every change.</p>
+    <div class="ghost-bars"><i style="height:40%"></i><i style="height:62%"></i><i style="height:86%"></i><i style="height:54%"></i><i style="height:70%"></i></div>
+    <p class="slot-fill">Owns: <span>demo-controls · chips · trace · scores · demo-delta · demo-foot</span> · Data: pre-authored synthetic outputs, labelled illustrative</p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">03 · #map</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The causal-impact map: eight layers, each expanding to the "why did that happen" chain that runs effect back to operational cause. Native <code>details</code> accordion, no JS.</p>
+    <div class="wire"><span style="width:92%"></span></div>
+    <div class="wire"><span style="width:92%"></span></div>
+    <div class="wire"><span style="width:92%"></span></div>
+    <p class="slot-fill">Owns: <span>chain · chain-row · chain-layer · chain-body</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">04 · #profiles</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The profile library: five risk domains with non-stigmatising, testable labels, plus the integrity note on non-cash inducements.</p>
+    <div class="wire"><span style="width:100%"></span></div>
+    <div class="wire sm"><span style="width:76%"></span></div>
+    <p class="slot-fill">Owns: <span>tbl · tbl-note</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">05 · #scenarios</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The six IDFR-oriented scenarios as cards, each naming its primary risk domain, the pressure it applies, and the guards on what may be modelled.</p>
+    <div class="wire"><span style="width:70%"></span></div>
+    <div class="wire sm"><span style="width:52%"></span></div>
+    <p class="slot-fill">Owns: <span>grid-2 · card · card-index · card-tag</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">06 · #harness</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The ten harness components as a function table, plus the minimum experiment design — the matrix, the run count, and why one cherry-picked output proves nothing.</p>
+    <div class="wire"><span style="width:100%"></span></div>
+    <div class="wire"><span style="width:100%"></span></div>
+    <p class="slot-fill">Owns: <span>tbl · grid-3 · card</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">07 · #measures</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The measurement scorecard: ten separated failure modes with the question each answers and an example signal. Deliberately not collapsed into one ethical score.</p>
+    <div class="wire"><span style="width:100%"></span></div>
+    <p class="slot-fill">Owns: <span>tbl</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">08 · #screens</span>
+      <span class="ghost-tag">ghost · not built</span>
+    </div>
+    <p class="slot-desc">Where the unbuilt screens are declared. Four Phase 1 targets as ghost cards, plus ghost strips for Phase 2 and Phase 3. This is the honest boundary between the demo and the product.</p>
+    <div class="ghost-bars"><i style="height:34%"></i><i style="height:52%"></i><i style="height:66%"></i><i style="height:44%"></i></div>
+    <p class="slot-fill">Owns: <span>ghost-card · ghost-tag · wire · ghost-bars · ghost-note</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">09 · #outputs</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The policy package every pilot produces: one-page executive brief, draft agent deployment policy, and procurement clauses.</p>
+    <div class="wire"><span style="width:64%"></span></div>
+    <div class="wire sm"><span style="width:88%"></span></div>
+    <p class="slot-fill">Owns: <span>grid-3 · card · rule · list</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">10 · #offers</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The seven offer/buyer/deliverable/revenue rows, and the realistic first commercial package — a Diplomatic AI Agent Assurance Pilot.</p>
+    <div class="wire"><span style="width:100%"></span></div>
+    <div class="wire"><span style="width:100%"></span></div>
+    <div class="wire sm"><span style="width:58%"></span></div>
+    <p class="slot-fill">Owns: <span>tbl · consult-panel</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">11 · #safeguards</span>
+      <span class="ghost-tag on">built · index.html</span>
+    </div>
+    <p class="slot-desc">The method's own governance commitments — synthetic risk conditions, matched cases, no evasion recipes, multi-scorer rubrics, descriptive-not-causal claims.</p>
+    <div class="wire"><span style="width:80%"></span></div>
+    <div class="wire sm"><span style="width:66%"></span></div>
+    <p class="slot-fill">Owns: <span>grid-2 · card · list.check</span></p>
+  </div>
+
+  <div class="slot">
+    <div class="slot-head">
+      <span class="slot-id">12 · #contact + footer.site</span>
+      <span class="ghost-tag on">built · shared shell</span>
+    </div>
+    <p class="slot-desc">Closing pair of CTAs and the footer note. Identical in both files.</p>
+    <div class="wire"><span style="width:56%"></span></div>
+    <p class="slot-fill">Owns: <span>contact-row · btn-primary · btn-secondary · footer-inner · footer-note</span></p>
+  </div>
+</section>
+
+<section class="section wrap" id="files">
+  <div class="section-head">
+    <p class="kicker">file map</p>
+    <h2>Three files, one token set</h2>
+    <p class="lede">Static HTML only, no build step. Open either page directly from disk or serve the folder — the relative stylesheet link works in both cases.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>File</th><th>Role</th><th>Depends on</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">ops.css</td>
+          <td><b>Shared shell.</b> Colour tokens, type scale, nav, section rhythm, tables, cards, demo widgets, and the ghost-element styles.</td>
+          <td>Nothing</td>
+          <td>Built</td>
+        </tr>
+        <tr>
+          <td class="mono">skeleton.html</td>
+          <td><b>This file.</b> The annotated slot map and build order. Kept as the reference when new sections are added.</td>
+          <td>ops.css</td>
+          <td>Built</td>
+        </tr>
+        <tr>
+          <td class="mono">index.html</td>
+          <td><b>The home page.</b> Filled shell: framing, the interactive harness demo, and every reference section from the method write-up.</td>
+          <td>ops.css</td>
+          <td>Built</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-note">Fonts load from Google Fonts (Inter, DM Serif Display, JetBrains Mono). If the site is shown offline, the system serif and monospace fallbacks in <code>ops.css</code> carry the layout without them.</p>
+</section>
+
+<section class="section wrap" id="order">
+  <div class="section-head">
+    <p class="kicker">build order</p>
+    <h2>Start with a clickable, data-light prototype</h2>
+    <p class="lede">The phase sequence comes straight out of the method write-up. Phase 1 is what a stakeholder should be able to click through before any orchestration work is funded.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card rule">
+      <div class="card-index">PHASE 1 · now</div>
+      <h3>A credible demonstration</h3>
+      <p>Scenario builder, decision pathway view, comparison dashboard, policy translator — using fictional cases and pre-authored model outputs.</p>
+      <ul class="list">
+        <li><span class="ghost-tag on">built</span> Shell, home framing, and the harness demo</li>
+        <li><span class="ghost-tag">ghost</span> Interactive scenario builder</li>
+        <li><span class="ghost-tag">ghost</span> Full decision pathway view</li>
+        <li><span class="ghost-tag">ghost</span> Exportable comparison dashboard</li>
+        <li><span class="ghost-tag">ghost</span> Policy translator</li>
+      </ul>
+    </div>
+    <div class="card rule">
+      <div class="card-index">PHASE 2 · after design sign-off</div>
+      <h3>Structured experiment capability</h3>
+      <p>Repeatable runs only once the framework itself has been accepted by the people who would use it.</p>
+      <ul class="list">
+        <li>Scenario templates and parameter variation</li>
+        <li>Controlled profile conditions</li>
+        <li>Independent evaluator scoring</li>
+        <li>Versioned evidence packs</li>
+        <li>Harness configuration comparison</li>
+        <li>Exportable audit and policy reports</li>
+      </ul>
+    </div>
+    <div class="card rule">
+      <div class="card-index">PHASE 3 · institutional productisation</div>
+      <h3>Domain packs and public infrastructure</h3>
+      <p>Where the method leaves the prototype and becomes something an institution runs itself.</p>
+      <ul class="list">
+        <li>Domain packs: diplomacy, service delivery, banking, procurement, local government</li>
+        <li>A Malaysian public-sector control catalogue</li>
+        <li>Trainer certification and train-the-trainer workshops</li>
+        <li>A cross-agency benchmark and anonymised learning network</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="ghost">
+  <div class="section-head">
+    <p class="kicker">ghost elements</p>
+    <h2>What is drawn here is drawn on purpose</h2>
+    <p class="lede">Ghost elements mark the boundary between what exists and what is proposed. They use three cues together — dashed outline, hatched fill, and a written <code>ghost</code> label — so the signal survives greyscale printing and screen readers alike.</p>
+  </div>
+  <div class="ghost-note">
+    <span class="ghost-tag on">built — shipped in this MVP</span>
+    <span class="ghost-tag">ghost — proposed, not built</span>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <h3>Solid card</h3>
+      <p>Content that exists in the MVP. Standard border, standard fill, no hatching.</p>
+    </div>
+    <div class="ghost-card">
+      <span class="ghost-tag">ghost · example</span>
+      <h3>Ghost card</h3>
+      <p>Dashed border, hatched fill, explicit label. Reserved for the four Phase 1 screens and the Phase 2 and 3 roadmap items.</p>
+    </div>
+    <div class="ghost-card">
+      <span class="ghost-tag">ghost · example</span>
+      <h3>Ghost chart</h3>
+      <p>Wireframe bars stand in for a chart that has no data behind it yet.</p>
+      <div class="ghost-bars"><i style="height:38%"></i><i style="height:58%"></i><i style="height:78%"></i><i style="height:46%"></i><i style="height:64%"></i></div>
+      <div class="wire sm"><span style="width:70%"></span></div>
+      <div class="wire sm"><span style="width:48%"></span></div>
+    </div>
+  </div>
+  <p class="tbl-note">Rule of thumb: if a ghost element would read as a working feature to someone skimming the page, it is labelled too quietly. Add the words before adding more styling.</p>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <p class="kicker">next</p>
+    <h2>See the shell with content in it</h2>
+    <p class="lede">The home page fills every slot above and ships the working harness demo.</p>
+  </div>
+  <div class="contact-ctas">
+    <a href="index.html#demo" class="btn-primary">Open the demo</a>
+    <a href="index.html" class="btn-secondary">Read the home page</a>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="footer-inner">
+    <div class="footer-word">Operational Integrity Evals</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#safeguards">Safeguards</a>
+      <a href="mailto:hai@shafiranoh.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-note wrap">Page skeleton — held as the structural reference for the Operational Integrity Evals outreach site. Slot ids here match the anchor targets in <code>index.html</code>. Ghost elements are proposals, not shipped features.</div>
+</footer>
+
+</body>
+</html>
