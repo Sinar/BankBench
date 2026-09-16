@@ -7,6 +7,8 @@ on:
       - "site/**"
       - "eval-scorecard/unified_scorecard_dashboard.html"
       - "eval-scorecard/README.md"
+      - "public/outreach/ops/**"
+      - "deploy.sh"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -30,6 +32,11 @@ jobs:
           mkdir -p "$OUT/eval-scorecard"
           cp eval-scorecard/unified_scorecard_dashboard.html "$OUT/eval-scorecard/"
           cp eval-scorecard/README.md "$OUT/eval-scorecard/" 2>/dev/null || true
+          # Public outreach microsite — static files only. The worker/ folder is
+          # deployed separately with `wrangler deploy`, so it stays out of Pages.
+          mkdir -p "$OUT/outreach"
+          cp -R public/outreach/ops "$OUT/outreach/ops"
+          rm -rf "$OUT/outreach/ops/worker"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

@@ -1,0 +1,10 @@
+name = "bankbench-nvidia-proxy"
+main = "index.js"
+compatibility_date = "2026-09-16"
+
+# No secrets in this file, ever. Set the key once with:
+#   npx wrangler secret put NVIDIA_API_KEY
+#
+# The console's "Live · Cloudflare" mode expects the Worker at
+#   https://<name>.<your-subdomain>.workers.dev/v1
+# so keep `name` in sync with MODE_BASE.hosted in ../evals.html if you rename it.

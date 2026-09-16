@@ -23,4 +23,11 @@ mkdir -p "$OUT/eval-scorecard"
 cp eval-scorecard/unified_scorecard_dashboard.html "$OUT/eval-scorecard/"
 cp eval-scorecard/README.md "$OUT/eval-scorecard/" 2>/dev/null || true
 
+# Public outreach microsite (Operational Integrity Evals) — static files only.
+# The worker/ folder is deployed separately with `wrangler deploy` from
+# public/outreach/ops/worker, so it is deliberately not copied into Pages.
+mkdir -p "$OUT/outreach"
+cp -R public/outreach/ops "$OUT/outreach/ops"
+rm -rf "$OUT/outreach/ops/worker"
+
 wrangler pages deploy "$OUT" --project-name bankbench-sinar
