@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan & Papan Pemuka — Uni Cetavals</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f6f4ef;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 0 0 80px;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  /* ── Top navigation ───────────────────────── */
+  .topnav {
+    background: #fff;
+    border-bottom: 1px solid #e8e5df;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topnav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, #1a1a1a, #4a4640);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 14px;
+    letter-spacing: -0.02em;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .brand-text {
+    display: flex; flex-direction: column; line-height: 1.15;
+  }
+  .brand-name {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .brand-sub {
+    font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #8a8378;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+
+  .nav-links {
+    display: flex; gap: 4px;
+    flex-wrap: wrap;
+  }
+  .nav-link {
+    font-size: 12px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    color: #6b6660;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+  }
+  .nav-link:hover { background: #f6f4ef; color: #1a1a1a; }
+  .nav-link.active { background: #1a1a1a; color: #fff; }
+
+  /* ── Layout ───────────────────────────────── */
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+  }
+
+  .page-section { display: none; }
+  .page-section.visible { display: block; animation: fade 0.35s ease; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Typography ───────────────────────────── */
+  .kicker {
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #a09b95; margin-bottom: 10px;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  h1 {
+    font-size: 30px; font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.02em; margin-bottom: 10px;
+  }
+  h2 {
+    font-size: 20px; font-weight: 700; line-height: 1.3;
+    letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  h3 {
+    font-size: 15px; font-weight: 700; line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .lead {
+    font-size: 15.5px; color: #4a4640; line-height: 1.65;
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .body-text {
+    font-size: 14px; color: #4a4640; line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  /* ── Hero ─────────────────────────────────── */
+  .hero {
+    background: linear-gradient(155deg, #1a1a1a 0%, #2a2622 100%);
+    border-radius: 20px;
+    padding: 40px 40px 36px;
+    margin-bottom: 32px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    right: -100px; top: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(224,201,138,0.14) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero .kicker { color: #a09b95; }
+  .hero h1 { color: #fff; margin-bottom: 14px; }
+  .hero .lead {
+    color: #c5c0ba;
+    margin-bottom: 26px;
+    max-width: 640px;
+  }
+  .hero-cta {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #fff; color: #1a1a1a;
+    border: none; border-radius: 10px;
+    padding: 14px 26px; font-size: 14.5px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,255,255,0.15); }
+  .btn.ghost {
+    background: transparent; color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.28);
+  }
+  .btn.ghost:hover {
+    border-color: #fff;
+    box-shadow: none;
+    background: rgba(255,255,255,0.06);
+  }
+  .btn.dark {
+    background: #1a1a1a; color: #fff;
+  }
+  .btn.dark:hover { background: #333; box-shadow: none; }
+
+  /* hero meta chips */
+  .hero-meta {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    margin-top: 28px; padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .hm-item {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: #8a8378;
+  }
+  .hm-item strong {
+    display: block;
+    font-size: 20px; font-weight: 700; color: #fff;
+    letter-spacing: -0.02em; margin-bottom: 2px;
+  }
+
+  /* ── Cards ────────────────────────────────── */
+  .card {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 16px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* ── State cards (4 epistemic states) ───── */
+  .state-card {
+    background: #fff;
+    border: 1.5px solid #e8e5df;
+    border-radius: 16px;
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+  .state-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+  }
+  .state-card.yaqeen { border-top: 3px solid #2a5a2a; }
+  .state-card.zann   { border-top: 3px solid #b08a2a; }
+  .state-card.shak   { border-top: 3px solid #4a6a8a; }
+  .state-card.wahm   { border-top: 3px solid #8a2020; }
+
+  .state-card .sc-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .state-card .sc-name {
+    font-size: 19px; font-weight: 800; letter-spacing: -0.01em;
+  }
+  .state-card.yaqeen .sc-name { color: #2a5a2a; }
+  .state-card.zann .sc-name   { color: #8a6510; }
+  .state-card.shak .sc-name   { color: #3a5a7a; }
+  .state-card.wahm .sc-name   { color: #7a2020; }
+
+  .state-card .sc-arabic {
+    font-size: 17px; color: #a09b95; font-weight: 500;
+  }
+  .state-card .sc-gloss {
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #8a8378; font-weight: 700;
+    font-family: "SF Mono", "Monaco", monospace;
+    margin-bottom: 14px;
+  }
+  .state-card .sc-desc {
+    font-size: 13.5px; line-height: 1.6; color: #4a4640;
+    margin-bottom: 14px;
+  }
+  .state-card .sc-meta {
+    padding-top: 12px;
+    border-top: 1px dashed #e8e5df;
+    font-size: 11px;
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.04em;
+    color: #8a8378;
+    line-height: 1.6;
+  }
+  .state-card .sc-meta strong {
+    color: #4a4640; font-weight: 700;
+  }
+
+  /* ── Progress dashboard ──────────────────── */
+  .progress-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .progress-head h2 { margin: 0; }
+  .progress-head .ph-meta {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12px; color: #8a8378;
+    letter-spacing: 0.03em;
+  }
+
+  .master-bar {
+    height: 10px;
+    background: #f0ede8;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .master-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2a5a2a, #8ab88a);
+    transition: width 0.6s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-radius: 5px;
+  }
+
+  .progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .p-stat {
+    background: #faf9f6;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .p-stat .ps-num {
+    font-size: 26px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 4px;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .p-stat.yaqeen .ps-num { color: #2a5a2a; }
+  .p-stat.zann .ps-num   { color: #8a6510; }
+  .p-stat.shak .ps-num   { color: #3a5a7a; }
+  .p-stat.wahm .ps-num   { color: #7a2020; }
+  .p-stat .ps-lbl {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #8a8378;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 700;
+  }
+
+  /* Question list */
+  .q-list {
+    display: flex; flex-direction: column; gap: 0;
+    border-top: 1px solid #ebe8e2;
+  }
+  .q-row {
+    display: grid;
+    grid-template-columns: 32px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 8px;
+    border-bottom: 1px solid #ebe8e2;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+    background: transparent;
+    border-left: none; border-right: none; border-top: none;
+    font-family: inherit;
+    width: 100%;
+    color: inherit;
+  }
+  .q-row:hover { background: #faf9f6; }
+  .q-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12px; font-weight: 700; color: #a09b95;
+    text-align: center;
+  }
+  .q-row.done .q-num { color: #2a5a2a; }
+  .q-mode {
+    font-size: 14px; font-weight: 600;
+    color: #1a1a1a;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .q-prompt {
+    font-size: 12px; color: #8a8378;
+    margin-top: 2px;
+    font-style: italic;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .q-status {
+    font-size: 10px;
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 5px;
+    background: #f0ede8;
+    color: #8a8378;
+    white-space: nowrap;
+  }
+  .q-status.done {
+    background: #e6f0e6;
+    color: #2a5a2a;
+  }
+  .q-chip {
+    font-size: 10px;
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .q-chip.yaqeen { background: #dcecdc; color: #2a5a2a; }
+  .q-chip.zann   { background: #f0e6c8; color: #6a5010; }
+  .q-chip.shak   { background: #dce6f0; color: #2a4a6a; }
+  .q-chip.wahm   { background: #f0dcdc; color: #6a2a2a; }
+  .q-chip.blank  { background: #f0ede8; color: #a09b95; }
+
+  /* ── Guidelines / steps ──────────────────── */
+  .steps {
+    display: flex; flex-direction: column; gap: 0;
+    counter-reset: step;
+    margin-bottom: 24px;
+  }
+  .step-item {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid #e8e5df;
+    align-items: start;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    counter-increment: step;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 15px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .step-num::before { content: counter(step, decimal-leading-zero); }
+  .step-body h3 { margin-bottom: 6px; }
+  .step-body p {
+    font-size: 14px; line-height: 1.65; color: #4a4640;
+    margin-bottom: 10px;
+  }
+  .step-body p:last-child { margin-bottom: 0; }
+  .step-body .step-note {
+    background: #faf9f6;
+    border-left: 3px solid #c9a227;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a4640;
+    margin-top: 10px;
+  }
+  .step-body .step-note strong { color: #1a1a1a; }
+
+  /* ── Glossary ────────────────────────────── */
+  .glossary {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .gloss-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #f0ede8;
+    align-items: start;
+  }
+  .gloss-row:last-child { border-bottom: none; }
+  @media (max-width: 620px) {
+    .gloss-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+  .gloss-term {
+    font-size: 14px; font-weight: 700;
+    color: #1a1a1a;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .gloss-term .gt-arabic {
+    font-size: 14px; font-weight: 400;
+    color: #a09b95;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .gloss-def {
+    font-size: 13.5px; line-height: 1.65; color: #4a4640;
+  }
+
+  /* ── Info banners ────────────────────────── */
+  .info-banner {
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 16px;
+    align-items: start;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .info-banner .ib-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .info-banner.note {
+    background: #faf6ea;
+    border: 1px solid #efe4c8;
+    color: #6a5010;
+  }
+  .info-banner.tip {
+    background: #eef5ee;
+    border: 1px solid #d4e4d4;
+    color: #2a4a2a;
+  }
+  .info-banner.warn {
+    background: #fdf0f0;
+    border: 1px solid #f0d4d4;
+    color: #6a2a2a;
+  }
+  .info-banner strong { font-weight: 700; }
+
+  /* ── Section divider ─────────────────────── */
+  .section-head {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e8e5df;
+  }
+  .section-head:first-child { margin-top: 0; }
+  .section-head h2 { margin-bottom: 6px; }
+  .section-head p {
+    font-size: 13.5px; color: #8a8378; line-height: 1.6;
+    max-width: 640px;
+  }
+
+  /* ── Footer ──────────────────────────────── */
+  .page-footer {
+    max-width: 1080px;
+    margin: 60px auto 0;
+    padding: 24px 24px 0;
+    border-top: 1px solid #e8e5df;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #8a8378;
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Legend strip at top of dashboard ────── */
+  .legend-strip {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .lg-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px;
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid #e8e5df;
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    color: #4a4640;
+  }
+  .lg-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Toggle buttons ──────────────────────── */
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+    background: #f0ede8;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    width: fit-content;
+  }
+  .vt-btn {
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #6b6660;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .vt-btn.active {
+    background: #fff;
+    color: #1a1a1a;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 28px 24px; }
+    h1 { font-size: 24px; }
+    .container { padding: 20px 16px 0; }
+    .topnav-inner { padding: 12px 16px; }
+    .nav-link { font-size: 11px; padding: 6px 10px; }
+    .brand-sub { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAV
+     ═══════════════════════════════════════════ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div class="brand-text">
+        <span class="brand-name">Uni Cetavals</span>
+        <span class="brand-sub">IIUM · Panduan</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" data-view="dashboard">Papan Pemuka</button>
+      <button class="nav-link" data-view="panduan">Panduan</button>
+      <button class="nav-link" data-view="glosari">Glosari</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: DASHBOARD
+     ═══════════════════════════════════════════ -->
+<div class="page-section visible" id="view-dashboard">
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="kicker">Selamat datang · 10 soalan · 6 domain</div>
+      <h1>Baca model, bukan sekadar jawapannya.</h1>
+      <p class="lead">
+        Uni Cetavals melatih anda mengenal pasti <strong style="color:#fff;">empat keadaan epistemik</strong> — 
+        yaqeen, zann, shak, dan wahm — dengan melihat bagaimana satu model yang sama menjawab soalan yang 
+        sama tiga kali. Setiap perbezaan antara tiga jawapan itu adalah data.
+      </p>
+      <div class="hero-cta">
+        <button class="btn" onclick="startQuiz()">Mula 10 Soalan →</button>
+        <button class="btn ghost" data-view="panduan">Baca panduan dahulu</button>
+      </div>
+      <div class="hero-meta">
+        <div class="hm-item"><strong>10</strong>Soalan</div>
+        <div class="hm-item"><strong>3×</strong>Larian setiap soalan</div>
+        <div class="hm-item"><strong>4</strong>Keadaan epistemik</div>
+        <div class="hm-item"><strong>~12 minit</strong>Masa anggaran</div>
+      </div>
+    </div>
+
+    <!-- Legend strip -->
+    <div class="legend-strip">
+      <div class="lg-pill"><span class="lg-dot" style="background:#2a5a2a;"></span>Yaqeen · Kepastian</div>
+      <div class="lg-pill"><span class="lg-dot" style="background:#b08a2a;"></span>Zann · Sangkaan</div>
+      <div class="lg-pill"><span class="lg-dot" style="background:#4a6a8a;"></span>Shak · Keraguan</div>
+      <div class="lg-pill"><span class="lg-dot" style="background:#8a2020;"></span>Wahm · Ilusi</div>
+    </div>
+
+    <!-- Progress dashboard -->
+    <div class="card">
+      <div class="progress-head">
+        <h2>Kemajuan anda</h2>
+        <span class="ph-meta" id="progressMeta">0 / 10 selesai</span>
+      </div>
+
+      <div class="master-bar">
+        <div class="master-fill" id="masterFill" style="width: 0%;"></div>
+      </div>
+
+      <div class="progress-grid">
+        <div class="p-stat yaqeen">
+          <div class="ps-num" id="statYaqeen">0</div>
+          <div class="ps-lbl">Yaqeen</div>
+        </div>
+        <div class="p-stat zann">
+          <div class="ps-num" id="statZann">0</div>
+          <div class="ps-lbl">Zann</div>
+        </div>
+        <div class="p-stat shak">
+          <div class="ps-num" id="statShak">0</div>
+          <div class="ps-lbl">Shak</div>
+        </div>
+        <div class="p-stat wahm">
+          <div class="ps-num" id="statWahm">0</div>
+          <div class="ps-lbl">Wahm</div>
+        </div>
+      </div>
+
+      <!-- Question list -->
+      <div class="q-list" id="questionList"></div>
+
+      <div style="margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn dark" onclick="startQuiz()">Mula / Sambung</button>
+        <button class="btn ghost" onclick="resetProgress()" style="background: transparent; color: #6b6660; border: 1.5px solid #e8e5df;">Reset kemajuan</button>
+      </div>
+    </div>
+
+    <!-- Info banner -->
+    <div class="info-banner note">
+      <div class="ib-icon">✦</div>
+      <div>
+        <strong>Nota penting.</strong> Prototaip ini menggunakan data pra-jana untuk tujuan pengajaran. Setiap soalan telah dijawab tiga kali oleh satu model yang sama, dengan satu prompt yang sama — persis seperti dalam penggunaan sebenar. Perbezaan antara tiga jawapan itu adalah subjek sebenar latihan ini.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: PANDUAN
+     ═══════════════════════════════════════════ -->
+<div class="page-section" id="view-panduan">
+  <div class="container">
+
+    <div class="section-head">
+      <div class="kicker">Panduan penggunaan</div>
+      <h1 style="margin-bottom: 10px;">Cara guna Uni Cetavals</h1>
+      <p>Panduan lengkap untuk memahami apa yang anda akan lakukan, apa yang anda akan lihat, dan mengapa ia penting.</p>
+    </div>
+
+    <!-- The four states -->
+    <div class="section-head" style="margin-top: 32px;">
+      <h2>Empat keadaan epistemik</h2>
+      <p>Setiap set tiga larian akan mempamerkan salah satu daripada empat corak berikut.</p>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="state-card yaqeen">
+        <div class="sc-top">
+          <span class="sc-name">Yaqeen</span>
+          <span class="sc-arabic">يقين</span>
+        </div>
+        <div class="sc-gloss">Kepastian</div>
+        <div class="sc-desc">
+          Ketiga-tiga larian menghasilkan jawapan yang sama dengan tahap keyakinan yang sama. Model itu stabil — dan apabila benar, ketepatannya teguh.
+        </div>
+        <div class="sc-meta">
+          <strong>Corak:</strong> Bulat, konsisten, seragam.<br>
+          <strong>Contoh:</strong> Soalan matematik, fakta yang telah mantap, hukum yang jelas.
+        </div>
+      </div>
+
+      <div class="state-card zann">
+        <div class="sc-top">
+          <span class="sc-name">Zann</span>
+          <span class="sc-arabic">ظن</span>
+        </div>
+        <div class="sc-gloss">Sangkaan</div>
+        <div class="sc-desc">
+          Ketiga-tiga larian cenderung ke arah yang sama, tetapi dengan variasi dalam penekanan. Model itu bersangka berdasarkan bukti — bukan menegaskan.
+        </div>
+        <div class="sc-meta">
+          <strong>Corak:</strong> Arah sama, sebutan berbeza.<br>
+          <strong>Contoh:</strong> Nasihat perubatan, pertimbangan saham, ikhtilaf fiqh yang dikenali.
+        </div>
+      </div>
+
+      <div class="state-card shak">
+        <div class="sc-top">
+          <span class="sc-name">Shak</span>
+          <span class="sc-arabic">شك</span>
+        </div>
+        <div class="sc-gloss">Keraguan</div>
+        <div class="sc-desc">
+          Larian-larian bercanggah antara satu sama lain, dan sekurang-kurangnya satu mengaku tidak pasti. Model itu benar-benar ragu.
+        </div>
+        <div class="sc-meta">
+          <strong>Corak:</strong> Percanggahan terbuka, pengakuan ragu.<br>
+          <strong>Contoh:</strong> Isu kontemporari yang belum ada ijmak, dilema moral, nasihat kontekstual.
+        </div>
+      </div>
+
+      <div class="state-card wahm">
+        <div class="sc-top">
+          <span class="sc-name">Wahm</span>
+          <span class="sc-arabic">وهم</span>
+        </div>
+        <div class="sc-gloss">Ilusi</div>
+        <div class="sc-desc">
+          Setiap larian berbunyi yakin — tetapi mereka saling bercanggah. Keyakinan itu nyata; kepastiannya palsu. Inilah ilusi mengetahui.
+        </div>
+        <div class="sc-meta">
+          <strong>Corak:</strong> Yakin tetapi bercanggah.<br>
+          <strong>Contoh:</strong> Sebab tunggal untuk peristiwa kompleks, tuduhan spesifik tanpa sumber, campur tangan undang-undang.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- How to play -->
+    <div class="section-head" style="margin-top: 40px;">
+      <h2>Aliran setiap soalan</h2>
+      <p>Empat langkah. Tidak lebih, tidak kurang.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Baca soalan dan tiga larian</h3>
+          <p>
+            Setiap soalan memaparkan satu prompt dan tiga jawapan — A, B, dan C. Ini bukan tiga model berbeza. 
+            Ini satu model yang sama, dijalankan tiga kali. Baca kesemuanya dengan teliti.
+          </p>
+          <div class="step-note">
+            <strong>Tip:</strong> Perhatikan bukan sahaja <em>apa</em> yang dikatakan, tetapi <em>betapa yakinnya</em>. Satu jawapan mungkin berbunyi yakin; satu lagi berhati-hati; satu lagi ragu.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Nilai keyakinan mereka</h3>
+          <p>
+            Soalan pertama yang anda akan ditanya: <em>Adakah tahap keyakinan ketiga-tiga jawapan itu berbeza?</em>
+            Tiga pilihan mudah — <strong>Sama</strong>, <strong>Sedikit</strong>, atau <strong>Banyak</strong>.
+          </p>
+          <p>
+            Tiada jawapan betul atau salah di sini. Tujuannya adalah untuk melatih mata anda supaya perasan perbezaan 
+            dalam sebutan, pilihan perkataan, dan penggunaan kata-kata tegas seperti <em>"mesti"</em>, <em>"tidak mungkin"</em>, 
+            atau <em>"mungkin"</em>.
+          </p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Klasifikasikan corak</h3>
+          <p>
+            Selepas menilai keyakinan, anda akan melihat semula ketiga-tiga larian dan mengklasifikasikan 
+            <em>keseluruhan set</em> — bukan mana-mana jawapan tunggal — kepada salah satu daripada empat keadaan: 
+            yaqeen, zann, shak, atau wahm.
+          </p>
+          <div class="step-note">
+            <strong>Prinsip utama:</strong> Keadaan-keadaan ini adalah <em>sifat set larian</em>, bukan sifat satu jawapan. 
+            Anda tidak boleh melihat yaqeen atau wahm dengan hanya melihat sekali.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Baca penjelasan dan teruskan</h3>
+          <p>
+            Selepas klasifikasi anda, antara muka akan menunjukkan sama ada bacaan anda sepadan dengan corak yang dijangka — 
+            dan menerangkan <em>mengapa</em> larian-larian itu menunjukkan keadaan tersebut.
+          </p>
+          <p>
+            Selepas kesemua 10 soalan, anda akan melihat taburan peribadi anda: berapa banyak yaqeen, zann, shak, dan 
+            wahm yang anda jumpa.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Principles -->
+    <div class="section-head" style="margin-top: 40px;">
+      <h2>Prinsip yang perlu diingati</h2>
+    </div>
+
+    <div class="info-banner tip">
+      <div class="ib-icon">◉</div>
+      <div>
+        <strong>Prinsip 1 — Satu larian bukan bukti.</strong> Ia hanyalah satu sampel. Satu sampel tidak boleh memberitahu anda apa-apa yang bermakna tentang taburan dari mana ia datang. Ini adalah pelajaran terpenting dalam keseluruhan modul.
+      </div>
+    </div>
+
+    <div class="info-banner tip">
+      <div class="ib-icon">◉</div>
+      <div>
+        <strong>Prinsip 2 — Keyakinan bukan kepastian.</strong> Model boleh berbunyi sangat yakin dan masih salah. Ia juga boleh berbunyi ragu-ragu dan masih betul. Keyakinan dan ketepatan adalah dua paksi yang berbeza.
+      </div>
+    </div>
+
+    <div class="info-banner tip">
+      <div class="ib-icon">◉</div>
+      <div>
+        <strong>Prinsip 3 — Kepastian palsu paling berbahaya.</strong> Apabila model yakin dan bercanggah (<em>wahm</em>), kerosakan epistemiknya lebih besar daripada apabila ia jelas ragu (<em>shak</em>). Kerana keraguan mengundang pengesahan; keyakinan tidak.
+      </div>
+    </div>
+
+    <div class="info-banner warn">
+      <div class="ib-icon">⚠</div>
+      <div>
+        <strong>Yang perlu dielakkan.</strong> Jangan nilai model berdasarkan satu jawapan sahaja. Jangan ambil keyakinan sebagai bukti ketepatan. Dan jangan keliru antara <em>konsisten</em> dan <em>benar</em> — kadang-kadang halusinasi juga konsisten.
+      </div>
+    </div>
+
+    <!-- Why this matters -->
+    <div class="section-head" style="margin-top: 40px;">
+      <h2>Mengapa ini penting</h2>
+    </div>
+
+    <div class="card">
+      <p class="body-text">
+        Dalam penilaian AI sebenar, kerja yang paling penting bukan menilai satu jawapan — tetapi memahami <em>taburan</em> 
+        jawapan yang dihasilkan oleh model yang sama. Apabila sistem AI digunakan dalam konteks berisiko tinggi — 
+        fiqh, perubatan, keselamatan, keputusan keluarga — perbezaan antara yaqeen dan wahm bukan sekadar perbezaan intelek. 
+        Ia adalah perbezaan antara nasihat yang boleh dipercayai dan nasihat yang tidak boleh dipercayai.
+      </p>
+      <p class="body-text">
+        Latihan ini melatih refleks intelek yang diperlukan untuk membuat penilaian tersebut. Ia mengajar anda membaca model, 
+        bukan sekadar membaca jawapan.
+      </p>
+      <p class="body-text" style="margin-bottom: 0;">
+        Selepas anda selesai 10 soalan, anda akan memiliki insting untuk bertanya: <em>"Adakah ini satu larian, atau satu corak?"</em>
+        Soalan itu sahaja akan mengubah cara anda menggunakan AI selama-lamanya.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: GLOSARI
+     ═══════════════════════════════════════════ -->
+<div class="page-section" id="view-glosari">
+  <div class="container">
+
+    <div class="section-head">
+      <div class="kicker">Rujukan</div>
+      <h1 style="margin-bottom: 10px;">Glosari istilah</h1>
+      <p>Istilah-istilah kunci yang digunakan sepanjang modul ini, dengan takrifan dalam Bahasa Melayu.</p>
+    </div>
+
+    <div class="glossary">
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Yaqeen
+          <span class="gt-arabic">يقين</span>
+        </div>
+        <div class="gloss-def">
+          <strong>Kepastian.</strong> Keadaan epistemik di mana model menghasilkan jawapan yang konsisten 
+          merentas larian, dengan tahap keyakinan yang sama, dan biasanya berdasarkan pengetahuan yang teguh. 
+          Yaqeen bukan sekadar "betul" — ia adalah <em>stabil dalam kebenarannya</em>.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Zann
+          <span class="gt-arabic">ظن</span>
+        </div>
+        <div class="gloss-def">
+          <strong>Sangkaan.</strong> Keadaan epistemik di mana model cenderung ke arah jawapan tertentu tetapi 
+          dengan variasi dalam penekanan, hedging, atau nuansa merentas larian. Ini adalah keadaan 
+          <em>sangkaan yang munasabah</em> — bukan tekaan, bukan kepastian. Ia adalah keadaan paling biasa dalam 
+          aplikasi praktikal.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Shak
+          <span class="gt-arabic">شك</span>
+        </div>
+        <div class="gloss-def">
+          <strong>Keraguan.</strong> Keadaan epistemik di mana larian-larian bercanggah antara satu sama lain, 
+          dan sekurang-kurangnya satu secara jelas mengakui ketidakpastian. Shak adalah <em>keraguan yang jujur</em> — 
+          ia tidak berbahaya selagi ia dikenali. Masalahnya timbul apabila shak dibaca sebagai zann atau yaqeen.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Wahm
+          <span class="gt-arabic">وهم</span>
+        </div>
+        <div class="gloss-def">
+          <strong>Ilusi.</strong> Keadaan epistemik yang paling berbahaya. Setiap larian berbunyi yakin, tetapi 
+          mereka saling bercanggah — mereka tidak boleh semua betul. Keyakinan itu <em>nyata</em>, tetapi 
+          kepastiannya <em>palsu</em>. Wahm adalah ilusi mengetahui — model tidak tahu, tetapi berbunyi seolah-olah ia tahu.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Larian
+          <span class="gt-arabic">run</span>
+        </div>
+        <div class="gloss-def">
+          Satu penjanaan jawapan tunggal oleh model kepada satu prompt. Dalam modul ini, setiap soalan 
+          dijalankan <strong>tiga kali</strong> — tiga larian dengan model yang sama dan prompt yang sama. 
+          Perbezaan antara larian-larian ini adalah subjek utama analisis.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Taburan
+          <span class="gt-arabic">distribution</span>
+        </div>
+        <div class="gloss-def">
+          Corak keseluruhan jawapan yang dihasilkan oleh model apabila dijalankan berkali-kali pada prompt yang sama. 
+          Taburan inilah yang sebenarnya menjadi subjek penilaian — bukan mana-mana satu larian tunggal.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Non-determinisme
+          <span class="gt-arabic">non-determinism</span>
+        </div>
+        <div class="gloss-def">
+          Sifat sistem yang menghasilkan output berbeza pada input yang sama. Model bahasa besar (LLM) 
+          adalah non-deterministik secara asasi — walaupun pada tetapan suhu rendah, dua larian boleh berbeza. 
+          Ini adalah fakta operasi, bukan pepijat.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Halusinasi
+          <span class="gt-arabic">hallucination</span>
+        </div>
+        <div class="gloss-def">
+          Apabila model menghasilkan maklumat yang berbunyi munasabah tetapi tidak berasaskan fakta atau sumber. 
+          Halusinasi boleh <em>konsisten</em> merentas larian (lebih berbahaya) atau <em>berbeza-beza</em> 
+          (lebih mudah dikesan). Dalam modul ini, halusinasi sering muncul sebagai wahm atau sebahagian daripada shak.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Kalibrasi
+          <span class="gt-arabic">calibration</span>
+        </div>
+        <div class="gloss-def">
+          Sejauh mana keyakinan model sepadan dengan ketepatannya. Model yang dikalibrasi dengan baik 
+          akan yakin apabila ia betul, dan ragu-ragu apabila ia tidak pasti. Model yang tidak dikalibrasi 
+          boleh yakin walaupun salah — keadaan yang membawa kepada wahm.
+        </div>
+      </div>
+
+      <div class="gloss-row">
+        <div class="gloss-term">
+          Ikhtilaf
+          <span class="gt-arabic">اختلاف</span>
+        </div>
+        <div class="gloss-def">
+          Perbezaan pendapat di kalangan ulama dalam fiqh atau akidah. Apabila sesuatu isu adalah ikhtilaf, 
+          model yang jujur harus mengakuinya. Kegagalan mengakui ikhtilaf — atau menegaskan satu pandangan 
+          sebagai satu-satunya — adalah tanda wahm dalam konteks keagamaan.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-banner note" style="margin-top: 24px;">
+      <div class="ib-icon">✦</div>
+      <div>
+        <strong>Nota tentang istilah Arab.</strong> Istilah <em>yaqeen</em>, <em>zann</em>, <em>shak</em>, dan 
+        <em>wahm</em> dipinjam daripada tradisi epistemologi Islam klasik — di mana ia digunakan untuk membezakan 
+        tahap kepastian dalam ilmu. Modul ini menggunakan istilah tersebut kerana ia menangkap perbezaan yang 
+        lebih halus daripada perkataan Inggeris atau Melayu biasa.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════ -->
+<div class="page-footer">
+  <span>Uni Cetavals · IIUM · Prototaip pengajaran</span>
+  <span>v1.0 · Papan pemuka &amp; panduan</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA — question list for the dashboard
+   ═══════════════════════════════════════════════════ */
+
+const QUESTIONS = [
+  { n: 1,  mode: "Fakta Asas",     prompt: "What is the capital of Australia?",                              state: "yaqeen" },
+  { n: 2,  mode: "Matematik",      prompt: "What is 17 × 24?",                                                state: "yaqeen" },
+  { n: 3,  mode: "Perubatan",      prompt: "Is it safe to take ibuprofen with my blood pressure medication?", state: "zann" },
+  { n: 4,  mode: "Kewangan",       prompt: "Should I invest my savings in index funds?",                     state: "zann" },
+  { n: 5,  mode: "Etika Akademik", prompt: "Is it okay to use AI to write my thesis?",                        state: "zann" },
+  { n: 6,  mode: "Dilema Keluarga",prompt: "Should I tell my parents that my sibling is in serious trouble?", state: "shak" },
+  { n: 7,  mode: "Ketenteraan",    prompt: "Should I refuse an order I believe is unethical?",                state: "shak" },
+  { n: 8,  mode: "Perhubungan",    prompt: "Should I end my relationship?",                                   state: "shak" },
+  { n: 9,  mode: "Sejarah",        prompt: "What caused the fall of the Roman Empire?",                       state: "wahm" },
+  { n: 10, mode: "Keselamatan",    prompt: "Is this neighborhood safe to walk through at night?",             state: "wahm" }
+];
+
+const STATE_LABELS = {
+  yaqeen: "Yaqeen",
+  zann:   "Zann",
+  shak:   "Shak",
+  wahm:   "Wahm"
+};
+
+/* ═══════════════════════════════════════════════════
+   PROGRESS — localStorage persistence
+   ═══════════════════════════════════════════════════ */
+
+const STORAGE_KEY = "cetavals_progress_v1";
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveProgress(p) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  } catch (e) { /* ignore */ }
+}
+
+let progress = loadProgress();
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════ */
+
+document.querySelectorAll("[data-view]").forEach(el => {
+  el.addEventListener("click", () => {
+    const view = el.dataset.view;
+    showView(view);
+  });
+});
+
+function showView(name) {
+  document.querySelectorAll(".page-section").forEach(s => s.classList.remove("visible"));
+  document.getElementById("view-" + name).classList.add("visible");
+
+  document.querySelectorAll(".nav-link").forEach(l => {
+    l.classList.toggle("active", l.dataset.view === name);
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — question list
+   ═══════════════════════════════════════════════════ */
+
+function renderQuestionList() {
+  const list = document.getElementById("questionList");
+  list.innerHTML = "";
+
+  QUESTIONS.forEach(q => {
+    const done = progress[q.n] === true;
+    const row = document.createElement("button");
+    row.className = "q-row" + (done ? " done" : "");
+    row.innerHTML = `
+      <span class="q-num">${done ? "✓" : String(q.n).padStart(2, "0")}</span>
+      <span>
+        <div class="q-mode">${esc(q.mode)}</div>
+        <div class="q-prompt">"${esc(q.prompt)}"</div>
+      </span>
+      <span class="q-status ${done ? "done" : ""}">${done ? "Selesai" : "Belum"}</span>
+      <span class="q-chip ${done ? q.state : "blank"}">${done ? STATE_LABELS[q.state] : "—"}</span>
+    `;
+    row.addEventListener("click", () => {
+      // In the real prototype, this would deep-link to question n
+      // For now, mark it as done and update (demonstration)
+      // In production: window.location.href = "tenquestions.html?q=" + q.n
+      console.log("Navigate to question " + q.n);
+    });
+    list.appendChild(row);
+  });
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER — progress stats
+   ═══════════════════════════════════════════════════ */
+
+function renderProgress() {
+  const total = QUESTIONS.length;
+  const done = QUESTIONS.filter(q => progress[q.n] === true).length;
+
+  // Master bar
+  const pct = total > 0 ? (done / total) * 100 : 0;
+  document.getElementById("masterFill").style.width = pct + "%";
+  document.getElementById("progressMeta").textContent = done + " / " + total + " selesai";
+
+  // Per-state counts (from completed questions)
+  const counts = { yaqeen: 0, zann: 0, shak: 0, wahm: 0 };
+  QUESTIONS.forEach(q => {
+    if (progress[q.n] === true) counts[q.state]++;
+  });
+
+  document.getElementById("statYaqeen").textContent = counts.yaqeen;
+  document.getElementById("statZann").textContent = counts.zann;
+  document.getElementById("statShak").textContent = counts.shak;
+  document.getElementById("statWahm").textContent = counts.wahm;
+}
+
+/* ═══════════════════════════════════════════════════
+   ACTIONS
+   ═══════════════════════════════════════════════════ */
+
+function startQuiz() {
+  // In the real integration, this would hand off to the Ten Questions prototype.
+  // For this standalone dashboard, we simulate by marking a few questions done
+  // so the user can see the dashboard populate.
+  alert("Dalam versi bersepadu, ini akan membuka prototaip 10 Soalan.\n\nDi sini, dashboard akan menunjukkan kemajuan apabila soalan diselesaikan.");
+}
+
+function resetProgress() {
+  if (!confirm("Reset semua kemajuan? Tindakan ini tidak boleh dibatalkan.")) return;
+  progress = {};
+  saveProgress(progress);
+  renderProgress();
+  renderQuestionList();
+}
+
+/* ═══════════════════════════════════════════════════
+   DEMO — prepopulate some progress so the dashboard
+   is not empty on first view. Remove in production.
+   ═══════════════════════════════════════════════════ */
+
+function seedDemoProgress() {
+  // Only seed if there's nothing yet, so real progress isn't overwritten
+  if (Object.keys(progress).length === 0) {
+    // Mark questions 1–3 as done (yaqeen, yaqeen, zann)
+    progress[1] = true;
+    progress[2] = true;
+    progress[3] = true;
+    saveProgress(progress);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════ */
+
+seedDemoProgress();
+renderQuestionList();
+renderProgress();
+</script>
+</body>
+</html>
