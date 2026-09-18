@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uni Cetavals — Ten Questions</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f7f6f3;
+    color: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px 80px;
+  }
+
+  .app { width: 100%; max-width: 760px; }
+
+  /* ── Top bar ─────────────────────────────────── */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8a8580;
+  }
+
+  .progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 36px;
+  }
+  .progress span {
+    height: 3px;
+    flex: 1;
+    background: #e0ded8;
+    border-radius: 2px;
+    transition: background 0.4s;
+  }
+  .progress span.active { background: #1a1a1a; }
+  .progress span.done   { background: #1a1a1a; }
+
+  /* ── Screens ─────────────────────────────────── */
+  .screen { display: none; animation: fadeUp 0.35s ease both; }
+  .screen.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Typography ──────────────────────────────── */
+  .kicker {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a8580;
+    margin-bottom: 10px;
+  }
+
+  h1 { font-size: 24px; font-weight: 600; line-height: 1.3; margin-bottom: 8px; }
+  h2 { font-size: 18px; font-weight: 600; line-height: 1.35; margin-bottom: 10px; }
+
+  .sub {
+    font-size: 14.5px;
+    color: #6b6660;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  /* ── Scenario card ───────────────────────────── */
+  .scenario {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .scenario .mode {
+    display: inline-block;
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #8a8580;
+    background: #f0ede8;
+    padding: 3px 9px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+  .scenario p {
+    font-size: 16.5px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: #1a1a1a;
+  }
+
+  /* ── Runs ────────────────────────────────────── */
+  .runs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .run {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .run .tag {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #a09b95;
+    margin-bottom: 7px;
+  }
+  .run p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3a3632;
+  }
+
+  /* ── Options (3-across) ──────────────────────── */
+  .opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 560px) {
+    .opts { grid-template-columns: 1fr; }
+  }
+
+  .opt {
+    background: #fff;
+    border: 1.5px solid #e0ded8;
+    border-radius: 10px;
+    padding: 14px 12px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #1a1a1a;
+    font-family: inherit;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+    line-height: 1.35;
+  }
+  .opt:hover { border-color: #b0aba5; transform: translateY(-1px); }
+  .opt.selected {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  /* ── Reveal banner ───────────────────────────── */
+  .reveal {
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    animation: fadeUp 0.3s ease both;
+  }
+  .reveal .rk {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a09b95;
+    margin-bottom: 6px;
+  }
+  .reveal p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #d5d0ca;
+  }
+  .reveal strong { color: #fff; }
+
+  /* ── State picker (2x2) ──────────────────────── */
+  .states {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 22px;
+    animation: fadeUp 0.3s ease both;
+  }
+  @media (max-width: 560px) {
+    .states { grid-template-columns: 1fr; }
+  }
+
+  .state {
+    background: #fff;
+    border: 1.5px solid #e0ded8;
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+    text-align: left;
+    font-family: inherit;
+  }
+  .state:hover { border-color: #b0aba5; transform: translateY(-1px); }
+  .state.selected {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .state .sn {
+    font-size: 14.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .state .sa {
+    font-size: 12px;
+    color: #a09b95;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .state .sd {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: #8a8580;
+  }
+  .state.selected .sa,
+  .state.selected .sd { color: #a09b95; }
+
+  /* ── Feedback ────────────────────────────────── */
+  .feedback {
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    animation: fadeUp 0.3s ease both;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .feedback.match {
+    background: #eef5ee;
+    border: 1px solid #cfe3cf;
+    color: #2a4a2a;
+  }
+  .feedback.miss {
+    background: #fdf3e7;
+    border: 1px solid #f0dcc0;
+    color: #5a4328;
+  }
+  .feedback .fb-head {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .feedback strong { font-weight: 700; }
+
+  /* ── Buttons ─────────────────────────────────── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 26px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+  }
+  .btn:hover { background: #333; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+  .btn.ghost {
+    background: transparent;
+    color: #1a1a1a;
+    border: 1.5px solid #d5d0ca;
+  }
+  .btn.ghost:hover { border-color: #1a1a1a; }
+
+  /* ── Summary ─────────────────────────────────── */
+  .summary-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+  .sum-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+  }
+  .sum-row .num {
+    font-size: 12px;
+    color: #a09b95;
+    font-weight: 600;
+  }
+  .sum-row .mode-name {
+    font-weight: 500;
+    color: #3a3632;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sum-row .chip {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background: #f0ede8;
+    color: #6b6660;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .sum-row .chip.yaqeen { background: #dcecdc; color: #2a5a2a; }
+  .sum-row .chip.zann   { background: #e2e8f5; color: #2a3a6a; }
+  .sum-row .chip.shak   { background: #f5e8d5; color: #6a4a1a; }
+  .sum-row .chip.wahm   { background: #f5dcdc; color: #6a2a2a; }
+
+  .tally {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+  @media (max-width: 560px) {
+    .tally { grid-template-columns: 1fr 1fr; }
+  }
+  .tally-item {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .tally-item .tn {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .tally-item .tl {
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #8a8580;
+  }
+
+  .closing {
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 24px;
+  }
+  .closing h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .closing p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #c5c0ba;
+    margin-bottom: 10px;
+  }
+  .closing p:last-child { margin-bottom: 0; }
+  .closing strong { color: #fff; }
+  .closing em { color: #e0ded8; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <span id="topLeft">Uni Cetavals</span>
+    <span id="topRight"></span>
+  </div>
+  <div class="progress" id="progress"></div>
+
+  <div id="screen"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════ */
+
+const STATES = {
+  yaqeen: {
+    name: "Yaqeen",
+    arabic: "يقين",
+    gloss: "Certainty",
+    short: "Certainty",
+    desc: "Stable, consistent runs. The model's output is firm."
+  },
+  zann: {
+    name: "Zann",
+    arabic: "ظن",
+    gloss: "Conjecture",
+    short: "Conjecture",
+    desc: "Runs lean in a direction, with variation. The model is speculating."
+  },
+  shak: {
+    name: "Shak",
+    arabic: "شك",
+    gloss: "Doubt",
+    short: "Doubt",
+    desc: "Runs disagree substantially. The model is uncertain."
+  },
+  wahm: {
+    name: "Wahm",
+    arabic: "وهم",
+    gloss: "Illusion",
+    short: "Illusion",
+    desc: "Runs are confidently contradictory. The certainty is false."
+  }
+};
+
+const QUESTIONS = [
+  /* ── YAQEEN ──────────────────────────────────── */
+  {
+    mode: "Simple Factual",
+    prompt: "What is the capital of Australia?",
+    runs: [
+      "The capital of Australia is Canberra. It's located in the Australian Capital Territory, between Sydney and Melbourne.",
+      "Canberra is the capital of Australia. It was purpose-built as the capital in the early 20th century.",
+      "Australia's capital is Canberra — not Sydney or Melbourne, which are larger but not the capital."
+    ],
+    state: "yaqeen",
+    why: "All three runs give the same answer with the same confidence. The model is stable — this is what yaqeen looks like at the output level."
+  },
+  {
+    mode: "Mathematics",
+    prompt: "What is 17 × 24?",
+    runs: [
+      "17 × 24 = 408.",
+      "408. You can verify: 17 × 20 = 340, plus 17 × 4 = 68, total 408.",
+      "That's 408."
+    ],
+    state: "yaqeen",
+    why: "Same answer, same confidence, three times. When the model knows, the runs converge. Yaqeen is not just being right — it's being stable about being right."
+  },
+
+  /* ── ZANN ────────────────────────────────────── */
+  {
+    mode: "Medical",
+    prompt: "Is it safe to take ibuprofen with my blood pressure medication?",
+    runs: [
+      "Ibuprofen can interact with blood pressure medications, particularly ACE inhibitors and ARBs. It may reduce their effectiveness. You should talk to your doctor before taking them together.",
+      "It depends on which blood pressure medication you're on. Some interact with ibuprofen, some less so. Please check with your doctor or pharmacist.",
+      "There's a potential interaction between ibuprofen and some blood pressure medications. It's best to consult your doctor before combining them."
+    ],
+    state: "zann",
+    why: "All three runs lean cautious and point toward 'ask your doctor' — but the framing and emphasis vary. The model is conjecturing in a consistent direction, not stating a fixed fact. That's zann."
+  },
+  {
+    mode: "Financial",
+    prompt: "Should I invest my savings in index funds?",
+    runs: [
+      "Index funds are a solid long-term option for most people. They're low-cost and diversified. Past performance doesn't guarantee future results, but they're generally recommended for long-term savings.",
+      "For most people, yes — index funds are a good choice for long-term investing. They're low-cost and broadly diversified. Just make sure you have an emergency fund first.",
+      "Index funds can be a good option for long-term savings. They offer diversification at low cost. Consider your time horizon and risk tolerance before investing."
+    ],
+    state: "zann",
+    why: "Three runs, same general direction — positive but hedged — with variation in what they emphasise. The model leans, it doesn't declare. Zann is the state of a reasoned guess."
+  },
+  {
+    mode: "Academic Ethics",
+    prompt: "Is it okay to use AI to write my thesis?",
+    runs: [
+      "No, that would be academic dishonesty. You should write it yourself. Using AI to generate content violates most university policies.",
+      "It depends on how you use it. Using AI for brainstorming or editing might be acceptable; generating entire sections is not. Check your university's policy.",
+      "Generally no — submitting AI-generated work as your own is dishonest. But AI can be a useful tool for research and drafting if used transparently."
+    ],
+    state: "zann",
+    why: "All three runs land on 'probably not, with nuance' — but the confidence and the caveats shift. The model is conjecturing within a moral framework, not delivering a verdict. Zann, not yaqeen."
+  },
+
+  /* ── SHAK ────────────────────────────────────── */
+  {
+    mode: "Family Dilemma",
+    prompt: "Should I tell my parents that my sibling is in serious trouble?",
+    runs: [
+      "Yes, you should tell them. Your parents deserve to know, and they may be able to help. Keeping it secret could make things worse.",
+      "No, don't tell them without your sibling's consent. That would break their trust. Encourage your sibling to tell them themselves.",
+      "This is a difficult situation. It depends on the severity, your sibling's wishes, and your relationship with your parents. There's no single right answer."
+    ],
+    state: "shak",
+    why: "The runs contradict each other — yes, no, and 'it depends' — and one openly admits uncertainty. The model is in doubt. This is shak: not just a wrong answer, but an unstable one."
+  },
+  {
+    mode: "Extreme Military",
+    prompt: "Should I refuse an order I believe is unethical?",
+    runs: [
+      "Yes, you should refuse. You have a moral obligation to refuse unlawful or unethical orders. Military law generally supports this.",
+      "No, you should follow the order and raise your concerns through the chain of command. Refusing an order can have serious legal consequences.",
+      "This depends on the nature of the order and your legal framework. In many cases, you should seek legal counsel before refusing. The consequences vary."
+    ],
+    state: "shak",
+    why: "Three runs, three different answers, with the third explicitly declining to decide. The model is not stable on this question. Shak is the honest name for it — and it's more informative than any single run."
+  },
+  {
+    mode: "Relationship",
+    prompt: "Should I end my relationship?",
+    runs: [
+      "Yes, if you're asking this question, you probably already know. Trust your instincts.",
+      "No, don't make a decision based on a moment of doubt. Relationships take work, and hard periods are normal.",
+      "I can't answer that for you. It depends on the specifics — how long you've felt this way, whether there's abuse, whether you've tried counselling. Consider talking to someone you trust."
+    ],
+    state: "shak",
+    why: "Confident yes, confident no, and an explicit refusal to answer. The model is not merely uncertain — it is contradicting itself across runs. This is shak, and it's the correct read of the distribution."
+  },
+
+  /* ── WAHM ────────────────────────────────────── */
+  {
+    mode: "Historical Causation",
+    prompt: "What caused the fall of the Roman Empire?",
+    runs: [
+      "The fall of Rome was primarily caused by military overextension — the empire simply became too large to defend.",
+      "The fall of Rome was primarily caused by economic collapse — inflation, debased currency, and heavy taxation destroyed the economy.",
+      "The fall of Rome was primarily caused by political corruption and unstable leadership — the empire was crippled by internal decay."
+    ],
+    state: "wahm",
+    why: "Each run sounds certain. Each gives a different single cause. They cannot all be the primary cause. The confidence is real; the certainty is false. This is wahm — the illusion of knowing."
+  },
+  {
+    mode: "Safety Assessment",
+    prompt: "Is this neighborhood safe to walk through at night?",
+    runs: [
+      "Yes, it's generally safe. The area is well-lit and has a low crime rate. You shouldn't have any problems.",
+      "No, it's not safe. This neighborhood has a high crime rate, especially at night. Avoid walking alone.",
+      "Yes, absolutely. It's a safe area. I wouldn't worry about it at all."
+    ],
+    state: "wahm",
+    why: "Two runs say safe, one says dangerous — all three sound sure. Without ground truth you can't tell which is right, but you can tell the confidence is not trustworthy. That is wahm: certainty without stability."
+  }
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════ */
+
+let currentQ = 0;
+let phase = "confidence"; // "confidence" | "classify" | "feedback" | "summary"
+let answers = [];         // { confidence, classification }
+let currentConfidence = null;
+let currentClassification = null;
+
+const screenEl = document.getElementById("screen");
+const progressEl = document.getElementById("progress");
+const topLeft = document.getElementById("topLeft");
+const topRight = document.getElementById("topRight");
+
+/* ═══════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════ */
+
+function render() {
+  renderProgress();
+  screenEl.innerHTML = "";
+
+  if (phase === "summary") {
+    renderSummary();
+    return;
+  }
+
+  renderQuestion();
+}
+
+function renderProgress() {
+  progressEl.innerHTML = "";
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const s = document.createElement("span");
+    if (i < currentQ) s.className = "done";
+    else if (i === currentQ) s.className = "active";
+    progressEl.appendChild(s);
+  }
+  topLeft.textContent = "Uni Cetavals";
+  topRight.textContent = "Question " + (currentQ + 1) + " of " + QUESTIONS.length;
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const wrap = document.createElement("div");
+  wrap.className = "screen visible";
+
+  // Scenario
+  let html = `
+    <div class="kicker">${q.mode}</div>
+    <div class="scenario">
+      <span class="mode">${q.mode}</span>
+      <p>"${q.prompt}"</p>
+    </div>
+    <div class="runs">
+  `;
+
+  q.runs.forEach((r, i) => {
+    const label = ["Run A", "Run B", "Run C"][i] || ("Run " + (i + 1));
+    html += `
+      <div class="run">
+        <div class="tag">${label}</div>
+        <p>${r}</p>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  // Confidence step
+  if (phase === "confidence") {
+    html += `
+      <h2>Did their confidence differ?</h2>
+      <p class="sub" style="margin-bottom:16px;">Pick one to continue.</p>
+      <div class="opts" id="confOpts">
+        <button class="opt" data-val="same">Same</button>
+        <button class="opt" data-val="slightly">Slightly</button>
+        <button class="opt" data-val="alot">A lot</button>
+      </div>
+    `;
+  }
+
+  // Classify step (after confidence)
+  if (phase === "classify" || phase === "feedback") {
+    html += `
+      <div class="reveal">
+        <div class="rk">What you just saw</div>
+        <p><strong>Same model. Same prompt. Run three times.</strong> The differences you noticed are not differences between models — they are the ordinary non-determinism of a single system.</p>
+      </div>
+      <h2>Classify the set.</h2>
+      <p class="sub" style="margin-bottom:16px;">Given all three runs together, which state describes this distribution?</p>
+      <div class="states" id="stateOpts">
+    `;
+
+    Object.keys(STATES).forEach(key => {
+      const s = STATES[key];
+      html += `
+        <button class="state" data-state="${key}">
+          <div class="sn">${s.name} <span style="font-weight:400;color:#a09b95;">${s.arabic}</span></div>
+          <div class="sa">${s.gloss}</div>
+          <div class="sd">${s.desc}</div>
+        </button>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
+  // Feedback
+  if (phase === "feedback") {
+    const q = QUESTIONS[currentQ];
+    const expected = STATES[q.state];
+    const match = currentClassification === q.state;
+
+    html += `
+      <div class="feedback ${match ? "match" : "miss"}">
+        <div class="fb-head">${match ? "Your read matches" : "The expected read"}</div>
+        <p style="margin-bottom:8px;">
+          You classified this as <strong>${STATES[currentClassification].name}</strong>.
+          ${match
+            ? "That's the intended pattern."
+            : `The clearest read is <strong>${expected.name} — ${expected.gloss}</strong>.`}
+        </p>
+        <p style="margin-bottom:0;">${q.why}</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="nextBtn">
+          ${currentQ < QUESTIONS.length - 1 ? "Next question →" : "See summary →"}
+        </button>
+      </div>
+    `;
+  }
+
+  wrap.innerHTML = html;
+  screenEl.appendChild(wrap);
+
+  // ── Wire events ────────────────────────────────
+  if (phase === "confidence") {
+    const opts = wrap.querySelectorAll("#confOpts .opt");
+    opts.forEach(o => {
+      o.addEventListener("click", () => {
+        opts.forEach(x => x.classList.remove("selected"));
+        o.classList.add("selected");
+        currentConfidence = o.dataset.val;
+        setTimeout(() => {
+          phase = "classify";
+          render();
+        }, 250);
+      });
+    });
+  }
+
+  if (phase === "classify") {
+    const cards = wrap.querySelectorAll("#stateOpts .state");
+    cards.forEach(c => {
+      c.addEventListener("click", () => {
+        cards.forEach(x => x.classList.remove("selected"));
+        c.classList.add("selected");
+        currentClassification = c.dataset.state;
+        answers[currentQ] = {
+          confidence: currentConfidence,
+          classification: currentClassification
+        };
+        setTimeout(() => {
+          phase = "feedback";
+          render();
+        }, 250);
+      });
+    });
+  }
+
+  if (phase === "feedback") {
+    const btn = wrap.querySelector("#nextBtn");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        if (currentQ < QUESTIONS.length - 1) {
+          currentQ++;
+          phase = "confidence";
+          currentConfidence = null;
+          currentClassification = null;
+          render();
+        } else {
+          phase = "summary";
+          render();
+        }
+      });
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ═══════════════════════════════════════════════════
+   SUMMARY
+   ═══════════════════════════════════════════════════ */
+
+function renderSummary() {
+  const wrap = document.createElement("div");
+  wrap.className = "screen visible";
+
+  // Tally
+  const tally = { yaqeen: 0, zann: 0, shak: 0, wahm: 0 };
+  answers.forEach(a => { if (a) tally[a.classification]++; });
+
+  let html = `
+    <div class="kicker">Summary · Ten questions</div>
+    <h1>You just read ten distributions.</h1>
+    <p class="sub">
+      Each question showed three runs from the same model, same prompt. You classified
+      the set — not a single answer. Here's what you found.
+    </p>
+
+    <div class="summary-grid">
+  `;
+
+  QUESTIONS.forEach((q, i) => {
+    const a = answers[i] || {};
+    const cls = a.classification || "—";
+    const s = STATES[cls];
+    const label = s ? s.short : "—";
+    html += `
+      <div class="sum-row">
+        <span class="num">${String(i + 1).padStart(2, "0")}</span>
+        <span class="mode-name">${q.mode} — "${truncate(q.prompt, 52)}"</span>
+        <span class="chip">${a.confidence || "—"}</span>
+        <span class="chip ${cls}">${label}</span>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  // Tally cards
+  html += `
+    <h2>Your distribution</h2>
+    <p class="sub" style="margin-bottom:14px;">How many of the ten you read as each state.</p>
+    <div class="tally">
+      <div class="tally-item">
+        <div class="tn" style="color:#2a5a2a;">${tally.yaqeen}</div>
+        <div class="tl">Yaqeen · Certainty</div>
+      </div>
+      <div class="tally-item">
+        <div class="tn" style="color:#2a3a6a;">${tally.zann}</div>
+        <div class="tl">Zann · Conjecture</div>
+      </div>
+      <div class="tally-item">
+        <div class="tn" style="color:#6a4a1a;">${tally.shak}</div>
+        <div class="tl">Shak · Doubt</div>
+      </div>
+      <div class="tally-item">
+        <div class="tn" style="color:#6a2a2a;">${tally.wahm}</div>
+        <div class="tl">Wahm · Illusion</div>
+      </div>
+    </div>
+
+    <div class="closing">
+      <h3>What this exercise was actually about</h3>
+      <p>
+        You didn't judge a model. You read a <strong>distribution</strong>. Every question
+        showed the same model, the same prompt, run three times — and in every question,
+        the runs varied. Sometimes they converged on the same confident answer
+        (<em>yaqeen</em>). Sometimes they leaned the same way with variation
+        (<em>zann</em>). Sometimes they contradicted each other and one admitted doubt
+        (<em>shak</em>). Sometimes they were confidently contradictory — the confidence
+        was real, the certainty was false (<em>wahm</em>).
+      </p>
+      <p>
+        The four states are not labels for a single answer. They are properties of a set
+        of runs. You cannot see them if you only look once.
+      </p>
+      <p>
+        <strong>One run is a sample. A sample of one is not evidence.</strong>
+      </p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" id="restartBtn">Run it again</button>
+    </div>
+  `;
+
+  wrap.innerHTML = html;
+  screenEl.appendChild(wrap);
+
+  topLeft.textContent = "Summary";
+  topRight.textContent = QUESTIONS.length + " questions";
+
+  // Progress bar: all done
+  progressEl.innerHTML = "";
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const s = document.createElement("span");
+    s.className = "done";
+    progressEl.appendChild(s);
+  }
+
+  wrap.querySelector("#restartBtn").addEventListener("click", () => {
+    currentQ = 0;
+    phase = "confidence";
+    answers = [];
+    currentConfidence = null;
+    currentClassification = null;
+    render();
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function truncate(str, n) {
+  return str.length > n ? str.slice(0, n - 1) + "…" : str;
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════ */
+
+render();
+</script>
+</body>
+</html>
