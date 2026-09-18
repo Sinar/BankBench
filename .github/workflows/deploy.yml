@@ -39,10 +39,11 @@ jobs:
           cp -R public/outreach/ops "$OUT/outreach/ops"
           rm -rf "$OUT/outreach/ops/worker"
           # Public outreach microsite — Uni eval pages (static files only).
-          mkdir -p "$OUT/outreach/uni"
+          # NOTE: cp -R creates the target dir itself; mkdir-ing it first makes
+          # cp nest the source inside (uni/uni/*.html), so never pre-create it.
           cp -R public/outreach/uni "$OUT/outreach/uni"
           # Also mirror under /public/... so full repo-path URLs work too.
-          mkdir -p "$OUT/public/outreach/uni"
+          mkdir -p "$OUT/public/outreach"
           cp -R public/outreach/uni "$OUT/public/outreach/uni"
 
       - name: Deploy to Cloudflare Pages
