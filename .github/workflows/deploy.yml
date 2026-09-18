@@ -7,9 +7,10 @@ on:
       - "site/**"
       - "eval-scorecard/unified_scorecard_dashboard.html"
       - "eval-scorecard/README.md"
-      - "public/outreach/ops/**"
-      - "deploy.sh"
-      - ".github/workflows/deploy.yml"
+      - public/outreach/ops/**
+      - public/outreach/uni/**
+      - deploy.sh
+      - .github/workflows/deploy.yml
   workflow_dispatch:
 
 permissions: {}
@@ -37,6 +38,12 @@ jobs:
           mkdir -p "$OUT/outreach"
           cp -R public/outreach/ops "$OUT/outreach/ops"
           rm -rf "$OUT/outreach/ops/worker"
+          # Public outreach microsite — Uni eval pages (static files only).
+          mkdir -p "$OUT/outreach/uni"
+          cp -R public/outreach/uni "$OUT/outreach/uni"
+          # Also mirror under /public/... so full repo-path URLs work too.
+          mkdir -p "$OUT/public/outreach/uni"
+          cp -R public/outreach/uni "$OUT/public/outreach/uni"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

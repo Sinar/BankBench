@@ -30,4 +30,8 @@ mkdir -p "$OUT/outreach"
 cp -R public/outreach/ops "$OUT/outreach/ops"
 rm -rf "$OUT/outreach/ops/worker"
 
+# Public outreach microsite — Uni eval pages (static files only).
+mkdir -p "$OUT/outreach/uni"
+cp -R public/outreach/uni "$OUT/outreach/uni"
+
 wrangler pages deploy "$OUT" --project-name bankbench-sinar
