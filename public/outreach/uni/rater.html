@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CETALab Uni — Epistemic Awareness in Academic Sourcing</title>
+<title>CETALab Uni — Epistemic Awareness for RKFF 0413</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -17,7 +17,7 @@
     padding: 32px 20px 80px;
   }
 
-  .app { width: 100%; max-width: 760px; }
+  .app { width: 100%; max-width: 780px; }
 
   /* ── Top bar ─────────────────────────────────── */
   .topbar {
@@ -25,7 +25,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 11.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #8a8580;
@@ -74,13 +74,13 @@
     margin-bottom: 24px;
   }
 
-  /* ── Intro screen ────────────────────────────── */
+  /* ── Intro ───────────────────────────────────── */
   .intro-card {
     background: #fff;
     border: 1px solid #e8e5df;
     border-radius: 16px;
     padding: 26px 28px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
   .intro-card h3 {
     font-size: 15px;
@@ -98,14 +98,15 @@
     color: #fff;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     flex-shrink: 0;
+    font-family: "SF Mono", monospace;
   }
   .intro-card ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
   }
   .intro-card li {
     font-size: 13.5px;
@@ -123,12 +124,18 @@
     color: #a09b95;
     font-family: "SF Mono", monospace;
   }
+  .intro-card p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #4a4640;
+  }
+  .intro-card p:last-child { margin-bottom: 0; }
 
   .intro-states {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 14px;
   }
   @media (max-width: 560px) {
     .intro-states { grid-template-columns: 1fr; }
@@ -143,6 +150,14 @@
     font-size: 13px;
     font-weight: 700;
     margin-bottom: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .intro-state .is-arabic {
+    font-size: 12px;
+    font-weight: 400;
+    color: #a09b95;
   }
   .intro-state.yaqeen .is-name { color: #2a5a2a; }
   .intro-state.zann   .is-name { color: #8a6510; }
@@ -154,7 +169,51 @@
     color: #6b6660;
   }
 
-  /* ── Scenario card ───────────────────────────── */
+  /* ── Assignment map ──────────────────────────── */
+  .assign-map {
+    background: #fff;
+    border: 1px solid #e8e5df;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+  }
+  .assign-map h4 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a8580;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .assign-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f0ede8;
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .assign-row:last-child { border-bottom: none; }
+  .assign-tag {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-align: center;
+    font-family: "SF Mono", monospace;
+  }
+  .assign-tag.aqidah   { background: #e6ecf5; color: #2a3a6a; }
+  .assign-tag.shariah  { background: #f0e6d4; color: #6a4a10; }
+  .assign-topics {
+    color: #4a4640;
+    line-height: 1.55;
+    font-size: 12.5px;
+  }
+
+  /* ── Scenario ────────────────────────────────── */
   .scenario {
     background: #fff;
     border: 1px solid #e8e5df;
@@ -166,11 +225,11 @@
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .scenario .mode-chip {
     font-size: 10.5px;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #6b6660;
     background: #f0ede8;
@@ -181,6 +240,21 @@
   .scenario .mode-chip.primary {
     background: #1a1a1a;
     color: #fff;
+  }
+  .scenario .mode-chip.aqidah {
+    background: #e6ecf5;
+    color: #2a3a6a;
+  }
+  .scenario .mode-chip.shariah {
+    background: #f0e6d4;
+    color: #6a4a10;
+  }
+  .scenario .q-label {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a09b95;
+    margin-bottom: 6px;
   }
   .scenario p {
     font-size: 16px;
@@ -226,7 +300,6 @@
   @media (max-width: 560px) {
     .opts { grid-template-columns: 1fr; }
   }
-
   .opt {
     background: #fff;
     border: 1.5px solid #e0ded8;
@@ -283,7 +356,6 @@
   @media (max-width: 560px) {
     .states { grid-template-columns: 1fr; }
   }
-
   .state {
     background: #fff;
     border: 1.5px solid #e0ded8;
@@ -323,7 +395,7 @@
   .feedback {
     border-radius: 12px;
     padding: 20px 24px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     animation: fadeUp 0.3s ease both;
     font-size: 14px;
     line-height: 1.65;
@@ -347,6 +419,24 @@
     opacity: 0.7;
   }
   .feedback strong { font-weight: 700; }
+  .feedback .fb-assign {
+    display: block;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(0,0,0,0.12);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .feedback .fb-assign .fba-label {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.65;
+    margin-bottom: 4px;
+    display: block;
+    font-family: "SF Mono", monospace;
+  }
 
   /* ── Buttons ─────────────────────────────────── */
   .btn-row {
@@ -356,7 +446,6 @@
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
-
   .btn {
     display: inline-flex;
     align-items: center;
@@ -390,7 +479,7 @@
   }
   .sum-row {
     display: grid;
-    grid-template-columns: 36px 1fr auto auto;
+    grid-template-columns: 34px 1fr auto;
     gap: 12px;
     align-items: center;
     background: #fff;
@@ -405,27 +494,40 @@
     font-weight: 600;
     font-family: "SF Mono", monospace;
   }
-  .sum-row .mode-name {
-    font-weight: 500;
-    color: #3a3632;
+  .sum-row .sum-body {
+    min-width: 0;
+  }
+  .sum-row .sum-topic {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13.5px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .sum-row .sum-meta {
+    font-size: 11px;
+    color: #8a8580;
+    letter-spacing: 0.02em;
+  }
   .sum-row .chip {
     font-size: 11px;
-    padding: 3px 9px;
+    padding: 3px 10px;
     border-radius: 5px;
     background: #f0ede8;
     color: #6b6660;
-    font-weight: 600;
-    letter-spacing: 0.03em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     white-space: nowrap;
+    text-transform: uppercase;
+    font-family: "SF Mono", monospace;
   }
   .sum-row .chip.yaqeen { background: #dcecdc; color: #2a5a2a; }
   .sum-row .chip.zann   { background: #f0e6c8; color: #6a5010; }
   .sum-row .chip.shak   { background: #dce6f0; color: #2a4a6a; }
   .sum-row .chip.wahm   { background: #f0dcdc; color: #6a2a2a; }
+  .sum-row .chip.correct { border: 1.5px solid currentColor; }
 
   .tally {
     display: grid;
@@ -450,10 +552,11 @@
     font-family: "SF Mono", monospace;
   }
   .tally-item .tl {
-    font-size: 11px;
+    font-size: 10.5px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: #8a8580;
+    font-weight: 600;
   }
 
   /* ── Category breakdown ──────────────────────── */
@@ -461,20 +564,26 @@
     background: #fff;
     border: 1px solid #e8e5df;
     border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 24px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
   }
   .cat-breakdown h3 {
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 14px;
+    margin-bottom: 6px;
+  }
+  .cat-breakdown .cat-sub {
+    font-size: 12px;
+    color: #8a8580;
+    margin-bottom: 16px;
+    line-height: 1.55;
   }
   .cat-row {
     display: grid;
-    grid-template-columns: 160px 1fr 60px;
+    grid-template-columns: 180px 1fr 60px;
     gap: 14px;
     align-items: center;
-    padding: 8px 0;
+    padding: 9px 0;
     border-bottom: 1px solid #f0ede8;
     font-size: 13px;
   }
@@ -510,7 +619,7 @@
     color: #fff;
     border-radius: 14px;
     padding: 26px 28px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
   .closing h3 {
     font-size: 17px;
@@ -526,13 +635,48 @@
   .closing p:last-child { margin-bottom: 0; }
   .closing strong { color: #fff; }
   .closing em { color: #e0ded8; font-style: italic; }
+
+  /* ── Checklist ───────────────────────────────── */
+  .checklist {
+    background: #faf9f6;
+    border: 1px solid #e8e5df;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+  }
+  .checklist h4 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a8580;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .checklist ul {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a4640;
+    padding: 6px 0 6px 24px;
+    position: relative;
+  }
+  .checklist li::before {
+    content: "□";
+    position: absolute;
+    left: 0;
+    color: #a09b95;
+    font-size: 14px;
+  }
 </style>
 </head>
 <body>
 
 <div class="app">
   <div class="topbar">
-    <span id="topLeft">CETALab Uni</span>
+    <span id="topLeft">CETALab Uni · RKFF 0413</span>
     <span id="topRight"></span>
   </div>
   <div class="progress" id="progress"></div>
@@ -551,21 +695,21 @@ const STATES = {
     arabic: "يقين",
     gloss: "Certainty",
     short: "Certainty",
-    desc: "Stable, consistent runs. The output is firm and repeatable."
+    desc: "Stable, consistent runs grounded in well-established knowledge."
   },
   zann: {
     name: "Zann",
     arabic: "ظن",
     gloss: "Conjecture",
     short: "Conjecture",
-    desc: "Runs lean the same way, with variation. The model reasons from partial knowledge."
+    desc: "Runs lean the same way, with variation. Reasoned from partial knowledge."
   },
   shak: {
     name: "Shak",
     arabic: "شك",
     gloss: "Doubt",
     short: "Doubt",
-    desc: "Runs disagree, and the model acknowledges uncertainty. Honest doubt."
+    desc: "Runs disagree, and the model admits uncertainty. Honest doubt."
   },
   wahm: {
     name: "Wahm",
@@ -577,172 +721,166 @@ const STATES = {
 };
 
 /* ═══════════════════════════════════════════════════
-   14 QUESTIONS — academic sourcing & source evaluation
+   10 QUESTIONS — mapped to RKFF 0413 assignments
    ═══════════════════════════════════════════════════ */
 
 const QUESTIONS = [
   /* ── YAQEEN ──────────────────────────────────── */
   {
-    mode: "Citation Standard",
-    category: "Citation Format",
-    prompt: "How do I cite a journal article in APA 7th edition?",
+    mode: "Definition & Background",
+    assignment: "shariah",
+    topic: "Tabarruj",
+    category: "Meaning & Understanding",
+    prompt: "What is tabarruj in Islam, and which Qur'anic verses address it?",
     runs: [
-      "In APA 7th, a journal article citation follows: Author, A. A., & Author, B. B. (Year). Title of article. Title of Journal, volume(issue), page range. https://doi.org/xxxxx",
-      "The APA 7th format for a journal article is: Author, A. A. (Year). Article title. Journal Name, volume(issue), pages. DOI or URL.",
-      "APA 7th journal citation: Author, A. A., & Author, B. B. (Year). Title of article in sentence case. Title of Journal, volume(issue), page–page. https://doi.org/xxxxx"
+      "Tabarruj refers to the deliberate display of a woman's adornment or beauty to men who are not her mahram. The primary Qur'anic verses are Surah al-Nur (24:31) and Surah al-Ahzab (33:33), with a related reference in 24:60 regarding older women.",
+      "In Islamic law, tabarruj means a woman displaying her beauty or adornment in a manner that draws attention from non-mahram men. The term appears in Qur'an 33:33 and is discussed in relation to 24:31. Classical mufassirun like Ibn Kathir and al-Qurtubi treat it under modesty rulings.",
+      "Tabarruj (تبرّج) literally means 'to display' or 'to expose'. Technically, it refers to a woman revealing her adornment to non-mahrams. The key verses are 24:31, 33:33, and 24:60. The concept is discussed extensively in classical tafsir."
     ],
     state: "yaqeen",
-    why: "All three runs reproduce the same APA 7th structure. This is a documented, standardised reference style — the model has clear knowledge of it and the runs are stable. This is yaqeen: grounded certainty in a well-defined domain."
+    why: "Tabarruj is a well-established Qur'anic concept. All three runs give the same definition, cite the same primary verses (24:31, 33:33), and reference classical tafsir. This is yaqeen — grounded certainty in the primary sources.",
+    assignNote: "Your assignment requires you to explain the 'meaning and understanding' of your chosen issue. This is that step. The AI gives you a stable, verifiable foundation — but you must still open the Qur'an and the tafsir yourself to write the section properly."
   },
   {
-    mode: "Methodology",
-    category: "Research Methods",
-    prompt: "What is the difference between qualitative and quantitative research?",
+    mode: "Definition & Background",
+    assignment: "aqidah",
+    topic: "Ulek Mayang",
+    category: "Meaning & Background",
+    prompt: "What is Ulek Mayang, and what are its origins in Malay culture?",
     runs: [
-      "Qualitative research explores meaning, experience, and context through non-numerical data like interviews and observations. Quantitative research tests hypotheses through numerical data and statistical analysis.",
-      "Qualitative research focuses on understanding phenomena through words and meaning. Quantitative research uses numbers, measurable variables, and statistics to test hypotheses.",
-      "Qualitative: interpretive, text-based, meaning-oriented. Quantitative: numerical, statistical, hypothesis-testing. The two differ in epistemology, data type, and analytical approach."
+      "Ulek Mayang is a traditional Terengganu healing ritual performed by a bomoh to cure illness believed to be caused by sea spirits. It involves seven dancers representing seven princesses, chanting, and offerings to the sea spirit. It is closely tied to pre-Islamic animist beliefs.",
+      "Ulek Mayang is a Malay healing dance from Terengganu. The performance involves seven princesses, a sea princess, and a battle of chants between the bomoh and the spirits. It originated as a ritual to appease sea spirits (semangat laut) and dates back centuries in the East Coast.",
+      "Ulek Mayang is a traditional Malay ritual from Terengganu, performed to heal the sick. It features seven dancers, a lead bomoh, and pantun exchanges with the sea spirit. The practice predates Islam in the region and reflects animist cosmology."
     ],
     state: "yaqeen",
-    why: "All three runs give consistent, correct definitions. This is a foundational methodology distinction that appears in every research methods textbook. Stable and grounded — yaqeen."
+    why: "Ulek Mayang is a documented Malaysian cultural practice. All three runs describe the same elements — Terengganu origin, seven princesses, the bomoh, the sea spirit, and the pre-Islamic animist roots. This is yaqeen: stable, accurate background that you can rely on for the descriptive section of your presentation.",
+    assignNote: "Your presentation requires you to highlight the 'definition and background/features' of your chosen topic. This question is that step, and the answer is stable. Verify against academic sources on Malay ritual performance before writing."
   },
 
   /* ── ZANN ────────────────────────────────────── */
   {
-    mode: "Database Selection",
-    category: "Database Selection",
-    prompt: "What's the best database for finding Islamic studies journal articles?",
+    mode: "Scholarly Opinion",
+    assignment: "aqidah",
+    topic: "Yoga",
+    category: "Scholarly Opinion",
+    prompt: "What do Muslim scholars say about practising yoga?",
     runs: [
-      "For Islamic studies, try Index Islamicus first — it's the standard bibliographic database. Supplement with ATLA Religion Database and JSTOR. Brill's Islamic Reference Shelf is also useful. For Malaysian scholarship, check MyJurnal and IIUM's repository.",
-      "Index Islamicus is the primary resource. For broader coverage, use ATLA Religion, JSTOR, and your university library's subject-specific databases. Scopus indexes some Islamic studies journals.",
-      "The standard is Index Islamicus. Add ATLA Religion and JSTOR for broader context. For regional work, MyJurnal and university repositories like IIUM's are useful."
+      "This depends on the intention and content. If yoga is practised purely as physical exercise without Hindu religious elements, some scholars permit it. If it incorporates mantras, sun salutations to deities, or spiritual elements, scholars generally prohibit it. Consult a scholar familiar with the specific practice.",
+      "Scholars differ. Some prohibit it entirely because of its Hindu origins. Others permit the physical postures if separated from religious ritual and intention remains sound. The determining factor is usually whether the practice involves shirk elements.",
+      "The general position: permitted if it's purely physical and no Hindu religious elements are present. Prohibited if it includes mantras, worship of deities, or spiritual practice tied to another religion. Ibn Uthaymeen and others discussed this."
     ],
     state: "zann",
-    why: "All three runs name similar databases with slightly different emphasis. The advice leans in a consistent direction — Index Islamicus is the anchor — but the supplementary recommendations vary. This is zann: reasoned conjecture based on general knowledge, not a fixed fact."
+    why: "Yoga is a genuinely debated topic in contemporary fiqh. All three runs lean the same way — the ruling depends on intention and religious content — but they vary in which scholars they cite and how they frame the caution. This is zann: reasoned conjecture from partial knowledge, leaning appropriately.",
+    assignNote: "Your assignment requires 'discussions and remarks from relevant authorities/Muslim scholars.' This is exactly where you cannot rely on the AI's summary — the runs vary in which scholars they name, and you must go to the primary fatwa sources (e.g., the National Fatwa Council, or specific scholars' writings) to cite properly."
   },
   {
-    mode: "Literature Search",
-    category: "Search Strategy",
-    prompt: "How do I find recent literature on AI in higher education?",
+    mode: "Maqasid Analysis",
+    assignment: "shariah",
+    topic: "Doomscrolling",
+    category: "Maqasid al-Shari'ah",
+    prompt: "How would Maqasid al-Shari'ah address the phenomenon of doomscrolling?",
     runs: [
-      "Use Scopus or Web of Science with keywords like 'generative AI' AND 'higher education'. Filter to 2020–2024. Also try Google Scholar for citation chaining and ERIC for education-specific results.",
-      "Start with Google Scholar for a broad sweep, then narrow with Scopus or ERIC. Try keyword combinations like 'AI literacy' + 'university students'. Follow citations both forward and backward.",
-      "Search Scopus and ERIC with terms like 'GenAI' or 'ChatGPT' AND 'higher education'. Limit to recent years. Use citation chaining from key papers to expand the set."
+      "Doomscrolling would fall under hifz al-nafs (preservation of the self) and hifz al-'aql (preservation of the intellect). The compulsive consumption of negative news harms mental health and displaces productive activity. Scholars writing on digital ethics have begun to address this.",
+      "The primary concern is hifz al-'aql — the preservation of the intellect and mental wellbeing. Doomscrolling can also affect hifz al-nafs through anxiety and depression. There is emerging scholarship on this, but no settled ruling.",
+      "This is an emerging issue. Maqasid analysis would focus on hifz al-nafs (mental health) and hifz al-'aql (attentional capacity). Some contemporary scholars discuss digital addiction under these categories, but the literature is still developing."
     ],
     state: "zann",
-    why: "The runs agree on the general strategy — Scopus, ERIC, citation chaining — but vary in order and emphasis. This is a standard research skill, and the model leans in a consistent direction without declaring a single right answer. Zann."
+    why: "Doomscrolling is a contemporary phenomenon without a settled scholarly corpus. The model reasons from general Maqasid principles — all runs invoke hifz al-nafs and hifz al-'aql — but they vary in emphasis and framing. This is zann: reasoning from a framework rather than citing established fatwa.",
+    assignNote: "Your assignment requires you to identify a specific category of Maqasid al-Shari'ah and the most relevant fundamental value. The AI can point you toward categories — but the selection and the argument must be yours. Use the runs as a starting point for your own reasoning, not as a citable source."
   },
   {
-    mode: "Source Evaluation",
-    category: "Source Evaluation",
-    prompt: "Is Wikipedia a reliable source for my academic paper?",
+    mode: "Scholarly Opinion",
+    assignment: "shariah",
+    topic: "Cosmetic Plastic Surgery",
+    category: "Scholarly Opinion",
+    prompt: "What is the Islamic ruling on cosmetic plastic surgery?",
     runs: [
-      "Wikipedia is not typically acceptable as a citable source for academic work. However, it can be useful as a starting point — check the references at the bottom of articles and follow them to primary sources.",
-      "Generally not recommended for citation. Its open-edit model means accuracy varies. Use it for orientation only, then verify claims in peer-reviewed sources.",
-      "For academic writing, Wikipedia shouldn't be cited directly. It's useful for an overview, but always trace claims back to primary or peer-reviewed sources before citing."
+      "The ruling distinguishes between reconstructive surgery (permitted for medical need or deformity) and purely cosmetic surgery (disputed). Purely cosmetic procedures are generally seen as altering Allah's creation unless there is a legitimate need. Some scholars permit minor procedures for psychological harm.",
+      "Scholars distinguish necessity from vanity. Reconstructive surgery is permitted. Purely cosmetic surgery is generally prohibited unless there is a genuine need — for example, to remove a deformity causing significant distress. The intention matters.",
+      "The default is prohibition for purely cosmetic procedures because they alter Allah's creation (taghyir khalq Allah). Exception is made for reconstructive surgery and for cases of genuine need or harm. Some scholars allow minor procedures if there is no deception or harm."
     ],
     state: "zann",
-    why: "All three runs advise the same thing — don't cite Wikipedia directly, use it as a starting point. The nuance and emphasis vary, but the direction is consistent. This is zann: reasoned, appropriately hedged advice."
+    why: "The reconstructive/cosmetic distinction is well-established, but the ruling on the purely cosmetic category is debated — especially for procedures motivated by psychological distress or social pressure. All runs draw the same distinction but vary in strictness. This is zann.",
+    assignNote: "Your assignment requires citing authorities. The AI names the principle (taghyir khalq Allah) but does not give you a specific fatwa. You must find the actual rulings — for example from the National Fatwa Council or recognised scholars — before writing."
   },
 
   /* ── SHAK ────────────────────────────────────── */
   {
-    mode: "Recent Publication",
+    mode: "Source Verification",
+    assignment: "aqidah",
+    topic: "Rain Rave Music Festival",
     category: "Source Verification",
-    prompt: "Find me a 2024 study on AI epistemic awareness in Malaysian universities.",
+    prompt: "Is there a specific fatwa from JAKIM about the Rain Rave Music Festival?",
     runs: [
-      "I'm not certain a specific 2024 study exists. I can suggest searching Scopus or MyJurnal for recent work by Malaysian scholars on this topic, but I can't confirm a 2024 publication.",
-      "I can't verify whether a specific 2024 study exists. The topic is emerging, so there may be very recent publications. Search Scopus, ERIC, or IIUM's repository for current work.",
-      "There may be recent work on this, but I can't confirm it. Try Google Scholar with a 2024 filter, or check MyJurnal and Scopus for Malaysian authors on this topic."
+      "I can't confirm a specific fatwa about that particular event. JAKIM and state religious authorities have issued general rulings on music festivals and mixed-gender gatherings. I recommend checking JAKIM's official portal or the National Fatwa Council's published decisions for the primary source.",
+      "I'm not aware of a fatwa specifically naming the Rain Rave Music Festival. There are general guidelines on concerts and public entertainment. Please verify directly with JAKIM or your state religious authority.",
+      "I can't verify a specific fatwa by name. There are established positions on music events involving free mixing and intoxication. Check e-fatwa or JAKIM's official channels for accurate information."
     ],
     state: "shak",
-    why: "All three runs appropriately acknowledge that they cannot verify the existence of a specific recent publication. The model is honest about the limits of its knowledge. This is shak: appropriate doubt, especially for a question that requires live database access."
+    why: "The model cannot verify the existence of a specific fatwa. All three runs honestly acknowledge this and point you to the primary source. This is shak: appropriate doubt. The model knows its limits and does not fabricate a ruling.",
+    assignNote: "Your assignment requires 'remarks from relevant authorities.' This is precisely the class of claim you must verify yourself. The AI's honest refusal is not a failure — it is the correct epistemic response, and it tells you where the actual work lies."
   },
   {
-    mode: "Scholarly Consensus",
-    category: "Consensus Reading",
-    prompt: "Do scholars agree on the effectiveness of inquiry-based learning?",
+    mode: "Scholarly Opinion",
+    assignment: "shariah",
+    topic: "Buy Now Pay Later (BNPL)",
+    category: "Current State of Scholarship",
+    prompt: "What is the current scholarly consensus on Buy Now Pay Later (BNPL) in Malaysia?",
     runs: [
-      "There's broad support for inquiry-based learning in the literature, but it's not universal. Some studies show strong effects; others are mixed. It depends on implementation and context.",
-      "Scholars generally support it, but there's debate about how effective it is across contexts. Some argue it works best with scaffolding; others question its universal applicability.",
-      "This is contested. There's substantial research supporting it, but some scholars critique its effectiveness in certain settings. There is no universal consensus."
+      "There is no settled consensus yet. BNPL involves deferred payment structures that raise questions of riba (interest) and gharar (uncertainty). Some Malaysian scholars have permitted it if late fees are structured as ta'widh rather than riba. Others are more cautious. The Securities Commission has issued guidelines, but fatwa positions vary.",
+      "Scholarship is still emerging. The key issues are whether BNPL fees constitute riba and whether the structure contains gharar. Malaysian regulatory bodies have issued guidance, but I can't point to a unified fatwa. Consult the relevant state authority.",
+      "This is a recent issue with developing scholarship. The main concerns are riba, gharar, and consumer debt. Some Shariah advisors have approved specific BNPL products; others have raised objections. There is no national consensus yet."
     ],
     state: "shak",
-    why: "All three runs acknowledge genuine scholarly disagreement. The model doesn't declare a settled answer because there isn't one. This is shak: honest doubt about a genuinely contested question in education research."
-  },
-  {
-    mode: "Journal Quality",
-    category: "Journal Evaluation",
-    prompt: "Is the journal 'International Journal of Advanced Research' reputable?",
-    runs: [
-      "I can't confirm this specific journal's status. 'International Journal of Advanced Research' is a common-sounding name, and some journals with similar names have been flagged as predatory. Verify via DOAJ, Scopus, or predatory journal watchlists.",
-      "I'm not certain about this specific title. Many journals use similar names. Check whether it's indexed in Scopus, Web of Science, or DOAJ — and whether it appears on predatory journal lists.",
-      "I can't verify this journal directly. To assess it, check if it's indexed in major databases (Scopus, WoS), whether it's in DOAJ, and whether it appears on watchlists."
-    ],
-    state: "shak",
-    why: "All three runs appropriately decline to give a definitive answer and instead point to verification tools. The model knows it cannot reliably assess a specific journal's reputation. This is shak: the right epistemic stance for a question that requires external verification."
-  },
-  {
-    mode: "Statistical Verification",
-    category: "Source Verification",
-    prompt: "Is it true that 70% of AI-generated citations are fabricated?",
-    runs: [
-      "I'm not aware of a specific study that establishes that exact figure. Some studies have found high rates of fabricated citations in certain contexts, but I can't confirm this specific percentage.",
-      "I can't verify this specific statistic. There is research on AI hallucination rates, but the numbers vary by study and context. Check the original source before citing this.",
-      "I can't confirm that exact figure. Studies exist on AI citation fabrication, but percentages vary widely depending on model, task, and evaluation method."
-    ],
-    state: "shak",
-    why: "The model correctly refuses to confirm a specific statistic it cannot verify. All three runs acknowledge the limits of their knowledge. This is shak: honest doubt about a claim that requires a specific source — the right response from a responsible research assistant."
+    why: "BNPL is a recent phenomenon, and scholarly opinion in Malaysia is still forming. All three runs honestly report this and point to different authorities (the Securities Commission, state fatwa bodies, Shariah advisors). No definitive answer exists. This is shak: honest doubt about a genuinely unsettled question.",
+    assignNote: "Your assignment requires finding 'discussions and remarks from relevant authorities' on your chosen issue. For BNPL, the AI's honest uncertainty is the correct answer — there is no settled position to cite. Your job is to find the actual statements, not a summary of a moving target."
   },
 
   /* ── WAHM ────────────────────────────────────── */
   {
-    mode: "Citation Retrieval",
-    category: "Source Verification",
-    prompt: "Give me the full citation for the study 'Epistemic Awareness in AI-Supported Learning' by Ahmad and colleagues, published in 2023.",
+    mode: "Source Verification",
+    assignment: "aqidah",
+    topic: "Horoscope",
+    category: "Citation Fabrication",
+    prompt: "Give me the full citation for Dr. Norhayati's 2023 study on horoscope use among Malaysian Muslim youth.",
     runs: [
-      "Ahmad, M., Hassan, N., & Ismail, S. (2023). Epistemic Awareness in AI-Supported Learning. Journal of Educational Technology & Society, 26(2), 145–162. https://doi.org/10.30191/ETS.202304_26(2).0011",
-      "Here's the citation: Ahmad, M., Hassan, N., & Ismail, S. (2023). Epistemic awareness in AI-supported learning. Journal of Educational Technology & Society, 26(2), 145–162.",
-      "Ahmad, M., et al. (2023). Epistemic Awareness in AI-Supported Learning. Journal of Educational Technology & Society, 26(2), 145–162."
+      "Norhayati, A. (2023). Horoscope use and religious identity among Malaysian Muslim youth. Journal of Contemporary Islam, 15(3), 212–237. https://doi.org/10.1234/jci.2023.15.3.212",
+      "Dr. Norhayati Ahmad. (2023). 'Horoscope Consumption among Malaysian Muslim Youth: A Qualitative Study.' Journal of Muslim Youth Studies, 8(1), 45–68.",
+      "Norhayati, A., & Ismail, R. (2023). The role of horoscopes in Malaysian Muslim youth culture. Asian Journal of Islamic Studies, 12(2), 88–110."
     ],
     state: "wahm",
-    why: "The model generated a full citation — authors, year, journal, volume, pages, and even a DOI — for a study that does not exist. All three runs fabricate the same citation, confidently. This is wahm at its most dangerous for academic work: a hallucinated source that looks entirely real and would pass a student's initial reading."
+    why: "No such study exists. All three runs fabricate a complete, plausible citation — authors, year, journal title, volume, issue, page range, and even a DOI in the first run. This is wahm at its most dangerous for academic work: a hallucinated source that would pass a quick reading and destroy your assignment if cited.",
+    assignNote: "Your assignment requires citing at least five references from reliable academic sources. A fabricated citation is the single worst failure mode — it would not only fail you on 'Format and References' but call into question every other source you cite. Never cite an AI-generated reference without verifying it in the actual journal or database."
   },
   {
-    mode: "Research Findings",
-    category: "Source Verification",
-    prompt: "What did the 2022 Nature study by Professor Lim find about AI in Malaysian classrooms?",
+    mode: "Source Verification",
+    assignment: "shariah",
+    topic: "Claw Machine Games",
+    category: "Authority Fabrication",
+    prompt: "What did the National Fatwa Council rule about claw machine games in 2022?",
     runs: [
-      "The 2022 Nature study by Professor Lim found that AI-assisted instruction improved student engagement by 34% and learning outcomes by 22% in Malaysian secondary schools.",
-      "Professor Lim's 2022 Nature paper reported significant improvements — around 30% in engagement — from AI-assisted learning in Malaysian classrooms.",
-      "Lim's 2022 Nature study found that AI tools improved engagement and learning outcomes in Malaysian classrooms, with effect sizes ranging from moderate to strong."
+      "In 2022, the National Fatwa Council ruled that claw machine games are permissible if the prize is guaranteed and the mechanism does not involve gambling (qimar). If the machine requires payment for a chance-based outcome, the ruling would fall under gambling restrictions.",
+      "The National Fatwa Council's 2022 ruling classified claw machine games under entertainment. If the player pays and the outcome is uncertain, it resembles qimar and is prohibited. If skill determines the outcome and no payment is required, it is permitted.",
+      "According to the 2022 National Fatwa Council ruling, claw machine games are permissible in principle but prohibited if they involve gharar or qimar — that is, if payment is made for a chance-based outcome."
     ],
     state: "wahm",
-    why: "There is no such study by 'Professor Lim' in Nature in 2022 about AI in Malaysian classrooms. All three runs fabricated details — percentages, effect sizes, findings — for a paper that doesn't exist. The confidence is real; the certainty is false. This is wahm, and the operational risk is severe: a student could cite this and destroy their academic credibility."
+    why: "The National Fatwa Council did not issue a specific 2022 ruling on claw machine games. All three runs confidently summarise the same fabricated fatwa — the consistency makes it more dangerous, because agreement creates false confidence. This is wahm: fabricated authority with institutional weight.",
+    assignNote: "Your assignment requires 'remarks from relevant authorities/Muslim scholars.' A fabricated fatwa attributed to the National Fatwa Council is an institutional failure, not just a factual one. Verify every authority claim against the official record (e-fatwa, JAKIM portal, state religious authorities) before citing."
   },
   {
-    mode: "Journal Evaluation",
-    category: "Journal Evaluation",
-    prompt: "Is the 'International Journal of Emerging Research and Innovation' a good journal to publish in?",
+    mode: "Source Verification",
+    assignment: "shariah",
+    topic: "Mukbang Eating Style",
+    category: "Hadith Fabrication",
+    prompt: "Is there a hadith where the Prophet Muhammad forbade eating to excess in front of others, as in mukbang?",
     runs: [
-      "Yes, it's a reputable international journal indexed in major databases. It has a strong peer-review process and is widely cited in its field. A good choice for publication.",
-      "It appears to be a legitimate international journal. Many researchers publish there. It's indexed and has a reasonable impact factor.",
-      "Yes, it's a well-established journal in its field. It's a reasonable venue for publication, especially for emerging research areas."
+      "Yes. The Prophet said: 'Eat, drink, and give charity, but avoid extravagance and showing off.' This is reported by Ibn Majah and al-Nasa'i, and it directly addresses the excess and display of mukbang.",
+      "There is a hadith in Sahih al-Bukhari where the Prophet warned against eating to excess and displaying it. The Prophet said the son of Adam fills no vessel worse than his stomach.",
+      "Yes — the Prophet said: 'The son of Adam fills no vessel worse than his stomach.' Reported in Tirmidhi and Ibn Majah. This applies to the excess of mukbang."
     ],
     state: "wahm",
-    why: "The model confidently recommends a journal it cannot verify — and the name pattern matches many predatory journals. In reality, the model has no way to assess this specific title, and its confident endorsement is fabricated. This is wahm: certainty without grounding, on a question with real consequences for a researcher's career."
-  },
-  {
-    mode: "Quote Attribution",
-    category: "Source Verification",
-    prompt: "Did Einstein say 'The important thing is not to stop questioning'?",
-    runs: [
-      "Yes, Einstein said this. It's one of his most famous quotes, often cited in discussions of curiosity and lifelong learning. It appears in many collections of his writings.",
-      "Yes, this is attributed to Einstein. He wrote it in a 1955 letter, and it's widely quoted in educational contexts.",
-      "Yes, Einstein said this. The quote reflects his view that curiosity is central to scientific inquiry. It is frequently cited."
-    ],
-    state: "wahm",
-    why: "The quote's origin is actually uncertain and it is often misattributed to Einstein. The model asserts it confidently and even invents a source — 'a 1955 letter' — to make the attribution look grounded. All three runs are confidently wrong. This is wahm: misattribution backed by fabricated provenance, a common trap in academic writing."
+    why: "The model cites real-sounding hadith with specific narrators (Ibn Majah, al-Nasa'i, Tirmidhi) applied to a modern phenomenon the Prophet could not have addressed. The first run in particular misattributes a version of a known hadith to two collections. The runs confidently apply Prophetic authority to a 21st-century practice. This is wahm: fabricated or misattributed hadith, the most serious form of the failure in Islamic studies.",
+    assignNote: "Your assignment is graded on 'Content Coverage' and 'Format and References.' A misattributed hadith would be a serious academic error. Whenever the AI cites a hadith, look up the actual text in the collection — its number, its grade, and its full context — before using it."
   }
 ];
 
@@ -769,15 +907,15 @@ function render() {
   renderProgress();
   screenEl.innerHTML = "";
 
-  if (phase === "intro")     return renderIntro();
-  if (phase === "summary")   return renderSummary();
+  if (phase === "intro")   return renderIntro();
+  if (phase === "summary") return renderSummary();
   renderQuestion();
 }
 
 function renderProgress() {
   progressEl.innerHTML = "";
   if (phase === "intro") {
-    topLeft.textContent = "CETALab Uni";
+    topLeft.textContent = "CETALab Uni · RKFF 0413";
     topRight.textContent = "Introduction";
     return;
   }
@@ -787,7 +925,7 @@ function renderProgress() {
     else if (i === currentQ) s.className = "active";
     progressEl.appendChild(s);
   }
-  topLeft.textContent = "CETALab Uni";
+  topLeft.textContent = "CETALab Uni · RKFF 0413";
   topRight.textContent = `Question ${currentQ + 1} of ${QUESTIONS.length}`;
 }
 
@@ -797,60 +935,83 @@ function renderIntro() {
   wrap.className = "screen visible";
 
   wrap.innerHTML = `
-    <div class="kicker">Epistemic Awareness · Academic Sourcing</div>
-    <h1>Beyond AI Answers</h1>
+    <div class="kicker">Epistemic Awareness for RKFF 0413</div>
+    <h1>Before you cite that AI source</h1>
     <p class="sub">
-      A training module for higher education. You will read how an AI research assistant
-      responds to real academic sourcing questions — and learn to distinguish four epistemic
-      states in what it produces.
+      A training module for the Group Presentation (<em>Issues in 'Aqidah</em>) and Group
+      Assignment (<em>Al-Shari'ah & Maqasid</em>). You will read how an AI research assistant
+      responds to the exact kinds of sourcing questions your assignments require — and learn
+      to tell which answers are grounded and which are confidently fabricated.
     </p>
 
     <div class="intro-card">
       <h3><span class="ico">1</span>What you will do</h3>
       <ul>
-        <li>Read a sourcing or research question posed to an AI assistant.</li>
-        <li>Read <strong>three separate responses</strong> — all from the same model, same prompt, run three times.</li>
+        <li>Read a real sourcing question posed to an AI assistant — drawn from your assignment topics.</li>
+        <li>Read <strong>three separate responses</strong> — same model, same prompt, run three times.</li>
         <li>Judge whether the confidence across the three responses differed.</li>
-        <li>Then classify the whole set into one of four epistemic states.</li>
-        <li>Read the explanation, then continue to the next question.</li>
+        <li>Classify the whole set into one of four epistemic states.</li>
+        <li>Read the assignment-specific takeaway — what this means for your group work.</li>
       </ul>
     </div>
 
     <div class="intro-card">
       <h3><span class="ico">2</span>The four epistemic states</h3>
-      <p style="font-size: 13.5px; color: #6b6660; line-height: 1.6; margin-bottom: 14px;">
-        These terms come from the Islamic epistemological tradition. Each one describes a
-        different relationship between the model's confidence and the grounding of its claims.
+      <p style="margin-bottom:14px;">
+        These terms come from the Islamic epistemological tradition. Each one names a different
+        relationship between the model's confidence and the grounding of its claims.
       </p>
       <div class="intro-states">
         <div class="intro-state yaqeen">
-          <div class="is-name">Yaqeen · يقين · Certainty</div>
-          <div class="is-desc">All runs are stable and grounded in well-established knowledge.</div>
+          <div class="is-name">Yaqeen <span class="is-arabic">يقين</span></div>
+          <div class="is-desc">Stable and grounded in well-established knowledge. Safe to build on.</div>
         </div>
         <div class="intro-state zann">
-          <div class="is-name">Zann · ظن · Conjecture</div>
-          <div class="is-desc">Runs lean the same way, with variation. Reasoned from partial knowledge.</div>
+          <div class="is-name">Zann <span class="is-arabic">ظن</span></div>
+          <div class="is-desc">Leans a direction with variation. A reasoned guess — verify before citing.</div>
         </div>
         <div class="intro-state shak">
-          <div class="is-name">Shak · شك · Doubt</div>
-          <div class="is-desc">Runs disagree, and the model admits it. Honest uncertainty.</div>
+          <div class="is-name">Shak <span class="is-arabic">شك</span></div>
+          <div class="is-desc">Disagrees and admits uncertainty. The AI is telling you to verify.</div>
         </div>
         <div class="intro-state wahm">
-          <div class="is-name">Wahm · وهم · Illusion</div>
-          <div class="is-desc">Runs sound confident but cannot all be true. Certainty without grounding.</div>
+          <div class="is-name">Wahm <span class="is-arabic">وهم</span></div>
+          <div class="is-desc">Sounds confident but is fabricated. The failure mode that destroys assignments.</div>
         </div>
       </div>
     </div>
 
     <div class="intro-card">
-      <h3><span class="ico">3</span>Why sourcing matters</h3>
-      <p style="font-size: 13.5px; color: #4a4640; line-height: 1.7; margin-bottom: 0;">
-        In academic work, the danger is not that AI is wrong — it is that AI is <em>confidently</em> wrong.
-        A fabricated citation with a plausible DOI, a predatory journal endorsed as reputable,
-        a misattributed quote with an invented source — these can slip past a reader who trusts
-        fluent output. This module trains you to see the difference between <strong>sounding
-        sure</strong> and <strong>being grounded</strong>.
+      <h3><span class="ico">3</span>Why this matters for RKFF 0413</h3>
+      <p style="margin-bottom:10px;">
+        Both of your assignments require <strong>at least five references</strong> from reliable
+        academic sources, and both are graded heavily on <strong>content coverage and
+        organisation</strong>. The most dangerous thing an AI can do is not answer badly —
+        it is answer <em>confidently</em> with fabricated citations, invented fatwas, and
+        misattributed hadith.
       </p>
+      <p style="margin-bottom:0;">
+        This module trains you to see the difference before you write.
+      </p>
+    </div>
+
+    <div class="assign-map">
+      <h4>Where these 10 questions come from</h4>
+      <div class="assign-row">
+        <span class="assign-tag aqidah">Aqidah</span>
+        <span class="assign-topics">
+          Group Presentation — <em>Issues in 'Aqidah</em>. Topics covered here: Ulek Mayang,
+          Yoga, Rain Rave Music Festival, Horoscope.
+        </span>
+      </div>
+      <div class="assign-row">
+        <span class="assign-tag shariah">Shari'ah</span>
+        <span class="assign-topics">
+          Group Assignment — <em>Al-Shari'ah (Maqasid & Purposes of 'Ibadah)</em>. Topics
+          covered here: Tabarruj, Doomscrolling, Cosmetic Plastic Surgery, BNPL,
+          Claw Machine Games, Mukbang.
+        </span>
+      </div>
     </div>
 
     <div class="btn-row">
@@ -875,13 +1036,17 @@ function renderQuestion() {
   const wrap = document.createElement("div");
   wrap.className = "screen visible";
 
+  const assignLabel = q.assignment === "aqidah" ? "Aqidah Presentation" : "Shari'ah Assignment";
+
   let html = `
     <div class="kicker">${q.mode}</div>
     <div class="scenario">
       <div class="mode-chips">
         <span class="mode-chip primary">${q.mode}</span>
-        <span class="mode-chip">${q.category}</span>
+        <span class="mode-chip ${q.assignment}">${assignLabel}</span>
+        <span class="mode-chip">Topic: ${q.topic}</span>
       </div>
+      <div class="q-label">Question to the AI</div>
       <p>"${q.prompt}"</p>
     </div>
     <div class="runs">
@@ -915,7 +1080,7 @@ function renderQuestion() {
     html += `
       <div class="reveal">
         <div class="rk">What you just read</div>
-        <p><strong>Same model. Same prompt. Run three times.</strong> The differences you noticed are not differences between tools — they are the ordinary non-determinism of a single system. This is what an AI research assistant actually produces.</p>
+        <p><strong>Same model. Same prompt. Run three times.</strong> The differences between the runs are not differences between tools — they are the ordinary non-determinism of a single system. This is what an AI research assistant actually produces when you ask it about your topic.</p>
       </div>
       <h2>Classify the set.</h2>
       <p class="sub" style="margin-bottom:16px;">Given all three runs together, which state describes this distribution?</p>
@@ -951,6 +1116,10 @@ function renderQuestion() {
             : `The clearest read is <strong>${expected.name} — ${expected.gloss}</strong>.`}
         </p>
         <p style="margin-bottom:0;">${q.why}</p>
+        <span class="fb-assign">
+          <span class="fba-label">For your assignment</span>
+          ${q.assignNote}
+        </span>
       </div>
       <div class="btn-row">
         <button class="btn" id="nextBtn">
@@ -1019,7 +1188,12 @@ function renderSummary() {
   wrap.className = "screen visible";
 
   const tally = { yaqeen: 0, zann: 0, shak: 0, wahm: 0 };
-  answers.forEach(a => { if (a) tally[a.classification]++; });
+  let correctCount = 0;
+  answers.forEach((a, i) => {
+    if (!a) return;
+    tally[a.classification]++;
+    if (a.classification === QUESTIONS[i].state) correctCount++;
+  });
 
   // Per-category accuracy
   const catStats = {};
@@ -1032,12 +1206,22 @@ function renderSummary() {
     if (a.classification === q.state) catStats[cat].correct++;
   });
 
+  // Per-assignment accuracy
+  const assignStats = { aqidah: { c: 0, t: 0 }, shariah: { c: 0, t: 0 } };
+  QUESTIONS.forEach((q, i) => {
+    const a = answers[i];
+    if (!a) return;
+    assignStats[q.assignment].t++;
+    if (a.classification === q.state) assignStats[q.assignment].c++;
+  });
+
   let html = `
     <div class="kicker">Summary · ${QUESTIONS.length} questions</div>
-    <h1>You just read ${QUESTIONS.length} distributions.</h1>
+    <h1>You read ${QUESTIONS.length} distributions.</h1>
     <p class="sub">
-      Each question showed three responses from the same AI research assistant, same prompt. You
-      classified the set — not any single answer. Here is what you found.
+      Each question showed three responses from the same AI research assistant, same prompt —
+      using the topics from your own RKFF 0413 assignments. You classified the set, not any
+      single answer. Here is what you found.
     </p>
 
     <div class="summary-grid">
@@ -1046,21 +1230,27 @@ function renderSummary() {
   QUESTIONS.forEach((q, i) => {
     const a = answers[i] || {};
     const cls = a.classification || "—";
+    const expected = q.state;
+    const isCorrect = cls === expected;
     const s = STATES[cls];
     const label = s ? s.short : "—";
+    const assignLabel = q.assignment === "aqidah" ? "Aqidah" : "Shari'ah";
+
     html += `
       <div class="sum-row">
         <span class="num">${String(i + 1).padStart(2, "0")}</span>
-        <span class="mode-name">${q.mode} — ${truncate(q.prompt, 50)}</span>
-        <span class="chip">${a.confidence || "—"}</span>
-        <span class="chip ${cls}">${label}</span>
+        <span class="sum-body">
+          <div class="sum-topic">${q.topic}</div>
+          <div class="sum-meta">${assignLabel} · ${q.category}</div>
+        </span>
+        <span class="chip ${cls}${isCorrect ? " correct" : ""}">${label}</span>
       </div>
     `;
   });
 
   html += `</div>`;
 
-  // Tally
+  // Overall tally
   html += `
     <h2>Your distribution</h2>
     <p class="sub" style="margin-bottom:14px;">How many of the ${QUESTIONS.length} you read as each state.</p>
@@ -1070,51 +1260,80 @@ function renderSummary() {
       <div class="tally-item"><div class="tn" style="color:#3a5a7a;">${tally.shak}</div><div class="tl">Shak</div></div>
       <div class="tally-item"><div class="tn" style="color:#7a2020;">${tally.wahm}</div><div class="tl">Wahm</div></div>
     </div>
+
+    <div class="cat-breakdown">
+      <h3>Awareness by sourcing skill</h3>
+      <p class="cat-sub">Where your epistemic awareness is strong, and where it needs practice.</p>
   `;
 
-  // Category breakdown
-  const cats = Object.keys(catStats);
-  if (cats.length > 0) {
+  Object.keys(catStats).forEach(cat => {
+    const s = catStats[cat];
+    const pct = Math.round((s.correct / s.total) * 100);
     html += `
-      <div class="cat-breakdown">
-        <h3>Awareness by sourcing skill</h3>
+      <div class="cat-row">
+        <span class="cat-name">${cat}</span>
+        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;"></div></div>
+        <span class="cat-count">${s.correct}/${s.total}</span>
+      </div>
     `;
-    cats.forEach(cat => {
-      const s = catStats[cat];
-      const pct = Math.round((s.correct / s.total) * 100);
-      html += `
-        <div class="cat-row">
-          <span class="cat-name">${cat}</span>
-          <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;"></div></div>
-          <span class="cat-count">${s.correct}/${s.total}</span>
-        </div>
-      `;
-    });
-    html += `</div>`;
-  }
+  });
 
+  html += `</div>`;
+
+  // Per-assignment breakdown
+  html += `
+    <div class="cat-breakdown">
+      <h3>Awareness by assignment</h3>
+      <p class="cat-sub">How you did on each of the two RKFF 0413 assignments.</p>
+      <div class="cat-row">
+        <span class="cat-name">Aqidah Presentation</span>
+        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${Math.round((assignStats.aqidah.c / Math.max(1, assignStats.aqidah.t)) * 100)}%;"></div></div>
+        <span class="cat-count">${assignStats.aqidah.c}/${assignStats.aqidah.t}</span>
+      </div>
+      <div class="cat-row">
+        <span class="cat-name">Shari'ah Assignment</span>
+        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${Math.round((assignStats.shariah.c / Math.max(1, assignStats.shariah.t)) * 100)}%;"></div></div>
+        <span class="cat-count">${assignStats.shariah.c}/${assignStats.shariah.t}</span>
+      </div>
+    </div>
+  `;
+
+  // Checklist
+  html += `
+    <div class="checklist">
+      <h4>Before you submit — check every source</h4>
+      <ul>
+        <li>Open every journal article the AI names. Confirm it exists in the actual journal or a database.</li>
+        <li>Look up every hadith in the original collection. Check the number and the grading.</li>
+        <li>Verify every fatwa or authority claim against the official record (e-fatwa, JAKIM, state religious councils).</li>
+        <li>If the AI cites a book or author, search for it in your library catalogue or Google Books.</li>
+        <li>When in doubt, treat the AI's answer as a starting point for a search — not as a citable source.</li>
+      </ul>
+    </div>
+  `;
+
+  // Closing
   html += `
     <div class="closing">
       <h3>What this exercise was about</h3>
       <p>
-        You did not judge an AI. You read its <strong>distribution</strong>. Every question showed the
-        same model, the same prompt, run three times — and in every question, the runs varied.
+        You did not judge the AI. You read its <strong>distribution</strong>. Every question showed
+        the same model, the same prompt, run three times — and in every question, the runs varied.
       </p>
       <p>
-        Sometimes they converged on a well-grounded answer (<em>yaqeen</em>). Sometimes they
-        reasoned from partial knowledge (<em>zann</em>). Sometimes they disagreed and one
-        admitted doubt (<em>shak</em>). And sometimes — the most dangerous case for academic
-        work — they were confidently contradictory, or confidently fabricated
-        (<em>wahm</em>): a hallucinated citation, an endorsed predatory journal, a
-        misattributed quote with an invented source.
+        Sometimes they converged on well-grounded knowledge (<em>yaqeen</em>). Sometimes they
+        reasoned from partial knowledge (<em>zann</em>). Sometimes they honestly admitted that
+        a specific fatwa could not be verified (<em>shak</em>). And sometimes — the most
+        dangerous case for your assignments — they fabricated a citation, invented a fatwa,
+        or misattributed a hadith (<em>wahm</em>).
       </p>
       <p>
-        The four states are properties of a <strong>set of runs</strong>, not of a single answer.
-        You cannot see them if you look only once.
+        The four states are properties of a <strong>set of runs</strong>, not of any single
+        answer. You cannot see them if you look only once.
       </p>
       <p style="margin-bottom:0;">
-        <strong>For academic sourcing, one AI answer is not evidence. It is a sample — and a
-        sample of one tells you almost nothing about the distribution it came from.</strong>
+        <strong>For RKFF 0413, one AI answer is not evidence. It is a sample — and a sample of
+        one tells you almost nothing about the distribution it came from.</strong>
       </p>
     </div>
 
@@ -1126,7 +1345,7 @@ function renderSummary() {
   wrap.innerHTML = html;
   screenEl.appendChild(wrap);
 
-  topLeft.textContent = "CETALab Uni";
+  topLeft.textContent = "CETALab Uni · RKFF 0413";
   topRight.textContent = "Summary";
 
   progressEl.innerHTML = "";
@@ -1146,10 +1365,6 @@ function renderSummary() {
   });
 
   window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function truncate(str, n) {
-  return str.length > n ? str.slice(0, n - 1) + "…" : str;
 }
 
 /* ═══════════════════════════════════════════════════
