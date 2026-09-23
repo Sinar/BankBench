@@ -2302,7 +2302,7 @@ function buildRowPayload() {
 
 function submitToSheets() {
   if (!SHEETS_ENDPOINT || SHEETS_ENDPOINT.includes("YOUR_DEPLOYMENT_ID")) {
-    alert("⚠️ Google Sheets endpoint not configured.\n\nPlease replace SHEETS_ENDPOINT in the script with your deployed Apps Script web app URL.");
+    alert("⚠️ Google Sheets endpoint not configured.");
     return;
   }
 
@@ -2315,30 +2315,32 @@ function submitToSheets() {
     rows: buildRowPayload()
   };
 
-  // Use URL-encoded body to avoid CORS preflight issues with Apps Script
-  const params = new URLSearchParams();
-  params.append("payload", JSON.stringify(payload));
+  const body = JSON.stringify(payload);
+  console.log("[submit] sending", body.length, "bytes to", SHEETS_ENDPOINT);
 
   fetch(SHEETS_ENDPOINT, {
     method: "POST",
-    mode: "no-cors",  // Apps Script doesn't return CORS headers; no-cors works for fire-and-forget
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString()
+    mode: "no-cors",
+    // text/plain keeps this a "simple request" — no CORS preflight,
+    // and the body reliably survives Apps Script's 302 redirect.
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: body
   })
   .then(() => {
-    btn.textContent = "✓ Submitted";
+    // We can't verify — no-cors hides the response. Say so honestly.
+    btn.textContent = "Sent — check your sheet ✓";
     btn.style.background = "#2a5a2a";
     setTimeout(() => {
       btn.textContent = "Submit to study";
       btn.disabled = false;
       btn.style.background = "";
-    }, 3000);
+    }, 4000);
   })
   .catch((err) => {
-    console.error(err);
+    console.error("[submit] failed", err);
     btn.textContent = "Submit failed — retry";
     btn.disabled = false;
-    alert("Submission failed. Please check your connection and try again.");
+    alert("Submission failed: " + err.message);
   });
 }
 
