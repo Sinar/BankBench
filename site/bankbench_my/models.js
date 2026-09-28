@@ -184,9 +184,20 @@
     k = k.replace(/^\s*(authorization|api[-_ ]?key)\s*[:=]\s*/i, '');
     k = k.replace(/^\s*bearer\s+/i, '');
     k = k.trim().replace(/^["']|["']$/g, '');
-    k = k.replace(/\s+/g, '');
+    // API keys are printable ASCII. Drop EVERY other character: this removes
+    // newlines, non-breaking spaces and invisible zero-width characters that
+    // survive trim() and \s, and which make the header unparseable upstream.
+    k = k.replace(/[^\x21-\x7E]/g, '');
     if (/^(undefined|null|none|true|false)$/i.test(k)) return '';
     return k;
+  }
+
+  /* How many characters had to be thrown away, so the UI can say so out loud
+     instead of silently fixing it. */
+  function keyDiagnostics(raw) {
+    var original = String(raw == null ? '' : raw);
+    var junk = original.split('').filter(function (ch) { return !/[\x20-\x7E\t\n\r]/.test(ch); }).length;
+    return { cleaned: cleanKey(original), stripped: junk };
   }
 
   function keyPrefix(provider) {
@@ -207,6 +218,7 @@
     bases: bases, list: list, detailed: detailed, refresh: refresh,
     fill: fill, bindFilter: bindFilter, state: state,
     cleanKey: cleanKey, keyPrefix: keyPrefix, keyWarning: keyWarning,
+    keyDiagnostics: keyDiagnostics,
     vendorOf: vendorOf, maxPriceDefault: maxPriceDefault
   };
 })();

@@ -339,7 +339,12 @@ function updateKeyDot(){
     !key ? 'key not set' : (warn ? 'key looks wrong' : 'key set (local)');
   const hint = document.getElementById('keyhint');
   if (hint){
-    hint.textContent = warn || ('Looks fine: ' + BBModels.keyPrefix(provider) + '\u2026, ' + key.length + ' characters.');
+    let note = warn || ('Looks fine: ' + BBModels.keyPrefix(provider) + '\u2026, ' + key.length + ' characters.');
+    if (!warn && BBModels.keyDiagnostics){
+      const diag = BBModels.keyDiagnostics(document.getElementById('apikey').value);
+      if (diag.stripped > 0) note += ' \u2014 ' + diag.stripped + ' stray character(s) were detected and will be ignored.';
+    }
+    hint.textContent = note;
     hint.style.color = warn ? '#b4232a' : '';
   }
   return key;
