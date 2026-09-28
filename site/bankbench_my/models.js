@@ -173,9 +173,40 @@
     });
   }
 
+  /* --- API key hygiene ---
+     OpenRouter replies "Missing Authentication header" (401) to ANY malformed
+     Authorization value, so a paste slip looks identical to a real auth fault.
+     Seen triggers: empty Bearer, raw key with no "Bearer " prefix,
+     "Bearer Bearer x", surrounding quotes, inner whitespace, literal
+     "undefined". Stripping them here means the header is always well formed. */
+  function cleanKey(raw) {
+    var k = String(raw == null ? '' : raw);
+    k = k.replace(/^\s*(authorization|api[-_ ]?key)\s*[:=]\s*/i, '');
+    k = k.replace(/^\s*bearer\s+/i, '');
+    k = k.trim().replace(/^["']|["']$/g, '');
+    k = k.replace(/\s+/g, '');
+    if (/^(undefined|null|none|true|false)$/i.test(k)) return '';
+    return k;
+  }
+
+  function keyPrefix(provider) {
+    return provider === 'nvidia' ? 'nvapi-' : 'sk-or-v1-';
+  }
+
+  /* '' when the key looks usable, otherwise a plain-English explanation. */
+  function keyWarning(provider, cleaned) {
+    if (!cleaned) return 'No API key saved yet.';
+    var want = keyPrefix(provider);
+    if (cleaned.indexOf(want) !== 0) {
+      return 'Does not look like an ' + provider + ' key — expected it to start with "' + want + '".';
+    }
+    return '';
+  }
+
   window.BBModels = {
     bases: bases, list: list, detailed: detailed, refresh: refresh,
     fill: fill, bindFilter: bindFilter, state: state,
+    cleanKey: cleanKey, keyPrefix: keyPrefix, keyWarning: keyWarning,
     vendorOf: vendorOf, maxPriceDefault: maxPriceDefault
   };
 })();

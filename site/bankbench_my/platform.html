@@ -727,7 +727,7 @@ function toast(msg){
    LLM CALLS
    ════════════════════════════════════════════════════════════ */
 async function callModel(provider, modelId, messages, opts = {}){
-  const key = keyFor(provider);
+  const key = window.BBModels ? BBModels.cleanKey(keyFor(provider)) : keyFor(provider);
   if (!key) throw new Error(`No ${provider} API key set`);
   const url = provider === 'openrouter'
       ? '/api/proxy?target=' + encodeURIComponent('https://openrouter.ai/api/v1/chat/completions')
@@ -1645,8 +1645,9 @@ async function syncJudgeModels(){
   BBModels.bindFilter(document.getElementById('judgeFilter'), sel);
 }
 function saveSettingsFromForm(){
-  state.settings.openrouterKey = document.getElementById('keyOpenRouter').value.trim();
-  state.settings.nvidiaKey     = document.getElementById('keyNvidia').value.trim();
+  const clean = v => window.BBModels ? BBModels.cleanKey(v) : v.trim();
+  state.settings.openrouterKey = clean(document.getElementById('keyOpenRouter').value);
+  state.settings.nvidiaKey     = clean(document.getElementById('keyNvidia').value);
   state.settings.judgeProvider = document.getElementById('judgeProvider').value;
   state.settings.judgeModel    = document.getElementById('judgeModel').value.trim() || 'openai/gpt-4o-mini';
   saveSettings();
@@ -1664,6 +1665,12 @@ function updateKeyStatus(){
   if (n === 0) label.textContent = 'No keys';
   else if (n === 2){ dot.classList.add('on'); label.textContent = 'Both keys'; }
   else { dot.classList.add('partial'); label.textContent = or ? 'OpenRouter' : 'NVIDIA'; }
+  if (window.BBModels){
+    const warns = [];
+    if (or){ const w = BBModels.keyWarning('openrouter', state.settings.openrouterKey); if (w) warns.push('OpenRouter ' + w); }
+    if (nv){ const w = BBModels.keyWarning('nvidia',     state.settings.nvidiaKey);     if (w) warns.push('NVIDIA ' + w); }
+    if (warns.length) label.textContent += ' — ' + warns.join(' | ');
+  }
 }
 
 /* ════════════════════════════════════════════════════════════

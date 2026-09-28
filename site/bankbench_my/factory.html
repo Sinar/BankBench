@@ -176,6 +176,10 @@
             <input id="apikey" class="mono" type="password" placeholder="sk-... (never leaves your browser)">
           </div>
           <div class="srow">
+            <label></label>
+            <span id="keyhint" style="font-size:11px;opacity:.8;"></span>
+          </div>
+          <div class="srow">
             <label>Seeder model</label>
             <input id="modelfilter" class="mono" placeholder="filter the model list" autocomplete="off">
           </div>
@@ -321,10 +325,24 @@ function saveSettings(){
   localStorage.setItem(K, JSON.stringify(s));
   updateKeyDot();
 }
+function cleanedKey(){
+  return window.BBModels ? BBModels.cleanKey(document.getElementById('apikey').value)
+                         : document.getElementById('apikey').value.trim();
+}
 function updateKeyDot(){
-  const has = !!document.getElementById('apikey').value.trim();
-  const d=document.getElementById('keydot'); d.classList.toggle('ok', has);
-  document.getElementById('keylabel').textContent = has ? 'key set (local)' : 'key not set';
+  const provider = document.getElementById('provider').value;
+  const key = cleanedKey();
+  const warn = window.BBModels ? BBModels.keyWarning(provider, key) : '';
+  const d = document.getElementById('keydot');
+  d.classList.toggle('ok', !!key && !warn);
+  document.getElementById('keylabel').textContent =
+    !key ? 'key not set' : (warn ? 'key looks wrong' : 'key set (local)');
+  const hint = document.getElementById('keyhint');
+  if (hint){
+    hint.textContent = warn || ('Looks fine: ' + BBModels.keyPrefix(provider) + '\u2026, ' + key.length + ' characters.');
+    hint.style.color = warn ? '#b4232a' : '';
+  }
+  return key;
 }
 function onProvider(){
   const p=document.getElementById('provider').value;
@@ -338,7 +356,7 @@ function toggleSettings(){ document.getElementById('settings').classList.toggle(
 async function syncModelSelect(provider, wanted){
   const sel = document.getElementById('seedmodel');
   if (!window.BBModels){ applyModelChoice(); return; }
-  const key = document.getElementById('apikey').value.trim();
+  const key = cleanedKey();
   if (provider === 'custom'){
     // No catalogue to fetch — the user supplies the id by hand.
     sel.innerHTML = '<option value="__custom__">Other (type a model id)</option>';
@@ -375,6 +393,10 @@ function effectiveSeedModel(){
 });
 document.getElementById('seedmodel').addEventListener('change', function(){ applyModelChoice(); saveSettings(); });
 document.getElementById('seedmodelcustom').addEventListener('input', saveSettings);
+['apikey','provider'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', updateKeyDot);
+  document.getElementById(id).addEventListener('change', updateKeyDot);
+});
 ['cheaponly','maxprice'].forEach(function(id){
   document.getElementById(id).addEventListener('change', function(){
     syncModelSelect(document.getElementById('provider').value,
@@ -449,7 +471,7 @@ function status(msg, err){
 async function seed(){
   const prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ status('Type a scenario category first.', true); return; }
-  const key=document.getElementById('apikey').value.trim();
+  const key=cleanedKey();
   const base=(document.getElementById('baseurl').value||BASE[document.getElementById('provider').value]).replace(/\/+$/,'');
   const model=effectiveSeedModel();
   if(!key){ status('Set your API key in ⚙ Settings first (stored locally).', true); return; }
@@ -478,7 +500,15 @@ async function seed(){
         messages:[{role:'system',content:SYSTEM},{role:'user',content:prompt}],
         max_tokens:3000})
     });
-    if(!resp.ok){ const t=await resp.text(); throw new Error('HTTP '+resp.status+' '+t.slice(0,200)); }
+    if(!resp.ok){
+      const t=await resp.text();
+      let msg='HTTP '+resp.status+' '+t.slice(0,200);
+      if(resp.status===401 && t.indexOf('Missing Authentication header')!==-1){
+        msg += '  \u2014  the key was sent but the provider could not read it.'
+             + ' Open Settings and re-paste JUST the key (no "Bearer", no quotes).';
+      }
+      throw new Error(msg);
+    }
     const j=await resp.json();
     const txt=j.choices[0].message.content;
     let arr=parseJsonArray(txt);
