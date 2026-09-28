@@ -661,8 +661,8 @@ async function callModel(provider, modelId, messages, opts = {}){
   const key = keyFor(provider);
   if (!key) throw new Error(`No ${provider} API key set`);
   const url = provider === 'openrouter'
-    ? 'https://openrouter.ai/api/v1/chat/completions'
-    : 'https://integrate.api.nvidia.com/v1/chat/completions';
+      ? '/api/proxy?target=' + encodeURIComponent('https://openrouter.ai/api/v1/chat/completions')
+      : '/api/proxy?target=' + encodeURIComponent('https://integrate.api.nvidia.com/v1/chat/completions');
   const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer ' + key };
   if (provider === 'openrouter'){
     headers['HTTP-Referer'] = location.origin || 'https://bankbench.local';
