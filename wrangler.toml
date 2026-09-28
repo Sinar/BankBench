@@ -1,0 +1,10 @@
+name = "bankbench-api-proxy"
+account_id = "ae3a3151ad1f43bfacc255972c0edcfd"
+compatibility_date = "2026-09-28"
+
+main = "workers/api-proxy.js"
+
+[env.production]
+  durability = "interval"
+
+routes = "/api/proxy/*"
