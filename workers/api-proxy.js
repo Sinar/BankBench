@@ -1,96 +1,73 @@
+// Standalone Cloudflare Worker — OpenAI-compatible proxy.
+//
+// IMPORTANT: this Worker is NOT what serves /api/proxy on the Pages site.
+// A Worker route cannot be attached to *.pages.dev, so that traffic is handled
+// by functions/api/proxy.js instead. This Worker exists for callers that hit
+// it directly on its workers.dev URL or a custom domain.
+//
+// Fixes applied vs. the previous version:
+//   1. no longer appends request.url.pathname to the upstream URL
+//   2. no longer double-decodes the (already decoded) ?target= param
+//   3. forwards only Content-Type/Authorization/HTTP-Referer/X-Title
+
+const ALLOWED_HOSTS = ['integrate.api.nvidia.com', 'openrouter.ai'];
+
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, HTTP-Referer, X-Title',
+};
+
+const json = (body, status) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...CORS },
+  });
+
 export default {
-  async fetch(request, env, ctx) {
-    // Handle preflight OPTIONS requests for CORS
+  async fetch(request) {
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-      });
+      return new Response(null, { status: 204, headers: CORS });
     }
 
-    // Parse the target URL from query parameters
-    const url = new URL(request.url);
-    const targetUrl = url.searchParams.get('target');
+    const rawTarget = new URL(request.url).searchParams.get('target');
+    if (!rawTarget) return json({ error: 'Missing target parameter' }, 400);
 
-    if (!targetUrl) {
-      return new Response(
-        JSON.stringify({ error: 'Missing target parameter' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+    let target;
+    try {
+      target = new URL(rawTarget);
+    } catch {
+      return json({ error: 'Invalid target URL' }, 400);
     }
 
-    // Decode the target URL
-    const decodedTarget = decodeURIComponent(targetUrl);
+    const allowed = ALLOWED_HOSTS.some(
+      (h) => target.hostname === h || target.hostname.endsWith('.' + h)
+    );
+    if (!allowed) return json({ error: 'Target host not allowed' }, 403);
 
-    // Only allow specific API providers
-    const allowedHosts = [
-      'integrate.api.nvidia.com',
-      'openrouter.ai',
-    ];
+    const headers = new Headers();
+    for (const h of ['Content-Type', 'Authorization', 'HTTP-Referer', 'X-Title']) {
+      const v = request.headers.get(h);
+      if (v) headers.set(h, v);
+    }
+
+    const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
 
     try {
-      const parsedUrl = new URL(decodedTarget);
-
-      // Check if the target host is allowed
-      const isAllowed = allowedHosts.some(host =>
-        parsedUrl.hostname === host || parsedUrl.hostname.endsWith('.' + host)
-      );
-
-      if (!isAllowed) {
-        return new Response(
-          JSON.stringify({ error: 'Target host not allowed' }),
-          { status: 403, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-
-      // Extract the path from the original request
-      const path = new URL(decodedTarget).pathname;
-
-      // Create the forward request
-      const forwardRequest = new Request(
-        decodedTarget + request.url.pathname,
-        {
-          method: request.method,
-          headers: {
-            'Content-Type': 'application/json',
-            ...Object.fromEntries(request.headers.entries()),
-          },
-          body: request.method !== 'GET' ? request.body : undefined,
-        }
-      );
-
-      // Forward the request
-      const response = await fetch(forwardRequest);
-
-      // Add CORS headers to the response
-      const corsHeaders = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      };
-
-      // Build the response with CORS headers
-      const newResponse = new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          ...Object.fromEntries(response.headers.entries()),
-          ...corsHeaders,
-        },
+      const upstream = await fetch(target.toString(), {
+        method: request.method,
+        headers,
+        body: hasBody ? request.body : undefined,
       });
-
-      return newResponse;
-
-    } catch (error) {
-      console.error('Proxy error:', error);
-      return new Response(
-        JSON.stringify({ error: 'Proxy failed' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
+      const out = new Headers(upstream.headers);
+      for (const [k, v] of Object.entries(CORS)) out.set(k, v);
+      return new Response(upstream.body, {
+        status: upstream.status,
+        statusText: upstream.statusText,
+        headers: out,
+      });
+    } catch (err) {
+      return json({ error: 'Proxy failed', detail: String(err) }, 502);
     }
-  }
+  },
 };

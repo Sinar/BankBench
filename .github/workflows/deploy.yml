@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "bankbench_my/**"
+      - "functions/**"
+      - "workers/**"
+      - "wrangler.toml"
       - "eval-scorecard/unified_scorecard_dashboard.html"
       - "eval-scorecard/README.md"
       - public/outreach/ops/**
@@ -27,6 +31,13 @@ jobs:
 
       - name: Assemble site output
         run: |
+          # Keep the site/ mirror in sync with the source pages so edits under
+          # bankbench_my/ can't silently ship stale pages.
+          mkdir -p site/bankbench_my
+          for f in factory.html platform.html models.js; do
+            [ -f "bankbench_my/$f" ] && cp "bankbench_my/$f" "site/bankbench_my/$f" || true
+          done
+
           OUT=dist
           rm -rf "$OUT" && mkdir -p "$OUT"
           cp -R site/. "$OUT"/

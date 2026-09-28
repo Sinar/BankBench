@@ -4,9 +4,16 @@ compatibility_date = "2026-09-28"
 
 main = "workers/api-proxy.js"
 
-[env.production]
-  durability = "interval"
+# Give the Worker its own workers.dev URL so it is reachable directly.
+workers_dev = true
 
-[[routes]]
-  pattern = "/api/proxy/*"
-  zone_name = "pages.dev"
+# NOTE: the previous `[[routes]] pattern = "/api/proxy/*" zone_name = "pages.dev"`
+# block has been REMOVED. Cloudflare does not allow a Worker route to be created
+# on the shared pages.dev zone, so that route never attached and the Worker never
+# saw the traffic. The Pages site now serves /api/proxy from
+# functions/api/proxy.js (a Pages Function, same-origin, no route needed).
+#
+# If you later want the Worker on a domain you actually own, use e.g.:
+#   [[routes]]
+#     pattern = "api.shafiranoh.com/*"
+#     zone_name = "shafiranoh.com"

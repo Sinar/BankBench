@@ -404,6 +404,13 @@
               <div class="panel-sub" id="modelSummary">0 selected</div>
             </div>
           </div>
+          <div class="field-row" style="gap:10px;align-items:center;margin-bottom:10px;">
+            <label style="display:flex;gap:6px;align-items:center;white-space:nowrap;font-size:12px;">
+              <input type="checkbox" id="cheapOnly" checked style="width:auto;"> cheap &amp; free only
+            </label>
+            <input type="number" id="maxPrice" value="1" min="0" step="0.25" style="max-width:80px;" title="ceiling in USD per million tokens">
+            <span style="font-size:11px;color:var(--faint);">$/Mtok</span>
+          </div>
           <div class="model-grid" id="modelGrid"></div>
         </div>
         <div class="panel" id="runPanel" style="display:none;">
@@ -488,8 +495,9 @@
               <option value="openrouter">OpenRouter</option>
               <option value="nvidia">NVIDIA</option>
             </select>
-            <input type="text" id="judgeModel" placeholder="openai/gpt-4o-mini" autocomplete="off">
+            <input type="text" id="judgeFilter" placeholder="filter models" autocomplete="off">
           </div>
+          <select id="judgeModel"></select>
           <div class="hint">A small, fast model is fine — it just needs to follow instructions.</div>
         </div>
         <div class="btn-row">
@@ -512,6 +520,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="models.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    CONSTANTS
@@ -556,7 +565,7 @@ const CATEGORIES = [
 
 const DIM_KEYS = ['construct','internal','external','reliability','correctness'];
 
-const MODELS = [
+let MODELS = [
   { provider:'openrouter', id:'openai/gpt-4o-mini',                 label:'GPT-4o mini',     vendor:'OpenAI' },
   { provider:'openrouter', id:'anthropic/claude-3.5-sonnet',        label:'Claude 3.5 Sonnet', vendor:'Anthropic' },
   { provider:'openrouter', id:'google/gemini-flash-1.5',            label:'Gemini Flash 1.5', vendor:'Google' },
@@ -566,6 +575,66 @@ const MODELS = [
   { provider:'nvidia',     id:'nvidia/llama-3.1-nemotron-70b-instruct', label:'Nemotron 70B', vendor:'NVIDIA' },
   { provider:'nvidia',     id:'mistralai/mistral-7b-instruct-v0.3', label:'Mistral 7B',      vendor:'Mistral (NIM)' }
 ];
+
+/* The list above is only a pre-load fallback. loadAllModels() replaces it with
+   the providers' LIVE /models catalogues, so retired ids (e.g. the old
+   anthropic/claude-3.5-sonnet, google/gemini-flash-1.5 and NVIDIA
+   meta/llama-3.1-70b-instruct entries below have already gone dead) can no
+   longer be offered. */
+let modelsLoaded = false;
+function vendorOf(id){ return id.indexOf('/') > 0 ? id.slice(0, id.indexOf('/')) : 'other'; }
+
+async function loadAllModels(){
+  if (!window.BBModels){ act('Model catalogue loader unavailable — using built-in list'); return; }
+  const or = await BBModels.detailed('openrouter', state.settings.openrouterKey);
+  const nv = await BBModels.detailed('nvidia',     state.settings.nvidiaKey);
+  const next = [];
+  or.forEach(r => next.push({ provider:'openrouter', id:r.id, label:r.id, free:r.free, price:r.price, vendor:vendorOf(r.id) + ' · OpenRouter' }));
+  nv.forEach(r => next.push({ provider:'nvidia',     id:r.id, label:r.id, free:r.free, price:r.price, nim:r.nim, vendor:vendorOf(r.id) + ' · NVIDIA NIM' }));
+  if (!next.length) return;
+  MODELS = next;
+  modelsLoaded = true;
+  act('Model catalogue loaded: ' + or.length + ' OpenRouter + ' + nv.length + ' NVIDIA (' +
+      or.filter(r => r.free).length + ' free)');
+  await syncJudgeModels();
+  if (document.querySelector('.step-panel.active') &&
+      Number(document.querySelector('.step-panel.active').dataset.panel) === 4) renderModels();
+  renderModelTabs();
+}
+
+function cheapFilterOn(){
+  const cb = document.getElementById('cheapOnly');
+  return cb ? !!cb.checked : true;
+}
+function maxPriceCeiling(){
+  const el = document.getElementById('maxPrice');
+  const v = el ? parseFloat(el.value) : NaN;
+  return isNaN(v) ? BBModels.maxPriceDefault() : v;
+}
+function isCheapish(m){
+  if (m.nim) return true;                    // NVIDIA = free credit tier
+  if (m.free) return true;
+  if (m.price === null || m.price === undefined) return false;
+  return m.price <= maxPriceCeiling();
+}
+function filteredModels(){
+  const q  = (document.getElementById('modelFilter') || {}).value || '';
+  const pf = (document.getElementById('modelProviderFilter') || {}).value || '';
+  const ql = q.trim().toLowerCase();
+  const cheapOnly = cheapFilterOn();
+  const kept = MODELS.filter(m =>
+    (!pf || m.provider === pf) &&
+    (!ql || m.id.toLowerCase().indexOf(ql) !== -1) &&
+    (!cheapOnly || isCheapish(m))
+  );
+  kept.sort((a, b) => {
+    if (!!a.free !== !!b.free) return a.free ? -1 : 1;
+    const ap = a.price == null ? Infinity : a.price, bp = b.price == null ? Infinity : b.price;
+    return ap - bp || (a.id < b.id ? -1 : 1);
+  });
+  return kept;
+}
+function renderModelTabs(){ /* hook for future provider tabs */ }
 
 const SEED_LIBRARY = [
   { id:'s1', title:'Scam transfer in English', category:'fraud', pathway:'customer-facing', risk:'high', tags:['english','scam'] },
@@ -661,8 +730,8 @@ async function callModel(provider, modelId, messages, opts = {}){
   const key = keyFor(provider);
   if (!key) throw new Error(`No ${provider} API key set`);
   const url = provider === 'openrouter'
-    ? 'https://openrouter.ai/api/v1/chat/completions'
-    : 'https://integrate.api.nvidia.com/v1/chat/completions';
+      ? '/api/proxy?target=' + encodeURIComponent('https://openrouter.ai/api/v1/chat/completions')
+      : '/api/proxy?target=' + encodeURIComponent('https://integrate.api.nvidia.com/v1/chat/completions');
   const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer ' + key };
   if (provider === 'openrouter'){
     headers['HTTP-Referer'] = location.origin || 'https://bankbench.local';
@@ -1101,7 +1170,10 @@ function renderQualityCard(draft, draftIdx, orderIdx){
    ════════════════════════════════════════════════════════════ */
 function renderModels(){
   const grid = document.getElementById('modelGrid');
-  grid.innerHTML = MODELS.map(m => {
+  const rows = filteredModels();
+  const sum = document.getElementById('modelSummary');
+  if (sum) sum.textContent = state.flow.selectedModels.size + ' selected · ' + rows.length + ' shown' + (modelsLoaded ? '' : ' (loading live list…)');
+  grid.innerHTML = rows.map(m => {
     const key = m.provider + ':' + m.id;
     const sel = state.flow.selectedModels.has(key) ? 'selected' : '';
     const noKey = !keyFor(m.provider);
@@ -1547,7 +1619,30 @@ function loadSettings(){
   document.getElementById('keyOpenRouter').value = state.settings.openrouterKey || '';
   document.getElementById('keyNvidia').value     = state.settings.nvidiaKey || '';
   document.getElementById('judgeProvider').value = state.settings.judgeProvider || 'openrouter';
-  document.getElementById('judgeModel').value    = state.settings.judgeModel || 'openai/gpt-4o-mini';
+  syncJudgeModels();
+}
+async function syncJudgeModels(){
+  const sel = document.getElementById('judgeModel');
+  if (!sel || !window.BBModels) return;
+  const p   = document.getElementById('judgeProvider').value;
+  const key = p === 'nvidia' ? state.settings.nvidiaKey : state.settings.openrouterKey;
+  const want = state.settings.judgeModel || 'openai/gpt-4o-mini';
+  await BBModels.fill(sel, p, key, {
+    current: want, includeCustom: false,
+    onlyCheap: cheapFilterOn(), maxPrice: maxPriceCeiling()
+  });
+  const opts = Array.prototype.map.call(sel.options, o => o.value);
+  if (want && opts.indexOf(want) === -1){
+    const pick = opts.filter(Boolean)[0] || '';
+    if (pick){
+      sel.value = pick;
+      state.settings.judgeModel = pick;
+      act('Judge model "' + want + '" is retired — switched to ' + pick);
+    }
+  } else {
+    sel.value = want;
+  }
+  BBModels.bindFilter(document.getElementById('judgeFilter'), sel);
 }
 function saveSettingsFromForm(){
   state.settings.openrouterKey = document.getElementById('keyOpenRouter').value.trim();
@@ -1585,6 +1680,18 @@ function init(){
   });
 
   // Step 1
+  const jp = document.getElementById('judgeProvider');
+  if (jp) jp.addEventListener('change', async () => { await syncJudgeModels(); });
+  ['modelFilter','modelProviderFilter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderModels);
+  });
+  ['cheapOnly','maxPrice'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', async () => { await syncJudgeModels(); renderModels(); });
+  });
+  loadAllModels();
+
   document.getElementById('scoutBtn').addEventListener('click', scout);
   document.getElementById('promptInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') scout(); });
   document.querySelectorAll('#suggestions .chip').forEach(c => {

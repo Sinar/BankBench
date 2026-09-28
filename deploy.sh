@@ -7,14 +7,27 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-# Load Cloudflare creds from repo-root .env if present and not already set
-ROOT_ENV="$(dirname "$PWD")/.env"
+# Load Cloudflare creds from the repo-root .env if present and not already set.
+# FIX: this used to be `$(dirname "$PWD")/.env`, which resolved to the PARENT of
+# the repo (Antigravity/.env) — so the token in BankBench/.env was never loaded.
+ROOT_ENV="$PWD/.env"
 if [[ -f "$ROOT_ENV" ]]; then
   set -a
   # shellcheck disable=SC1090
   source "$ROOT_ENV" 2>/dev/null || true
   set +a
 fi
+
+# Keep the site/ mirror in sync with the source pages BEFORE assembling dist.
+# Edits to bankbench_my/*.html used to require a manual copy into site/, which
+# silently went stale and shipped old, non-proxied pages.
+mkdir -p site/bankbench_my
+for f in factory.html platform.html models.js; do
+  if [[ -f "bankbench_my/$f" ]]; then
+    cp "bankbench_my/$f" "site/bankbench_my/$f"
+    echo "synced site/bankbench_my/$f"
+  fi
+done
 
 OUT=dist
 rm -rf "$OUT" && mkdir -p "$OUT"
@@ -34,4 +47,7 @@ rm -rf "$OUT/outreach/ops/worker"
 mkdir -p "$OUT/outreach/uni"
 cp -R public/outreach/uni "$OUT/outreach/uni"
 
+# `functions/` is picked up automatically by `wrangler pages deploy` from the
+# current working directory — that is what serves /api/proxy on the Pages domain.
+echo "deploying Pages project bankbench-sinar (with functions/api/proxy.js)…"
 wrangler pages deploy "$OUT" --project-name bankbench-sinar
