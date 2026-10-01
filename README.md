@@ -4,7 +4,7 @@
 
 The migration plan this repo followed lives in the source repo's `MIGRATION_TO_SINAR.md` (private working repo, not part of this public one).
 
-**Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard.
+**Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard. The no-code eval console is live at [bankbench-sinar.pages.dev/bankbench_my/platform](https://bankbench-sinar.pages.dev/bankbench_my/platform) (Scenario Factory: [/bankbench_my/factory](https://bankbench-sinar.pages.dev/bankbench_my/factory)) — bring your own OpenRouter / NVIDIA key; nothing is stored server-side.
 
 ## What BankBench-MY is
 
@@ -18,7 +18,7 @@ One shared eval core (`bankbench_my/`), four applied surfaces built on top of it
 
 | Surface | Folder | What it adds |
 |---|---|---|
-| **BankBench itself** | `bankbench_my/`, `mybanksim/` | The scenarios, the Inspect AI task/scorer, and the live Cloudflare Worker sandbox that runs them |
+| **BankBench itself** | `bankbench_my/`, `mybanksim/` | The scenarios, the Inspect AI task/scorer, the live Cloudflare Worker sandbox that runs them, and the no-code eval console — `bankbench_my/platform.html` (Ask → Drafts → Quality → Run → Review) plus the Scenario Factory (`bankbench_my/factory.html`) |
 | **+ Scorecard** | `standard_scorecard/`, `dashboard/`, `eval-scorecard/` | A/B/C/D graded, versioned cross-model comparisons — benchmark-lifecycle framing (drift, deprecation, saturation). `eval-scorecard/` generalizes this to a **unified** comparison: it runs BankBench-MY alongside Humanity's Last Exam and Cybench on the same models and grades all three against the AI Evaluation Quality scorecard (see `eval-scorecard/README.md`). |
 | **+ Model** | `training-loop/` | The eval set becomes training data — fine-tune toward the behavior BankBench-MY measures, then re-measure it |
 | **+ Public Education** | `site/public-education/` | Plain-language consumer explainers built from the same findings. Includes an **interactive bilingual (EN/BM) demo** (`interactive.html`) — pick a real scam scenario, see safe vs. vulnerable AI behavior, and explore the evaluation data as charts — plus 1 live written explainer ("What Your Bank's AI Can and Can't Do") and 5 ghosted explainers in progress (authority scam, structuring fraud, Manglish-as-risk, rapport dilution, AI handoff) |
@@ -37,8 +37,14 @@ BankBench/
 │   └── workflows/deploy.yml   ← auto-deploy the site to Cloudflare Pages
 ├── diagrams/
 │   └── bankbench-meta-overview.svg
+├── wrangler.toml              ← Worker config for the API proxy (workers_dev; no pages.dev route)
+├── functions/
+│   └── api/proxy.js           ← Cloudflare Pages Function serving /api/proxy same-origin (the live path)
+├── workers/
+│   └── api-proxy.js           ← standalone Worker build of the same proxy, for its own workers.dev URL
 ├── site/                       ← the public-facing overview page (deployed to bankbench-sinar.pages.dev)
 │   ├── index.html              ← general landing page — NOT the raw training dashboard; links to Public Education surface
+│   ├── bankbench_my/           ← mirrored copy of the live eval console + factory pages (re-synced by deploy.sh)
 │   ├── training-loop-dashboard.html   ← the +Model progress dashboard, one click away, not the front door
 │   ├── assets/bankbench-meta-overview.svg
 │   ├── public-education/       ← the "+ Public Education" surface (live on the site)
@@ -56,6 +62,11 @@ BankBench/
 │       └── index.html          ← rendered bio at /bio/ (links from site nav)
 ├── bankbench_my/               ← the eval core
 │   ├── bankbench_eval.py       ← canonical Inspect AI task (from bankbench/3-4 LLM_scorecard/)
+│   ├── platform.html           ← LIVE: no-code eval console — Ask → Drafts → Quality → Run → Review
+│   ├── factory.html            ← LIVE: Scenario Factory — prompt a category, dedup vs. library, run matrix
+│   ├── models.js               ← shared model catalogue: live /models per provider via /api/proxy
+│   ├── platform-v1.html        ← v1 variant of the console (tabbed views) — October scope
+│   ├── factory-v1.html         ← v1 variant of the factory (tabbed views) — October scope
 │   ├── scenarios/
 │   │   └── bankbench-20-tasks.json   ← canonical dataset (from bankbench/bankbench_tasks.json)
 │   ├── tamperbank/             ← TamperBank scorecard: validity notebooks, live runner, dashboard builder
@@ -70,7 +81,8 @@ BankBench/
 │   └── outreach/
 │       ├── idfr-diplomacy/     ← IDFR diplomacy book work (Ch.5, TOC, OCR text, RAG worker)
 │       ├── AISA/               ← idea pitch for an AI safety project in Malaysia
-│       └── ops/                ← Operational Integrity Evals outreach site (v0.1 skeleton + demo)
+│       ├── ops/                ← Operational Integrity Evals outreach site (v0.1 skeleton + live eval console demo)
+│       └── uni/                ← CETALab Uni outreach: bilingual rater + dashboard for the RKFF 0413 pilot, plus 5 exercise pages
 ├── src/                        ← cetalabs.html (Cetalabs-branded site)
 └── jobs/                       ← Harbor run output (2026-09-11)
 ```
@@ -90,7 +102,8 @@ A week-by-week record of what actually landed on `main`, dated by author date. W
 | Month | What landed |
 |---|---|
 | **August 2026** | Repo cut from the private working repo; meta-overview + diagram; `bankbench_my/` eval core; `training-loop/` S-01→S-05 scaffolding; unified `eval-scorecard/` (BankBench-MY vs HLE vs Cybench); live site + GitHub Action auto-deploy; Public Education surface (1 live + 5 ghosted explainers, bilingual interactive demo); fellow bio; IDFR diplomacy book backup; Open Finance research log |
-| **September 2026** | TamperBank scorecard (3 open-weight models, 20 tamper scenarios + 2 controls); open-weight safety guidance article + five-part series draft; `3-4_LLM_tamper_harbor` Harbor merge into `bankbench_my/`; folder reorganisation; IDFR Ch.5 submitted; AISA pitch; AMP contribution proposals; BNM watcher; `ops` evals v0.1 skeleton |
+| **September 2026** | TamperBank scorecard (3 open-weight models, 20 tamper scenarios + 2 controls); open-weight safety guidance article + five-part series draft; `3-4_LLM_tamper_harbor` Harbor merge into `bankbench_my/`; folder reorganisation; IDFR Ch.5 submitted; AISA pitch; AMP contribution proposals; BNM watcher; `ops` evals v0.1 skeleton; CETALab Uni rater + RKFF 0413 outreach pages; live no-code eval console + Scenario Factory; same-origin Pages Function API proxy and live model catalogue |
+| **October 2026** | v1 tabbed variants of the eval console and factory (`platform-v1.html`, `factory-v1.html`) staged |
 
 ### Week of 3–9 Aug 2026 — the repo cut
 
@@ -142,10 +155,32 @@ No commits. Two weeks with no activity on `main`.
 - **Sep 16** — AMP contribution proposals and roadmap (agentic-payment assurance artifacts, not SDK code) → `bankbench_my/research/amp.md`.
 - **Sep 16** — BNM watcher script documentation → `bankbench_my/research/bnm-watch.md`.
 - **Sep 16** — `ops` evals v0.1 skeleton for public: the Operational Integrity Evals outreach site, with a working harness-delta demo and ghosted Phase 1 screens → `public/outreach/ops/`, plus `src/cetalabs.html`.
+- **Sep 16** — the weekly log itself starts: first "weekly logs of this repo" commit, which the Progress log below continues.
+
+**Sep 18 — university rater and the uni outreach pages** *(added late — this week's Sep 18 work was missed in the first pass)*
+
+- `public/outreach/uni/`: CETALab Uni outreach set deployed to Cloudflare Pages — the bilingual rater guide + dashboard (`rate-dashboard.html`, `rater.html`, `rater-only.html`) for the RKFF 0413 pilot, and five exercise pages (Pull It Apart, The Receipt / claim-check, The Shift / inspect, Build the Scorer, The Confidence Meter / spectrum + agent-spectrum).
+- IIUM pass on the rater flow: inspect the LLM outputs, score-your-LLM exercise, LLM exercise where a result is broken apart, and the IIUM rater dashboard + guide.
+- Deploy fix: nested uni pages were being copied to `uni/uni` — corrected so they land under `outreach/uni/`.
+
+### Week of 21–27 Sep 2026 — rater questions reworked
+
+- **Sep 23** — the 10 rater questions rewritten to run against real LLM models rather than fixed text, with the pre-/post-test pair dropped so the rater flow stands on its own.
+- **Sep 23** — responses shortened per prompt; truncated outputs refined; links back to the header restored.
+- **Sep 23** — Google Sheets submission refactored and synced with the pre-/post-test removal.
+
+### Week of 28 Sep – 4 Oct 2026 — the eval tool goes live
+
+- **Sep 28** — **live no-code eval console** (`bankbench_my/platform.html`): a five-step flow — Ask (a category in plain language, checked against what you already have) → Drafts (each shaped like an Inspect test) → Quality (scored on the five AI Evaluation Quality dimensions) → Run (3–5 models against every selected test) → Review (full answers hidden by default). Provider keys stay on the user's machine.
+- **Sep 28** — **Scenario Factory** (`bankbench_my/factory.html`): prompt a scenario category, dedup the result against the existing library, then run a matrix of approved scenarios × models × trials × registers.
+- **Sep 28** — `bankbench_my/models.js`: shared model catalogue that fetches each provider's live `/models` list through `/api/proxy`, so a retired model id can never be offered again; OpenRouter filtered to cheap/free models with a price cap.
+- **Sep 28** — API proxy moved from a Worker route to a **Cloudflare Pages Function** (`functions/api/proxy.js`): a Worker route cannot attach to the shared `pages.dev` zone, so `workers/api-proxy.js` never received `/api/proxy/*` traffic. The Function is same-origin, enforces a target-host allow-list (`integrate.api.nvidia.com`, `openrouter.ai`), and forwards only named headers instead of the whole inbound set. Malformed API keys — including ones carrying invisible characters — now surface as an explicit 401 instead of a silent failure.
+- **Sep 28** — `deploy.sh` fix: it was sourcing `.env` from the *parent* of the repo (`Antigravity/.env`), so the token in `BankBench/.env` was never loaded; it now loads `BankBench/.env` and mirrors `bankbench_my/*.html` + `models.js` into `site/` before assembling `dist/`, so the deployed Pages copy can no longer go stale.
+- **Oct (staged)** — `bankbench_my/platform-v1.html` and `factory-v1.html`: v1 variants adding tabbed views (Factory / library / runs) for the October scope.
 
 ### What the log shows
 
-Two things worth reading off the dates rather than the file tree: the work is **bursty** — one very heavy week in mid-August, a two-week gap, then a steady September — and it is **multi-surface by design**, with the eval core, the scorecard, the training loop, and the public-facing writing all moving in the same period rather than one after another.
+Three things worth reading off the dates rather than the file tree: the work is **bursty** — one very heavy week in mid-August, a two-week gap, then a steady September — and it is **multi-surface by design**, with the eval core, the scorecard, the training loop, and the public-facing writing all moving in the same period rather than one after another. The third is the turn at the end of September: the repo stops being only static pages and documents and grows a **live, bring-your-own-key eval console**, which is the first thing here a third party can run themselves without cloning anything.
 
 ## Usage / How to contribute
 
