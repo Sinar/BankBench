@@ -22,7 +22,7 @@ fi
 # Edits to bankbench_my/*.html used to require a manual copy into site/, which
 # silently went stale and shipped old, non-proxied pages.
 mkdir -p site/bankbench_my
-for f in factory.html platform.html models.js; do
+for f in factory.html factory-v1.html platform.html platform-v1.html models.js; do
   if [[ -f "bankbench_my/$f" ]]; then
     cp "bankbench_my/$f" "site/bankbench_my/$f"
     echo "synced site/bankbench_my/$f"
@@ -49,5 +49,14 @@ cp -R public/outreach/uni "$OUT/outreach/uni"
 
 # `functions/` is picked up automatically by `wrangler pages deploy` from the
 # current working directory — that is what serves /api/proxy on the Pages domain.
+#
+# `--stage-only` assembles site/ + dist/ and stops before publishing, so a
+# review pass can inspect exactly what would ship.
+if [[ "${1:-}" == "--stage-only" ]]; then
+  echo "staged only — dist/ assembled, wrangler NOT run"
+  echo "would run: wrangler pages deploy dist --project-name bankbench-sinar"
+  exit 0
+fi
+
 echo "deploying Pages project bankbench-sinar (with functions/api/proxy.js)…"
 wrangler pages deploy "$OUT" --project-name bankbench-sinar
