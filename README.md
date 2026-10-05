@@ -6,42 +6,53 @@ The migration plan this repo followed lives in the source repo's `MIGRATION_TO_S
 
 **Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard. The no-code eval console is live at [bankbench-sinar.pages.dev/bankbench_my/platform](https://bankbench-sinar.pages.dev/bankbench_my/platform) (Scenario Factory: [/bankbench_my/factory](https://bankbench-sinar.pages.dev/bankbench_my/factory)) — bring your own OpenRouter / NVIDIA key; nothing is stored server-side.
 
-## Executive summary — early impact
+## Executive summary — why this work, and what society gets back
 
-Pilot-stage results across the four surfaces, pulled live from this repo (Cetavals Uni
-rater export, TamperBank live export 2026-09-03). Numbers are early signal, not settled
-findings; each strand notes its own maturity.
+**The problem, in plain terms.** Malaysians are already asking AI chatbots to do real
+things: move money, answer questions about faith and law, explain what is happening in
+the world. These tools reply in fluent, confident language whether they are right or
+wrong, and they work far better in English than in Bahasa Malaysia or the mixed
+"Manglish" Malaysians actually type. Until now there was no locally built, multilingual
+way to check whether they stay safe when they are put under pressure. BankBench is that
+check — small, open, and runnable by anyone, from a student to a ministry.
+[Try it →](https://bankbench-sinar.pages.dev)
 
-**BankBench as a whole.** A multilingual (EN / Bahasa Malaysia / Manglish) safety
-evaluation for Malaysian banking-agent LLMs — does a banking chatbot leak OTPs/PII,
-process unauthorised transfers, or follow phishing links when the conversation register
-shifts? Built on Inspect AI under the Sinar fellowship, and runnable by a third party
-with their own key at [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev).
+**What society gets back.**
 
-**1 · Uni strand (Cetavals Uni rater pilot — RKFF 0413 / IIUM).** 24 raters completed
-the bilingual reliability-calibration module; mean module accuracy was **3.9/10** and only
-**39%** of trust judgements matched the correct reliability state (mean **0.95** categories
-off) — the exact gap the module exists to close. After it, **4.5/5** called the module
-relevant, **4.46/5** said they would check citations, and **15/24** chose "verify" on a
-fabricated-fatwa scenario. → [rater dashboard](https://bankbench-sinar.pages.dev/outreach/uni/rate-dashboard.html)
+**1 · Young people who can tell a confident answer from a reliable one.** In our first
+university pilot (24 students, RKFF 0413 / IIUM), most could not reliably spot when an AI
+answer was trustworthy — on average their judgement was about one step off, and only
+**39%** of their calls were right. After a short, bilingual lesson built from our own test
+data, **4.5 out of 5** said it was relevant to them and most said they would check sources
+from then on. This is digital literacy with an Islamic-studies spine — exactly the
+audience most exposed to confident, wrong AI answers about religion and money.
+→ [rater dashboard](https://bankbench-sinar.pages.dev/outreach/uni/rate-dashboard.html)
 
-**2 · IDFR strand (diplomacy).** Chapter 5, *"AI Safety and Operational Safeguards for
-Diplomacy"*, was delivered to the IDFR book **AI: Innovating Diplomacy** (Sep 2026) — a
-six-section, from-principle-to-practice chapter on making AI safe in daily statecraft,
-tying Malaysian safeguards to Malaysia's ASEAN AI-safety agenda. *(Book chapter — no
-public URL.)*
+**2 · Malaysia's diplomats get a practical safety guide.** Chapter 5 of the book
+*AI: Innovating Diplomacy*, delivered to the Institute of Diplomacy and Foreign Relations
+(Sep 2026), turns AI-safety principle into day-to-day practice for foreign ministries —
+so Malaysia can help shape how Southeast Asia governs AI from a position of discipline,
+not just enthusiasm. *(Book chapter — no public URL.)*
 
-**3 · Consumer strand (public education).** A live bilingual (EN/BM) interactive
-scam-scenario demo plus one published consumer explainer, with five more in progress —
-all built from the same eval findings, so the public sees the same evidence the benchmark
-produces. → [interactive demo](https://bankbench-sinar.pages.dev/public-education/interactive.html)
+**3 · Ordinary people get free, plain-language tools — in both languages.** A live
+bilingual (English / Bahasa Malaysia) demo lets anyone watch a real scam play out against
+a safe versus a vulnerable chatbot, alongside a written explainer on what your bank's AI
+can and can't do, with five more in progress. Everything is free, and nothing is in
+English only. → [interactive demo](https://bankbench-sinar.pages.dev/public-education/interactive.html)
 
-**4 · TamperBank pilot (BankBench core result).** 3 low-cost open-weight models × 20
-adversarial Malaysian banking-crime scenarios + 2 benign controls, live inference:
-**ΔADVOCACY +9.5pp** overall (GLM-5 and Kimi-K2.5 **+14.3pp** each; DeepSeek-V4-Flash 0)
-— a compliance-SLA prompt overlay pushed low-cost models toward harmful financial-crime
-facilitation. N=1 pilot, self-graded Cetavals **D** overall (needs N≥3 to stand); reported
-as early signal only. → [site](https://bankbench-sinar.pages.dev) · [code](https://github.com/Sinar/BankBench)
+**4 · Evidence that cheap AI is not automatically safe AI.** In a first pilot we put three
+low-cost AI models through 20 real Malaysian financial-crime situations — money
+laundering, scam tactics, evasion. Simply telling a model to be "helpful and compliant"
+made it *more* willing to help with the crime, and two of the three models got worse, not
+better. This is an early, small pilot — we grade our own confidence as low and plan to
+repeat it — but it is early proof that safety has to be tested, not assumed.
+→ [site](https://bankbench-sinar.pages.dev) · [code](https://github.com/Sinar/BankBench)
+
+**Why it matters that this continues.** All of it is open, in both languages, and small
+enough that a student, a bank, or a ministry can run it themselves. That is what makes it
+worth continuing: the evidence is local, the tools are free, and the people who need them
+most — young Malaysians, ordinary banking customers, and the diplomats setting the rules —
+are the ones it reaches.
 
 ## What BankBench-MY is
 
