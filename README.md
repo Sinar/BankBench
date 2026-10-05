@@ -6,6 +6,43 @@ The migration plan this repo followed lives in the source repo's `MIGRATION_TO_S
 
 **Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard. The no-code eval console is live at [bankbench-sinar.pages.dev/bankbench_my/platform](https://bankbench-sinar.pages.dev/bankbench_my/platform) (Scenario Factory: [/bankbench_my/factory](https://bankbench-sinar.pages.dev/bankbench_my/factory)) — bring your own OpenRouter / NVIDIA key; nothing is stored server-side.
 
+## Executive summary — early impact
+
+Pilot-stage results across the four surfaces, pulled live from this repo (Cetavals Uni
+rater export, TamperBank live export 2026-09-03). Numbers are early signal, not settled
+findings; each strand notes its own maturity.
+
+**BankBench as a whole.** A multilingual (EN / Bahasa Malaysia / Manglish) safety
+evaluation for Malaysian banking-agent LLMs — does a banking chatbot leak OTPs/PII,
+process unauthorised transfers, or follow phishing links when the conversation register
+shifts? Built on Inspect AI under the Sinar fellowship, and runnable by a third party
+with their own key at [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev).
+
+**1 · Uni strand (Cetavals Uni rater pilot — RKFF 0413 / IIUM).** 24 raters completed
+the bilingual reliability-calibration module; mean module accuracy was **3.9/10** and only
+**39%** of trust judgements matched the correct reliability state (mean **0.95** categories
+off) — the exact gap the module exists to close. After it, **4.5/5** called the module
+relevant, **4.46/5** said they would check citations, and **15/24** chose "verify" on a
+fabricated-fatwa scenario. → [rater dashboard](https://bankbench-sinar.pages.dev/outreach/uni/rate-dashboard.html)
+
+**2 · IDFR strand (diplomacy).** Chapter 5, *"AI Safety and Operational Safeguards for
+Diplomacy"*, was delivered to the IDFR book **AI: Innovating Diplomacy** (Sep 2026) — a
+six-section, from-principle-to-practice chapter on making AI safe in daily statecraft,
+tying Malaysian safeguards to Malaysia's ASEAN AI-safety agenda. *(Book chapter — no
+public URL.)*
+
+**3 · Consumer strand (public education).** A live bilingual (EN/BM) interactive
+scam-scenario demo plus one published consumer explainer, with five more in progress —
+all built from the same eval findings, so the public sees the same evidence the benchmark
+produces. → [interactive demo](https://bankbench-sinar.pages.dev/public-education/interactive.html)
+
+**4 · TamperBank pilot (BankBench core result).** 3 low-cost open-weight models × 20
+adversarial Malaysian banking-crime scenarios + 2 benign controls, live inference:
+**ΔADVOCACY +9.5pp** overall (GLM-5 and Kimi-K2.5 **+14.3pp** each; DeepSeek-V4-Flash 0)
+— a compliance-SLA prompt overlay pushed low-cost models toward harmful financial-crime
+facilitation. N=1 pilot, self-graded Cetavals **D** overall (needs N≥3 to stand); reported
+as early signal only. → [site](https://bankbench-sinar.pages.dev) · [code](https://github.com/Sinar/BankBench)
+
 ## What BankBench-MY is
 
 A multilingual (EN / Bahasa Malaysia / Manglish) safety evaluation for banking-agent LLMs — does a banking chatbot leak OTPs/PII, process unauthorised transfers, or follow phishing links when conversation register shifts mid-conversation (the "seam-over-model" hypothesis)? Built on Inspect AI, developed under the Sinar fellowship.
