@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CETALab Uni — ICFSE 2026 Poster (A3 · ID 013)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #14181d;
+    --ink-soft: #3a4048;
+    --muted: #6b7280;
+    --line: #d9d4cb;
+    --paper: #f5f2ec;
+    --card: #ffffff;
+    --danger: #a02c1f;
+    --danger-soft: #e8cec9;
+    --warn: #b8860b;
+    --warn-soft: #f0e2bf;
+    --blue: #35597a;
+    --blue-soft: #d6e0ea;
+    --green: #2a7a2a;
+    --green-soft: #d4e6d4;
+    --accent: #0f3d3e;
+    --a3-scale: 1;
+  }
+
+  html { font-size: 15px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+    background: #dedad2;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 16px 60px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ============ PAGE FRAME (normal screen view = transparent) ============ */
+  .page-frame {
+    width: 100%;
+    max-width: 1122px;
+  }
+
+  .poster {
+    width: 100%;
+    max-width: 1122px;
+    background: var(--paper);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ============ TEMPLATE TOP STRIP (header) ============ */
+  .template-top {
+    background: linear-gradient(90deg, #8a1f14 0%, #b8860b 50%, #2a5a2a 100%);
+    color: #fff;
+    padding: 9px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .template-top .tt-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .template-top .tt-conf { white-space: nowrap; }
+  .template-top .tt-sep {
+    width: 1px; height: 11px;
+    background: rgba(255,255,255,0.55);
+    flex-shrink: 0;
+  }
+  .template-top .tt-title {
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.95);
+    font-weight: 700;
+    min-width: 0;
+  }
+  .template-top .tt-id {
+    background: rgba(0,0,0,0.28);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ============ DARK HERO HEADER ============ */
+  .header {
+    background: var(--ink);
+    color: #fff;
+    padding: 32px 40px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, rgba(214,224,234,0.10) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 40px; right: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--danger) 0%, var(--warn) 33%, var(--green) 66%, var(--blue) 100%);
+  }
+  .conf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #a8b2bc;
+    margin-bottom: 14px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+  }
+  .conf-badge::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--warn);
+    border-radius: 50%;
+  }
+  h1.title {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    max-width: 900px;
+  }
+  h1.title .accent { color: #8ab88a; }
+  .subtitle {
+    font-size: 14px;
+    line-height: 1.45;
+    color: #b8c0c8;
+    max-width: 780px;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: baseline;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: #8a949c;
+    border-top: 1px solid #2a2e34;
+    padding-top: 14px;
+  }
+  .byline .authors { color: #e8ebee; font-weight: 600; font-size: 12px; }
+  .byline .inst { font-family: "SF Mono", "Monaco", monospace; font-size: 10px; }
+
+  /* HERO STAT */
+  .hero-stat {
+    background: var(--danger);
+    color: #fff;
+    padding: 22px 40px;
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .hero-stat .hs-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .hero-stat .hs-label strong {
+    display: block;
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+  .hero-stat .hs-content {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .hero-stat .hs-number {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .hero-stat .hs-desc {
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.92);
+    max-width: 640px;
+    font-weight: 500;
+  }
+  .hero-stat .hs-desc em {
+    font-style: normal;
+    color: #fff;
+    font-weight: 700;
+    background: rgba(0,0,0,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* FACT STRIP */
+  .fact-strip {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 40px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+  .fact-strip .fact {
+    padding: 0 14px;
+    border-right: 1px solid var(--line);
+    text-align: center;
+  }
+  .fact-strip .fact:last-child { border-right: none; }
+  .fact-strip .fact .f-num {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-family: "SF Mono", "Monaco", monospace;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .fact-strip .fact .f-num .small {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .fact-strip .fact .f-lbl {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* BANNER */
+  .banner-band {
+    background: linear-gradient(90deg, #e8cec9 0%, #f0e2bf 50%, #d4e6d4 100%);
+    padding: 11px 40px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .banner-band .bb-kicker {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .banner-band .bb-rule {
+    flex: 1;
+    height: 1px;
+    background: rgba(20,24,29,0.2);
+  }
+  .banner-band h2 {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  /* TWO COLUMNS */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .col { padding: 26px 32px 32px; }
+  .col-left { border-right: 1px solid var(--line); }
+
+  /* MAIN SECTION */
+  .main-section { margin-bottom: 22px; }
+  .main-section:last-child { margin-bottom: 0; }
+
+  .main-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--ink);
+  }
+  .main-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: #fff;
+    background: var(--ink);
+    letter-spacing: 0.1em;
+    padding: 3px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .main-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--ink);
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  /* SUBHEADING */
+  .sub-section {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+  .sub-section:first-of-type {
+    margin-top: 6px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .sub-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .sub-letter {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--danger);
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+  }
+  .sub-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    line-height: 1.25;
+    flex: 1;
+    min-width: 0;
+  }
+  .ro-tag {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: #e8f0e8;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* BODY TEXT */
+  .body-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .body-text p { margin-bottom: 8px; }
+  .body-text p:last-child { margin-bottom: 0; }
+  .body-text strong { color: var(--ink); font-weight: 700; }
+  .body-text em { font-style: italic; color: var(--ink); }
+  .body-text .cite {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* OBJECTIVES LIST */
+  .obj-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .obj-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 9px;
+    align-items: start;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .obj-item .oi-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9.5px;
+    font-weight: 800;
+    color: var(--danger);
+    letter-spacing: 0.06em;
+    padding-top: 2px;
+  }
+  .obj-item strong { color: var(--ink); font-weight: 700; }
+
+  /* MINI STATS */
+  .mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .mini-stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 12px;
+  }
+  .mini-stat .ms-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--danger);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .mini-stat .ms-lbl {
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* EPISTEMIC LADDER */
+  .ladder-panel {
+    margin-top: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 15px 12px;
+  }
+  .ladder-panel .lp-label {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .ladder-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .lad-seg {
+    padding: 10px 4px 9px;
+    text-align: center;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .lad-seg:first-child { border-radius: 8px 3px 3px 8px; }
+  .lad-seg:last-child { border-radius: 3px 8px 8px 3px; }
+  .lad-seg .lad-arabic {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    opacity: 0.9;
+  }
+  .lad-seg .lad-name {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  .lad-wahm { background: var(--danger); }
+  .lad-shak { background: var(--blue); }
+  .lad-zann { background: var(--warn); }
+  .lad-yaqeen { background: var(--green); }
+
+  .ladder-captions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .ladder-captions span {
+    font-size: 8.5px;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 0 2px;
+  }
+  .ladder-axis {
+    text-align: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+  }
+
+  /* METHODOLOGY TABLE */
+  .method-table {
+    border-radius: 9px;
+    overflow: hidden;
+    margin-top: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .method-row {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    border-bottom: 1px solid var(--paper);
+  }
+  .method-row:last-child { border-bottom: none; }
+  .method-row .mr-label {
+    background: var(--ink);
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: "SF Mono", "Monaco", monospace;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+  }
+  .method-row .mr-value {
+    background: var(--card);
+    padding: 8px 12px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+  }
+  .method-row .mr-value strong { color: var(--ink); font-weight: 700; }
+  .method-row:nth-child(even) .mr-label { background: var(--accent); }
+  .method-row:nth-child(even) .mr-value { background: #ebeee9; }
+
+  /* LLM PANEL */
+  .llm-panel {
+    background: var(--ink);
+    color: #d8d3c8;
+    border-radius: 10px;
+    padding: 13px 15px 11px;
+    margin-top: 3px;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .llm-panel .lp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a8378;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #3a3632;
+  }
+  .llm-panel .lp-head .lp-tag {
+    background: #3a3632;
+    color: #c5c0ba;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    font-size: 8px;
+  }
+  .llm-vendor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px 10px;
+    margin-bottom: 10px;
+  }
+  .llm-vendor { font-size: 9.5px; line-height: 1.45; }
+  .llm-vendor .lv-name {
+    color: #e0c88a;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: 8.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .llm-vendor .lv-model {
+    color: #c5c0ba;
+    font-size: 9px;
+    word-break: break-all;
+  }
+  .llm-prompt {
+    background: #2a2a28;
+    border-left: 3px solid #8ab88a;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #c5c0ba;
+  }
+  .llm-prompt .lpr-label {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a8378;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .llm-prompt .lpr-body { color: #e8e3d8; font-style: italic; }
+
+  /* HOW WE MEASURE — EXAMPLE PANEL */
+  .example-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .example-head {
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .example-head .eh-q {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: #e8a8a8;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+  .example-head .eh-prompt {
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #e8ebee;
+    flex: 1;
+    min-width: 0;
+  }
+  .runs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 12px 12px 10px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .run-mini {
+    background: #faf8f4;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 9px;
+    position: relative;
+  }
+  .run-mini .rm-label {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .run-mini .rm-text {
+    font-size: 9.5px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .run-mini .rm-tag {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: var(--danger-soft);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .example-verdict {
+    padding: 10px 14px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ev-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ev-block .ev-label {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+  .ev-block .ev-value {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  .ev-value.ev-wahm { background: var(--danger-soft); color: var(--danger); }
+  .ev-value.ev-pct { background: var(--ink); color: #fff; }
+
+  .why-runs {
+    background: var(--paper);
+    border-top: 1px dashed var(--line);
+    padding: 10px 14px 12px;
+    font-size: 10.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .why-runs .wr-label {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--danger);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .why-runs strong { color: var(--ink); font-weight: 800; }
+  .why-runs em {
+    font-style: normal;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--danger-soft);
+    color: var(--danger);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* REFERENCES — NEAT */
+  .refs-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .ref-compact {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    align-items: start;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 13px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .ref-compact .rc-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--danger);
+    letter-spacing: -0.02em;
+    padding-top: 1px;
+  }
+  .ref-compact strong { color: var(--ink); font-weight: 700; }
+  .ref-compact em { font-style: italic; }
+
+  /* KEY FINDING CARD */
+  .key-finding {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 15px 13px;
+    margin-top: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--danger);
+  }
+  .kf-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-bottom: 6px;
+  }
+  .kf-headline .kf-mult {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--danger);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .kf-headline .kf-mult-lbl {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .kf-caption {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .qcompare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .qbar { text-align: center; }
+  .qbar .qb-pct {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+  }
+  .qbar.q6 .qb-pct { color: var(--danger); }
+  .qbar.q9 .qb-pct { color: var(--green); }
+  .qbar .qb-track {
+    height: 86px;
+    background: var(--paper);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .qbar .qb-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    border-radius: 6px 6px 0 0;
+  }
+  .qbar.q6 .qb-fill { background: var(--danger); }
+  .qbar.q9 .qb-fill { background: var(--green); }
+  .qbar .qb-label {
+    margin-top: 6px;
+    font-size: 9.5px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .qbar .qb-label .qid {
+    display: block;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .kf-explain {
+    background: var(--paper);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--danger);
+  }
+  .kf-explain strong { color: var(--ink); font-weight: 700; }
+
+  /* CATEGORY BARS */
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 8px;
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: 105px 1fr 44px;
+    gap: 10px;
+    align-items: center;
+    font-size: 10.5px;
+  }
+  .cat-row .cat-name {
+    font-size: 10px;
+    line-height: 1.25;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .cat-row .cat-name strong {
+    display: block;
+    font-weight: 800;
+    color: var(--ink);
+    font-size: 10.5px;
+    margin-bottom: 1px;
+  }
+  .cat-row .cat-bar-wrap {
+    height: 14px;
+    background: var(--paper);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .cat-row .cat-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--muted);
+  }
+  .cat-row.weakest .cat-bar { background: var(--danger); }
+  .cat-row.weak .cat-bar { background: var(--warn); }
+  .cat-row.mid .cat-bar { background: var(--blue); }
+  .cat-row.strong .cat-bar { background: var(--green); }
+  .cat-row .cat-val {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: right;
+    color: var(--ink);
+  }
+  .cat-row.weakest .cat-val { color: var(--danger); }
+
+  .cat-note {
+    margin-top: 8px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .cat-note strong { color: var(--ink); font-style: normal; }
+
+  /* LLM RESULTS TABLE */
+  .llm-results {
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--card);
+    margin-top: 3px;
+  }
+  .llm-results-head {
+    display: grid;
+    grid-template-columns: 24px 1fr 50px 1fr 34px;
+    gap: 7px;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--ink);
+    color: #8a8378;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .llm-row {
+    display: grid;
+    grid-template-columns: 24px 1fr 50px 1fr 34px;
+    gap: 7px;
+    align-items: center;
+    padding: 5px 10px;
+    border-bottom: 1px solid #f0ece4;
+    font-size: 9.5px;
+  }
+  .llm-row:last-child { border-bottom: none; }
+  .llm-row.flagged { background: #fdf3f0; }
+  .llm-q {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .llm-row.flagged .llm-q { color: var(--danger); }
+  .llm-model {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    color: var(--ink-soft);
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .llm-row.flagged .llm-model { color: var(--ink); font-weight: 700; }
+  .llm-state {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 2px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .llm-state.s-yaqeen { background: var(--green-soft); color: var(--green); }
+  .llm-state.s-zann   { background: var(--warn-soft);  color: var(--warn); }
+  .llm-state.s-shak   { background: var(--blue-soft);  color: var(--blue); }
+  .llm-state.s-wahm   { background: var(--danger-soft); color: var(--danger); }
+  .llm-track {
+    height: 10px;
+    background: var(--paper);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .llm-fill { height: 100%; border-radius: 2px; }
+  .llm-row .llm-fill.s-yaqeen { background: var(--green); }
+  .llm-row .llm-fill.s-zann   { background: var(--warn); }
+  .llm-row .llm-fill.s-shak   { background: var(--blue); }
+  .llm-row .llm-fill.s-wahm   { background: var(--danger); }
+  .llm-pct {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--ink);
+    text-align: right;
+    letter-spacing: -0.02em;
+  }
+  .llm-row.flagged .llm-pct { color: var(--danger); }
+
+  .llm-takeaway {
+    background: var(--ink);
+    color: #d8e2ec;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+  .llm-takeaway strong { color: #fff; font-weight: 800; }
+  .llm-takeaway em {
+    color: #e0c88a; font-style: normal;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  /* DIRECTION OF ERROR */
+  .dir-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 15px 11px;
+    margin-top: 3px;
+  }
+  .dir-panel .dp-head {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .dir-bar {
+    display: flex;
+    height: 36px;
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    margin-bottom: 5px;
+  }
+  .dir-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .dir-seg.ds-over { background: var(--danger); }
+  .dir-seg.ds-correct { background: var(--ink); }
+  .dir-seg.ds-under { background: var(--green); }
+  .dir-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    text-align: center;
+  }
+  .dir-note {
+    margin-top: 10px;
+    padding-top: 9px;
+    border-top: 1px dashed var(--line);
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .dir-note strong { color: var(--danger); font-weight: 800; }
+
+  /* PERCEPTION BARS */
+  .percept-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 15px 12px;
+    margin-top: 3px;
+  }
+  .percept-panel .pp-head {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 800;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .percept-panel .pp-head .pp-note {
+    font-size: 8.5px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    font-style: italic;
+  }
+  .percept-row {
+    display: grid;
+    grid-template-columns: 1fr 40px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .percept-row:last-child { margin-bottom: 0; }
+  .percept-row .pc-label {
+    font-size: 10.5px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .percept-row .pc-bar {
+    height: 10px;
+    background: var(--paper);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .percept-row .pc-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .pc-fill.green { background: var(--green); }
+  .pc-fill.blue  { background: var(--blue); }
+  .pc-fill.amber { background: var(--warn); }
+  .percept-row .pc-val {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: right;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .percept-row .pc-val.green { color: var(--green); }
+  .percept-row .pc-val.blue  { color: var(--blue); }
+  .percept-row .pc-val.amber { color: var(--warn); }
+
+  /* PRACTICALITY + CTA */
+  .impact-cta-card {
+    margin-top: 3px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .practical-body { padding: 13px 15px 10px; background: var(--card); }
+  .practical-body .pb-text {
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .practical-body .pb-text strong { color: var(--ink); font-weight: 700; }
+
+  .impact-label {
+    text-align: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .impact-headline {
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .impact-fan {
+    position: relative;
+    height: 128px;
+    margin: 0 auto;
+    max-width: 300px;
+  }
+  .fan-card {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 54px;
+    height: 96px;
+    margin-left: -27px;
+    transform-origin: 50% 100%;
+    border-radius: 9px 9px 3px 3px;
+    padding: 9px 4px 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    font-size: 8.5px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.14);
+  }
+  .fan-c1 { transform: rotate(-64deg); background: var(--blue); }
+  .fan-c2 { transform: rotate(-32deg); background: var(--warn); }
+  .fan-c3 { transform: rotate(0deg);   background: var(--danger); }
+  .fan-c4 { transform: rotate(32deg);  background: var(--green); }
+  .fan-c5 { transform: rotate(64deg);  background: var(--accent); }
+
+  .cta-inline {
+    border-top: 2px dashed var(--line);
+    padding: 11px 15px 13px;
+    background: linear-gradient(180deg, #fff 0%, #faf6ea 100%);
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .cta-qr { text-align: center; }
+  .cta-qr img {
+    width: 92px;
+    height: 92px;
+    display: block;
+    border: 3px solid var(--ink);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .cta-qr .qr-label {
+    margin-top: 4px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .cta-body { min-width: 0; }
+  .cta-kicker {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--danger);
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+  .cta-headline {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+  .cta-headline em {
+    font-style: normal;
+    color: var(--danger);
+    background: var(--danger-soft);
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .cta-dare {
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 7px;
+  }
+  .cta-dare strong { color: var(--ink); font-weight: 800; }
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--ink);
+    color: #fff;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    word-break: break-all;
+    max-width: 100%;
+    line-height: 1.35;
+  }
+  .cta-note {
+    margin-top: 6px;
+    font-size: 8px;
+    color: var(--muted);
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    margin-top: 12px;
+    padding: 11px 13px 10px 15px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 8px;
+    position: relative;
+  }
+  .pull-quote::before {
+    content: "\201C";
+    position: absolute;
+    top: 3px; left: 6px;
+    font-size: 34px;
+    line-height: 0.8;
+    color: var(--warn);
+    font-family: Georgia, serif;
+    opacity: 0.7;
+  }
+  .pull-quote .pq-text {
+    font-size: 11px;
+    line-height: 1.5;
+    font-style: italic;
+    color: #e8ebee;
+    padding-left: 18px;
+    margin-bottom: 6px;
+  }
+  .pull-quote .pq-attr {
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a949c;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+    padding-left: 18px;
+  }
+
+  /* CONCLUSION BAND */
+  .conclusion-band {
+    background: var(--accent);
+    color: #fff;
+    padding: 24px 40px 26px;
+  }
+  .conclusion-band .cb-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .conclusion-band .cb-head .cb-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--accent);
+    background: #8ab88a;
+    letter-spacing: 0.1em;
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+  .conclusion-band .cb-head h2 {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  .conclusion-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 32px;
+  }
+  .conclusion-copy {
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: #d0dcd0;
+  }
+  .conclusion-copy p { margin-bottom: 8px; }
+  .conclusion-copy p:last-child { margin-bottom: 0; }
+  .conclusion-copy strong { color: #fff; font-weight: 800; }
+  .conclusion-copy em { color: #8ab88a; font-style: italic; font-weight: 700; }
+
+  .recal-panel {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 14px 16px 13px;
+    border-top: 3px solid #8ab88a;
+  }
+  .recal-panel .rp-title {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8ab88a;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+  .recal-panel .rp-item {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .recal-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .recal-row {
+    display: grid;
+    grid-template-columns: 46px 1fr 42px;
+    gap: 9px;
+    align-items: center;
+  }
+  .recal-row .rr-lbl {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b8c8b8;
+  }
+  .recal-row .rr-track {
+    height: 20px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .recal-row .rr-fill { height: 100%; border-radius: 4px; }
+  .recal-row.before .rr-fill { background: var(--warn); }
+  .recal-row.after .rr-fill { background: #8ab88a; }
+  .recal-row .rr-val {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: right;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .recal-note {
+    margin-top: 11px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: #b8c8b8;
+  }
+  .recal-note strong { color: #8ab88a; font-weight: 800; }
+
+  /* TEMPLATE BOTTOM STRIP (footer) */
+  .template-bottom {
+    background: linear-gradient(90deg, #8a1f14 0%, #b8860b 50%, #2a5a2a 100%);
+    color: #fff;
+    padding: 9px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .template-bottom .tb-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .template-bottom .tb-contact {
+    letter-spacing: 0.06em;
+    font-size: 8.5px;
+    text-transform: none;
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .template-bottom .tb-id {
+    background: rgba(0,0,0,0.28);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ============ BUTTONS ============ */
+  .fab-group {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+  .fab-group button {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    letter-spacing: 0.02em;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .fab-group button:hover { transform: translateY(-2px); background: #2a2e34; }
+  .fab-group .preview-btn { background: #3f4a55; }
+  .fab-group .preview-btn:hover { background: #55616e; }
+
+  /* ============ A3 FIT MODE (screen preview) ============ */
+  body.a3-mode {
+    display: block;
+    padding: 24px 0;
+    background: #74716b;
+  }
+  body.a3-mode .page-frame {
+    width: 1122px;
+    max-width: none;
+    height: 1587px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  }
+  body.a3-mode .poster {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1122px;
+    max-width: none;
+    margin-left: -561px;
+    transform-origin: top center;
+    transform: scale(var(--a3-scale, 1));
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* ============ PRINT ============ */
+  @page { size: A3 portrait; margin: 0; }
+
+  @media print {
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      width: 1122px !important;
+      height: 1587px !important;
+      overflow: hidden !important;
+      display: block !important;
+    }
+
+    .page-frame {
+      width: 1122px !important;
+      max-width: none !important;
+      height: 1587px !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+      background: var(--paper) !important;
+      box-shadow: none !important;
+    }
+
+    .poster {
+      position: absolute !important;
+      top: 0 !important;
+      left: 50% !important;
+      width: 1122px !important;
+      max-width: none !important;
+      margin-left: -561px !important;
+      transform-origin: top center !important;
+      transform: scale(var(--a3-scale, 1)) !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .fab-group { display: none !important; }
+
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-frame">
+<div class="poster">
+
+  <!-- ===== TEMPLATE TOP STRIP · HEADER ===== -->
+  <div class="template-top">
+    <span class="tt-left">
+      <span class="tt-conf">12 &amp; 13 October 2026 | CFS IIUM, Gambang Campus, Pahang</span>
+      <span class="tt-sep"></span>
+      <span class="tt-title">Beyond AI Answers: Transforming Higher Education Through Epistemic Awareness</span>
+    </span>
+    <span class="tt-id">ID NO: 013</span>
+  </div>
+
+  <!-- DARK HERO HEADER -->
+  <header class="header">
+    <div class="conf-badge">ICFSE 2026 · AI &amp; Digital Transformation in Education</div>
+    <h1 class="title">
+      Beyond AI Answers<span class="accent">.</span><br>
+      Transforming Higher Education<br>
+      Through Epistemic Awareness
+    </h1>
+    <p class="subtitle">
+      A design-based research study of CETALab Uni — an AI-supported learning companion
+      that trains students to distinguish grounded certainty from confident fabrication.
+    </p>
+    <div class="byline">
+      <span class="authors">Wan Nurul Afiqah Akmal W M Affandi<sup>1</sup> · Shafira Noh<sup>2</sup></span>
+      <span class="inst"><sup>1</sup>Centre for Foundation Studies, IIUM Gambang</span>
+      <span class="inst"><sup>2</sup>Sinar Project, Malaysia</span>
+    </div>
+  </header>
+
+  <!-- HERO STAT -->
+  <section class="hero-stat">
+    <div class="hs-label">
+      The headline finding
+      <strong>Fluent fabrication</strong>
+    </div>
+    <div class="hs-content">
+      <div class="hs-number">20.5%</div>
+      <div class="hs-desc">
+        of fabricated AI responses were correctly detected. On one
+        <em>invented JAKIM fatwa</em> — <strong style="color:#fff;">1 of 22 students</strong>
+        got it right. Students didn't just miss the fabrication; they actively trusted it.
+      </div>
+    </div>
+  </section>
+
+  <!-- FACT STRIP -->
+  <section class="fact-strip">
+    <div class="fact"><div class="f-num">33<span class="small"> → 22</span></div><div class="f-lbl">Submissions → Unique</div></div>
+    <div class="fact"><div class="f-num">220</div><div class="f-lbl">Judgements</div></div>
+    <div class="fact"><div class="f-num">10</div><div class="f-lbl">AI responses</div></div>
+    <div class="fact"><div class="f-num">8</div><div class="f-lbl">LLM models</div></div>
+    <div class="fact"><div class="f-num">3×</div><div class="f-lbl">Runs per prompt</div></div>
+    <div class="fact"><div class="f-num">4</div><div class="f-lbl">Epistemic states</div></div>
+  </section>
+
+  <!-- BANNER -->
+  <section class="banner-band">
+    <span class="bb-kicker">Pilot Findings</span>
+    <span class="bb-rule"></span>
+    <h2>Design-Based Research · Cycle 1</h2>
+    <span class="bb-rule"></span>
+    <span class="bb-kicker">Sept – Oct 2026</span>
+  </section>
+
+  <!-- TWO COLUMNS -->
+  <div class="columns">
+
+    <!-- LEFT COLUMN -->
+    <div class="col col-left">
+
+      <!-- 01 INTRODUCTION -->
+      <section class="main-section">
+        <div class="main-head">
+          <span class="main-num">01</span>
+          <h2 class="main-title">Introduction</h2>
+        </div>
+        <div class="body-text">
+          <p>
+            GenAI produces fluent, confident outputs — whether or not they are grounded.
+            Fabricated citations, invented fatwas, and misattributed hadith are
+            indistinguishable from accurate ones without external verification
+            <span class="cite">(Walters &amp; Wilder, 2023)</span>, yet students use these
+            tools daily with no framework for judging when to trust.
+          </p>
+          <p>
+            The Islamic epistemological tradition distinguishes four degrees of assent to a
+            proposition <span class="cite">(Al-Attas, 1995)</span>. CETALab Uni uses these
+            four states as its framework, training students to recognise, weigh, and verify
+            before accepting.
+          </p>
+          <p style="font-size:11px;"><strong>Four research objectives.</strong></p>
+        </div>
+        <div class="obj-list">
+          <div class="obj-item">
+            <span class="oi-num">R01</span>
+            <span>Measure how accurately students <strong>classify AI responses</strong> by the four epistemic states.</span>
+          </div>
+          <div class="obj-item">
+            <span class="oi-num">R02</span>
+            <span>Identify the <strong>direction of misclassification</strong> — over-trust vs under-trust.</span>
+          </div>
+          <div class="obj-item">
+            <span class="oi-num">R03</span>
+            <span>Examine <strong>changes in self-reported awareness</strong> before and after the module.</span>
+          </div>
+          <div class="obj-item">
+            <span class="oi-num">R04</span>
+            <span>Evaluate students' <strong>perceptions of relevance and usefulness</strong>.</span>
+          </div>
+        </div>
+
+        <!-- EPISTEMIC LADDER -->
+        <div class="ladder-panel">
+          <div class="lp-label">The framework · four degrees of assent</div>
+          <div class="ladder-bar">
+            <div class="lad-seg lad-wahm">
+              <span class="lad-arabic">وهم</span>
+              <span class="lad-name">Wahm</span>
+            </div>
+            <div class="lad-seg lad-shak">
+              <span class="lad-arabic">شك</span>
+              <span class="lad-name">Shakk</span>
+            </div>
+            <div class="lad-seg lad-zann">
+              <span class="lad-arabic">ظن</span>
+              <span class="lad-name">Ẓann</span>
+            </div>
+            <div class="lad-seg lad-yaqeen">
+              <span class="lad-arabic">يقين</span>
+              <span class="lad-name">Yaqīn</span>
+            </div>
+          </div>
+          <div class="ladder-captions">
+            <span>Recognise<br>misconceptions</span>
+            <span>Interrogate<br>claims</span>
+            <span>Weigh<br>evidence</span>
+            <span>Verify before<br>accepting</span>
+          </div>
+          <div class="ladder-axis">← Increasing epistemic certainty →</div>
+        </div>
+      </section>
+
+      <!-- 02 METHODOLOGY -->
+      <section class="main-section">
+        <div class="main-head">
+          <span class="main-num">02</span>
+          <h2 class="main-title">Methodology</h2>
+        </div>
+
+        <div class="method-table">
+          <div class="method-row">
+            <div class="mr-label">Design</div>
+            <div class="mr-value">Design-Based Research · single-group pre-post (Cycle 1)</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Population</div>
+            <div class="mr-value">CFS IIUM foundation students — RKFF 0413 cohort</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Submissions</div>
+            <div class="mr-value"><strong>33 received</strong> · 11 duplicates removed (identical ID + timestamp)</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Final sample</div>
+            <div class="mr-value"><strong>n = 22</strong> · female 17 · male 5 · median time 16 min</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Analysis</div>
+            <div class="mr-value">Descriptive · exact binomial · Wilcoxon signed-rank · Spearman</div>
+          </div>
+        </div>
+
+        <!-- 02·A AI TOOLS -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">02·A</span>
+            <span class="sub-title">AI tools &amp; digital technologies</span>
+            <span class="ro-tag">Method · R01</span>
+          </div>
+          <div class="body-text" style="font-size:11px;margin-bottom:7px;">
+            Ten prompts were run by <strong>eight LLMs across six developers</strong> via the
+            OpenRouter API. Each prompt was run <strong>three times at temperature 1.0</strong>,
+            exposing non-determinism as a diagnostic signal.
+          </div>
+          <div class="llm-panel">
+            <div class="lp-head">
+              <span>LLM models used</span>
+              <span class="lp-tag">8 models · 6 vendors</span>
+            </div>
+            <div class="llm-vendor-grid">
+              <div class="llm-vendor">
+                <div class="lv-name">OpenAI</div>
+                <div class="lv-model">gpt-4o<br>gpt-4o-mini</div>
+              </div>
+              <div class="llm-vendor">
+                <div class="lv-name">Anthropic</div>
+                <div class="lv-model">claude-sonnet-5</div>
+              </div>
+              <div class="llm-vendor">
+                <div class="lv-name">Google</div>
+                <div class="lv-model">gemini-2.5-pro<br>gemini-3.1-flash</div>
+              </div>
+              <div class="llm-vendor">
+                <div class="lv-name">DeepSeek</div>
+                <div class="lv-model">v4-flash-0731</div>
+              </div>
+              <div class="llm-vendor">
+                <div class="lv-name">Alibaba</div>
+                <div class="lv-model">qwen3.8-flash</div>
+              </div>
+              <div class="llm-vendor">
+                <div class="lv-name">Meta</div>
+                <div class="lv-model">llama-3.3-70b</div>
+              </div>
+            </div>
+            <div class="llm-prompt">
+              <span class="lpr-label">System prompt · identical across all calls</span>
+              <span class="lpr-body">"You are an academic research assistant answering a question from a Malaysian university student for a course on Islamic studies. Answer in 3 to 5 sentences. Be direct."</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02·B HOW WE MEASURE -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">02·B</span>
+            <span class="sub-title">How we measure · one example</span>
+            <span class="ro-tag">Method · R01 R02</span>
+          </div>
+          <div class="body-text" style="font-size:11px;margin-bottom:8px;">
+            Each prompt is run <strong>three times</strong> by the same model. Students see
+            all three runs and classify the <em>set</em> into one of the four epistemic
+            states. Ground truth is assigned by the research team per prompt.
+          </div>
+
+          <div class="example-panel">
+            <div class="example-head">
+              <span class="eh-q">Q6 · EXAMPLE</span>
+              <span class="eh-prompt">"Is there a JAKIM fatwa on the Rain Rave Music Festival?"</span>
+            </div>
+
+            <div class="runs-row">
+              <div class="run-mini">
+                <div class="rm-label">Run 1</div>
+                <div class="rm-tag">fab.</div>
+                <div class="rm-text">"JAKIM has issued a fatwa condemning the festival, deeming it haram due to vice…"</div>
+              </div>
+              <div class="run-mini">
+                <div class="rm-label">Run 2</div>
+                <div class="rm-tag">fab.</div>
+                <div class="rm-text">"JAKIM has issued a fatwa prohibiting Muslims from participating…"</div>
+              </div>
+              <div class="run-mini">
+                <div class="rm-label">Run 3</div>
+                <div class="rm-tag">fab.</div>
+                <div class="rm-text">"JAKIM has issued a fatwa condemning the festival, citing hedonism…"</div>
+              </div>
+            </div>
+
+            <div class="example-verdict">
+              <div class="ev-block">
+                <span class="ev-label">Ground<br>truth</span>
+                <span class="ev-value ev-wahm">WAHM</span>
+              </div>
+              <div class="ev-block">
+                <span class="ev-label">Student<br>result</span>
+                <span class="ev-value ev-pct">5% detected (1/22)</span>
+              </div>
+            </div>
+
+            <div class="why-runs">
+              <span class="wr-label">Why we run three times</span>
+              All three runs agree on the <strong>same fabricated fatwa</strong> — no
+              contradiction to catch. Students cannot see it. But Q9 (claw machines)
+              <em>contradicted itself</em> across runs — 36% caught it. Non-determinism is
+              the diagnostic: <strong>agreement hides fabrication; contradiction exposes it.</strong>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- KEY REFERENCES -->
+      <section class="main-section">
+        <div class="main-head">
+          <span class="main-num">R</span>
+          <h2 class="main-title">Key References</h2>
+        </div>
+        <div class="refs-compact">
+          <div class="ref-compact">
+            <span class="rc-num">[1]</span>
+            <span>Al-Attas, S. M. N. (1995). <em>Prolegomena to the metaphysics of Islam.</em> ISTAC.</span>
+          </div>
+          <div class="ref-compact">
+            <span class="rc-num">[2]</span>
+            <span>Walters, W. H., &amp; Wilder, E. I. (2023). Fabrication and errors in citations generated by ChatGPT. <em>Scientific Reports, 13</em>, 14045.</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /left -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="col col-right">
+
+      <!-- 03 RESULTS AND DISCUSSIONS -->
+      <section class="main-section">
+        <div class="main-head">
+          <span class="main-num">03</span>
+          <h2 class="main-title">Results &amp; Discussions</h2>
+        </div>
+
+        <!-- 03·A ACCURACY BY STATE — R01 -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">03·A</span>
+            <span class="sub-title">Accuracy falls as grounding drops</span>
+            <span class="ro-tag">R01</span>
+          </div>
+          <div class="body-text" style="font-size:11px;margin-bottom:7px;">
+            Overall accuracy was <strong>39.1%</strong> (86 of 220 judgements) — above the
+            25% chance level, but only just. Accuracy dropped monotonically from grounded
+            answers to fabricated ones.
+          </div>
+          <div class="cat-list">
+            <div class="cat-row strong">
+              <div class="cat-name"><strong>Yaqīn</strong> · Certainty</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 52.3%;"></div></div>
+              <div class="cat-val">52.3%</div>
+            </div>
+            <div class="cat-row mid">
+              <div class="cat-name"><strong>Ẓann</strong> · Conjecture</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 42.0%;"></div></div>
+              <div class="cat-val">42.0%</div>
+            </div>
+            <div class="cat-row weak">
+              <div class="cat-name"><strong>Shakk</strong> · Doubt</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 38.6%;"></div></div>
+              <div class="cat-val">38.6%</div>
+            </div>
+            <div class="cat-row weakest">
+              <div class="cat-name"><strong>Wahm</strong> · Illusion</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 20.5%;"></div></div>
+              <div class="cat-val">20.5%</div>
+            </div>
+          </div>
+          <p class="cat-note">
+            Students read certainty well and illusion badly —
+            <strong>the exact opposite of what safe AI use requires.</strong>
+          </p>
+        </div>
+
+        <!-- 03·B LLM BREAKDOWN — R01 -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">03·B</span>
+            <span class="sub-title">Which models fooled students</span>
+            <span class="ro-tag">R01</span>
+          </div>
+
+          <div class="llm-results">
+            <div class="llm-results-head">
+              <span>Q</span>
+              <span>Model</span>
+              <span>State</span>
+              <span>Correct</span>
+              <span>%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q1</span>
+              <span class="llm-model">openai/gpt-4o</span>
+              <span class="llm-state s-yaqeen">Yaqīn</span>
+              <div class="llm-track"><div class="llm-fill s-yaqeen" style="width: 55%;"></div></div>
+              <span class="llm-pct">55%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q2</span>
+              <span class="llm-model">anthropic/claude-sonnet-5</span>
+              <span class="llm-state s-yaqeen">Yaqīn</span>
+              <div class="llm-track"><div class="llm-fill s-yaqeen" style="width: 50%;"></div></div>
+              <span class="llm-pct">50%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q3</span>
+              <span class="llm-model">google/gemini-2.5-pro</span>
+              <span class="llm-state s-zann">Ẓann</span>
+              <div class="llm-track"><div class="llm-fill s-zann" style="width: 36%;"></div></div>
+              <span class="llm-pct">36%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q4</span>
+              <span class="llm-model">deepseek/v4-flash-0731</span>
+              <span class="llm-state s-zann">Ẓann</span>
+              <div class="llm-track"><div class="llm-fill s-zann" style="width: 45%;"></div></div>
+              <span class="llm-pct">45%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q5</span>
+              <span class="llm-model">qwen/qwen3.8-flash</span>
+              <span class="llm-state s-zann">Ẓann</span>
+              <div class="llm-track"><div class="llm-fill s-zann" style="width: 45%;"></div></div>
+              <span class="llm-pct">45%</span>
+            </div>
+
+            <div class="llm-row flagged">
+              <span class="llm-q">Q6</span>
+              <span class="llm-model">meta/llama-3.3-70b</span>
+              <span class="llm-state s-wahm">Wahm</span>
+              <div class="llm-track"><div class="llm-fill s-wahm" style="width: 5%;"></div></div>
+              <span class="llm-pct">5%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q7</span>
+              <span class="llm-model">anthropic/claude-sonnet-5</span>
+              <span class="llm-state s-shak">Shakk</span>
+              <div class="llm-track"><div class="llm-fill s-shak" style="width: 32%;"></div></div>
+              <span class="llm-pct">32%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q8</span>
+              <span class="llm-model">openai/gpt-4o</span>
+              <span class="llm-state s-shak">Shakk</span>
+              <div class="llm-track"><div class="llm-fill s-shak" style="width: 45%;"></div></div>
+              <span class="llm-pct">45%</span>
+            </div>
+
+            <div class="llm-row flagged">
+              <span class="llm-q">Q9</span>
+              <span class="llm-model">openai/gpt-4o-mini</span>
+              <span class="llm-state s-wahm">Wahm</span>
+              <div class="llm-track"><div class="llm-fill s-wahm" style="width: 36%;"></div></div>
+              <span class="llm-pct">36%</span>
+            </div>
+
+            <div class="llm-row">
+              <span class="llm-q">Q10</span>
+              <span class="llm-model">google/gemini-3.1-flash-lite</span>
+              <span class="llm-state s-zann">Ẓann</span>
+              <div class="llm-track"><div class="llm-fill s-zann" style="width: 41%;"></div></div>
+              <span class="llm-pct">41%</span>
+            </div>
+          </div>
+
+          <div class="llm-takeaway">
+            <strong>Same failure class — different outcomes.</strong>
+            Q6 (<em>llama-3.3-70b</em>) fabricated the same JAKIM fatwa across all three
+            runs — invisible. Q9 (<em>gpt-4o-mini</em>) contradicted itself — 36% caught it.
+            The three-run design is what made fabrication <em>visible</em>.
+          </div>
+        </div>
+
+        <!-- 03·C DIRECTION OF ERROR — R02 -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">03·C</span>
+            <span class="sub-title">Errors leaned toward trusting AI</span>
+            <span class="ro-tag">R02</span>
+          </div>
+          <div class="dir-panel">
+            <div class="dp-head">Direction of error · n = 220 judgements</div>
+            <div class="dir-bar">
+              <div class="dir-seg ds-over" style="width: 38.2%;">38.2%</div>
+              <div class="dir-seg ds-correct" style="width: 39.1%;">39.1%</div>
+              <div class="dir-seg ds-under" style="width: 22.7%;">22.7%</div>
+            </div>
+            <div class="dir-legend">
+              <span>Rated too certain</span>
+              <span>Correct</span>
+              <span>Rated too doubtful</span>
+            </div>
+            <div class="dir-note">
+              <strong>18 of 22 students</strong> showed a net over-certainty bias
+              (Wilcoxon p = .005). This is <strong>automation bias</strong> — the same
+              pattern that makes fluent AI dangerous in research and religious reasoning.
+            </div>
+          </div>
+        </div>
+
+        <!-- 03·D PERCEPTION — R03 + R04 -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">03·D</span>
+            <span class="sub-title">Self-report and perception</span>
+            <span class="ro-tag">R03 + R04</span>
+          </div>
+          <div class="percept-panel">
+            <div class="pp-head">
+              <span>Module reception · n = 22</span>
+              <span class="pp-note">% agree (4 or 5 on 5-point Likert)</span>
+            </div>
+
+            <div class="percept-row">
+              <div>
+                <div class="pc-label">Understood why the same prompt gives different answers</div>
+                <div class="pc-bar"><div class="pc-fill green" style="width: 95.5%;"></div></div>
+              </div>
+              <div class="pc-val green">95.5%</div>
+            </div>
+
+            <div class="percept-row">
+              <div>
+                <div class="pc-label">Rated the module as relevant to their coursework</div>
+                <div class="pc-bar"><div class="pc-fill green" style="width: 86.4%;"></div></div>
+              </div>
+              <div class="pc-val green">86.4%</div>
+            </div>
+
+            <div class="percept-row">
+              <div>
+                <div class="pc-label">Said the module helped them understand AI behaviour</div>
+                <div class="pc-bar"><div class="pc-fill blue" style="width: 81.8%;"></div></div>
+              </div>
+              <div class="pc-val blue">81.8%</div>
+            </div>
+
+            <div class="percept-row">
+              <div>
+                <div class="pc-label">Would verify AI answers in future work</div>
+                <div class="pc-bar"><div class="pc-fill amber" style="width: 77.3%;"></div></div>
+              </div>
+              <div class="pc-val amber">77.3%</div>
+            </div>
+          </div>
+
+          <div class="dir-panel" style="margin-top: 10px;">
+            <div class="dp-head">Self-rated detection ability · R03 · pre vs post</div>
+            <div style="display: grid; grid-template-columns: 46px 1fr 42px; gap: 9px; align-items: center; margin-bottom: 6px;">
+              <span style="font-family: 'SF Mono', monospace; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">Before</span>
+              <div style="height: 18px; background: var(--paper); border-radius: 4px; overflow: hidden; border: 1px solid var(--line);">
+                <div style="width: 77.2%; height: 100%; background: var(--warn); border-radius: 3px;"></div>
+              </div>
+              <span style="font-family: 'SF Mono', monospace; font-size: 12px; font-weight: 800; text-align: right; color: var(--ink);">3.86</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 46px 1fr 42px; gap: 9px; align-items: center;">
+              <span style="font-family: 'SF Mono', monospace; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);">After</span>
+              <div style="height: 18px; background: var(--paper); border-radius: 4px; overflow: hidden; border: 1px solid var(--line);">
+                <div style="width: 69.0%; height: 100%; background: var(--green); border-radius: 3px;"></div>
+              </div>
+              <span style="font-family: 'SF Mono', monospace; font-size: 12px; font-weight: 800; text-align: right; color: var(--ink);">3.45</span>
+            </div>
+            <div class="dir-note" style="margin-top: 10px;">
+              Significant decrease (p = .042, r = .56). <strong>This is the good result.</strong>
+              Pre-module self-ratings did not predict actual accuracy (ρ = .20, p = .37).
+              Students started more confident than they should have been; the module
+              showed them the gap.
+            </div>
+          </div>
+        </div>
+
+        <!-- 03·E PRACTICALITY -->
+        <div class="sub-section">
+          <div class="sub-head">
+            <span class="sub-letter">03·E</span>
+            <span class="sub-title">Practicality &amp; deployment</span>
+            <span class="ro-tag">Impact</span>
+          </div>
+          <div class="body-text" style="font-size:11px;margin-bottom:10px;">
+            Browser-based platform — <strong>no installation, no signup, no data collection</strong>.
+            Delivered via QR code in a single class session; results stream to a Google
+            Sheets dashboard for the instructor.
+          </div>
+
+          <div class="impact-cta-card">
+            <div class="practical-body">
+              <div class="impact-label">What the intervention enables</div>
+              <div class="impact-headline">Five capabilities the module builds</div>
+              <div class="impact-fan">
+                <div class="fan-card fan-c1">Critical<br>Evaluation</div>
+                <div class="fan-card fan-c2">Source<br>Verification</div>
+                <div class="fan-card fan-c3">Fabrication<br>Detection</div>
+                <div class="fan-card fan-c4">Confidence<br>Calibration</div>
+                <div class="fan-card fan-c5">Responsible<br>AI Use</div>
+              </div>
+            </div>
+
+            <div class="cta-inline">
+              <div class="cta-qr">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=https%3A%2F%2Fbankbench-sinar.pages.dev%2Fpublic%2Foutreach%2Funi%2Frater"
+                  alt="QR code — scan to try the CETALab Uni rater"
+                />
+                <div class="qr-label">Scan to try</div>
+              </div>
+              <div class="cta-body">
+                <div class="cta-kicker">Your turn · Dare accepted?</div>
+                <div class="cta-headline">
+                  Can <em>you</em> detect the fabricated fatwa?
+                </div>
+                <div class="cta-dare">
+                  Only 1 of 22 students caught it. Think you can do better?
+                </div>
+                <a class="cta-link"
+                   href="https://bankbench-sinar.pages.dev/public/outreach/uni/rater"
+                   target="_blank" rel="noopener">
+                  bankbench-sinar.pages.dev/public/outreach/uni/rater
+                </a>
+                <div class="cta-note">~10 min · no signup · no private data collected</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pull-quote">
+            <div class="pq-text">
+              They literally palatau when they didn't know, and most of it didn't even
+              admit that they don't know.
+            </div>
+            <div class="pq-attr">— Participant, CFS IIUM Gambang</div>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /right -->
+
+  </div><!-- /columns -->
+
+  <!-- CONCLUSION BAND -->
+  <section class="conclusion-band">
+    <div class="cb-head">
+      <span class="cb-num">04</span>
+      <h2>Conclusion</h2>
+    </div>
+    <div class="conclusion-grid">
+      <div class="conclusion-copy">
+        <p>
+          Students entered the module with <strong>confidence that exceeded their ability</strong>
+          to judge AI output. They distinguished epistemic states at 39.1% accuracy —
+          above chance, but only just — and their weakest point was exactly where the risk is
+          greatest: <em>more than half of fabricated responses were judged probable or certain</em>.
+        </p>
+        <p>
+          The module corrected their self-assessment: self-rated detection ability
+          <strong>fell</strong> from 3.86 to 3.45 (p = .042) while actual classification
+          held — evidence of recalibration, not decline. Students overwhelmingly rated
+          the module as relevant (86.4%) and reported that it helped them understand how
+          AI actually behaves (81.8%).
+        </p>
+        <p>
+          <strong>For practice.</strong> Lecturers should treat AI output on religious
+          questions as material to be verified, not as a source. AI literacy activities
+          should include deliberately fabricated examples.
+        </p>
+        <p>
+          <strong>For the next DBR cycle.</strong> Independent expert validation of the
+          expected states, an added comparison group, lecturers included as participants,
+          and repeated use tested for retention of detection skill.
+        </p>
+      </div>
+      <div class="recal-panel">
+        <div class="rp-title">Answers to the four research objectives</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 11px; line-height: 1.5; color: #d0dcd0;">
+            <strong style="color: #8ab88a;">R01 · Classification accuracy</strong><br>
+            39.1% overall (above 25% chance) — but only 20.5% on fabricated <em>wahm</em>.
+          </div>
+          <div style="font-size: 11px; line-height: 1.5; color: #d0dcd0;">
+            <strong style="color: #8ab88a;">R02 · Direction of error</strong><br>
+            38.2% too certain vs 22.7% too doubtful — a clear over-trust bias.
+          </div>
+          <div style="font-size: 11px; line-height: 1.5; color: #d0dcd0;">
+            <strong style="color: #8ab88a;">R03 · Self-report change</strong><br>
+            Confidence fell 3.86 → 3.45 (p = .042) — recalibration, not decline.
+          </div>
+          <div style="font-size: 11px; line-height: 1.5; color: #d0dcd0;">
+            <strong style="color: #8ab88a;">R04 · Perceived usefulness</strong><br>
+            86.4% relevant · 81.8% helped · 77.3% will verify in future.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TEMPLATE BOTTOM STRIP · FOOTER ===== -->
+  <div class="template-bottom">
+    <span class="tb-left">
+      <span class="tb-contact">afiqahaffandi@iium.edu.my · Centre for Foundation Studies, IIUM Gambang</span>
+    </span>
+    <span class="tb-left">
+      <span class="tb-contact">12 &amp; 13 October 2026 · CFS IIUM, Gambang Campus, Pahang</span>
+    </span>
+    <span class="tb-id">ID NO: 013</span>
+  </div>
+
+</div><!-- /poster -->
+</div><!-- /page-frame -->
+
+<div class="fab-group">
+  <button class="preview-btn" type="button">A3 Preview</button>
+  <button class="print-btn" type="button">🖨 Print / Save as A3 PDF</button>
+</div>
+
+<script>
+(function () {
+  var A3_W = 1122;   // 297 mm @ 96 dpi
+  var A3_H = 1587;   // 420 mm @ 96 dpi
+  var poster     = document.querySelector('.poster');
+  var previewBtn = document.querySelector('.preview-btn');
+  var printBtn   = document.querySelector('.print-btn');
+  var previewOn  = false;
+
+  function fitToA3() {
+    if (!poster) return 1;
+    var prev = poster.style.width;
+    poster.style.width = A3_W + 'px';
+    var naturalHeight = poster.offsetHeight;   // transforms don't affect offsetHeight
+    poster.style.width = prev;
+    var scale = Math.min(1, A3_H / naturalHeight);
+    document.documentElement.style.setProperty('--a3-scale', scale.toFixed(5));
+    return scale;
+  }
+
+  function enterA3() {
+    fitToA3();
+    document.body.classList.add('a3-mode');
+  }
+  function leaveA3() {
+    document.body.classList.remove('a3-mode');
+  }
+
+  if (printBtn) {
+    printBtn.addEventListener('click', function () {
+      fitToA3();
+      document.body.classList.add('a3-mode');
+      window.print();
+    });
+  }
+
+  if (previewBtn) {
+    previewBtn.addEventListener('click', function () {
+      previewOn = !previewOn;
+      if (previewOn) {
+        enterA3();
+        previewBtn.textContent = '✕ Exit A3 Preview';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        leaveA3();
+        previewBtn.textContent = 'A3 Preview';
+      }
+    });
+  }
+
+  window.addEventListener('beforeprint', function () {
+    fitToA3();
+    document.body.classList.add('a3-mode');
+  });
+
+  window.addEventListener('afterprint', function () {
+    if (!previewOn) leaveA3();
+  });
+
+  // Re-measure once webfonts / images have settled
+  window.addEventListener('load', function () { if (previewOn) fitToA3(); });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { if (previewOn) fitToA3(); });
+  }
+})();
+</script>
+
+</body>
+</html>
