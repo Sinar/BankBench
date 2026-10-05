@@ -17,7 +17,9 @@ way to check whether they stay safe when they are put under pressure. BankBench 
 check — small, open, and runnable by anyone, from a student to a ministry.
 [Try it →](https://bankbench-sinar.pages.dev)
 
-**What society gets back.**
+**What society gets back.** *(Each bar shows how far that strand has come toward its goal.)*
+
+`Overall   ▰▰▰▰▰▱▱▱▱▱  55%`
 
 **1 · Young people who can tell a confident answer from a reliable one.** In our first
 university pilot (24 students, RKFF 0413 / IIUM), most could not reliably spot when an AI
@@ -26,6 +28,7 @@ answer was trustworthy — on average their judgement was about one step off, an
 data, **4.5 out of 5** said it was relevant to them and most said they would check sources
 from then on. This is digital literacy with an Islamic-studies spine — exactly the
 audience most exposed to confident, wrong AI answers about religion and money.
+`▰▰▰▰▰▰▰▱▱▱  70% — one pilot run and a live dashboard; next cohort not yet run`
 → [rater dashboard](https://bankbench-sinar.pages.dev/outreach/uni/rate-dashboard.html)
 
 **2 · Malaysia's diplomats get a practical safety guide.** Chapter 5 of the book
@@ -33,12 +36,14 @@ audience most exposed to confident, wrong AI answers about religion and money.
 (Sep 2026), turns AI-safety principle into day-to-day practice for foreign ministries —
 so Malaysia can help shape how Southeast Asia governs AI from a position of discipline,
 not just enthusiasm. *(Book chapter — no public URL.)*
+`▰▰▰▰▰▰▰▰▱▱  80% — chapter delivered; in the book's editorial process`
 
 **3 · Ordinary people get free, plain-language tools — in both languages.** A live
 bilingual (English / Bahasa Malaysia) demo lets anyone watch a real scam play out against
 a safe versus a vulnerable chatbot, alongside a written explainer on what your bank's AI
 can and can't do, with five more in progress. Everything is free, and nothing is in
 English only. → [interactive demo](https://bankbench-sinar.pages.dev/public-education/interactive.html)
+`▰▰▰▱▱▱▱▱▱▱  30% — demo live and 1 of 6 explainers published; 5 still to write`
 
 **4 · Evidence that cheap AI is not automatically safe AI.** In a first pilot we put three
 low-cost AI models through 20 real Malaysian financial-crime situations — money
@@ -46,6 +51,7 @@ laundering, scam tactics, evasion. Simply telling a model to be "helpful and com
 made it *more* willing to help with the crime, and two of the three models got worse, not
 better. This is an early, small pilot — we grade our own confidence as low and plan to
 repeat it — but it is early proof that safety has to be tested, not assumed.
+`▰▰▰▰▰▱▱▱▱▱  50% — first pilot done; needs to be repeated for the result to stand`
 → [site](https://bankbench-sinar.pages.dev) · [code](https://github.com/Sinar/BankBench)
 
 **Why it matters that this continues.** All of it is open, in both languages, and small
@@ -233,6 +239,37 @@ Three things worth reading off the dates rather than the file tree: the work is 
 ## Usage / How to contribute
 
 This repo is early and moving fast — check each surface's own README (`bankbench_my/`, `training-loop/`) before assuming something is finished; "not yet migrated" items above are genuinely not here yet, not hidden.
+
+### Where we are right now — and where a hand would help
+
+Here's the same picture as the summary at the top, in one place. Nothing here is finished;
+the bars show how far each part has come, and each one has an easy way in if you'd like to help.
+
+`Overall   ▰▰▰▰▰▱▱▱▱▱  55%`
+
+- **Students and lessons** — `▰▰▰▰▰▰▰▱▱▱  70%`. We've run one pilot with 24 students and the
+  dashboard is live. **Where you can help:** run the lesson with your own class or society,
+  or send us a batch of answers. Another cohort or two turns this from a pilot into a result.
+  → [rater dashboard](https://bankbench-sinar.pages.dev/outreach/uni/rate-dashboard.html)
+- **Diplomacy chapter** — `▰▰▰▰▰▰▰▰▱▱  80%`. The chapter is written and delivered; it's now
+  with the book's editors. **Where you can help:** if you work in a foreign ministry or know
+  someone who does, tell us what a real safeguard needs to look like day to day — that's the
+  part only practitioners can get right.
+- **Plain-language tools for the public** — `▰▰▰▱▱▱▱▱▱▱  30%`. The bilingual demo is live and
+  one explainer is out; five more are waiting. **Where you can help:** this is the easiest
+  one to join. Write or translate an explainer, draw a diagram, or send us a scam you've
+  actually seen. If it happened to you or someone you know, it belongs in here.
+  → [interactive demo](https://bankbench-sinar.pages.dev/public-education/interactive.html)
+- **Testing the models themselves** — `▰▰▰▰▰▱▱▱▱▱  50%`. The first run is done and the
+  signal is worth following, but one run isn't proof. **Where you can help:** repeat the run,
+  add a scenario from your own bank or neighbourhood, or try a model we haven't tested. It
+  costs a few cents of API calls — often nothing.
+  → [site](https://bankbench-sinar.pages.dev) · [code](https://github.com/Sinar/BankBench)
+
+No background in AI is needed for any of it. If you can write clearly in English or Bahasa
+Malaysia, spot a scam, or run a classroom session, you already have what most of these need.
+
+### The practical bits
 
 - **Reporting a bug or gap:** open an issue — this repo carries Sinar's standard `.github/ISSUE_TEMPLATE/` set (bug report, feature request, documentation, refactoring), pick whichever fits.
 - **Proposing a change:** branch off `main`, prefix by surface so it's obvious which quadrant you're touching — e.g. `bankbench/add-scenario-21`, `training-loop/fix-lora-config`, `scorecard/add-model-x`. Keep PRs scoped to one surface where possible; the four-quadrant split in the meta-overview is meant to keep changes reviewable independently.

@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CETALab Uni — Pilot Study Poster · ICFSE 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #14181d;
+    --ink-soft: #3a4048;
+    --muted: #6b7280;
+    --line: #d9d4cb;
+    --paper: #f5f2ec;
+    --card: #ffffff;
+    --danger: #a02c1f;
+    --danger-soft: #e8cec9;
+    --warn: #b8860b;
+    --warn-soft: #f0e2bf;
+    --blue: #35597a;
+    --blue-soft: #d6e0ea;
+    --green: #2a7a2a;
+    --green-soft: #d4e6d4;
+    --accent: #0f3d3e;
+    --plum: #4a1a5c;
+    --plum-soft: #e8dce8;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+    background: #dedad2;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 20px 80px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .poster {
+    width: 100%;
+    max-width: 1300px;
+    background: var(--paper);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  .header {
+    background: var(--ink);
+    color: #fff;
+    padding: 40px 48px 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, rgba(214,224,234,0.10) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 48px; right: 48px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--danger) 0%, var(--warn) 33%, var(--green) 66%, var(--blue) 100%);
+  }
+
+  .conf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #a8b2bc;
+    margin-bottom: 18px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+  }
+  .conf-badge::before {
+    content: "";
+    width: 6px; height: 6px;
+    background: var(--warn);
+    border-radius: 50%;
+  }
+
+  h1.title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+    max-width: 900px;
+  }
+  h1.title .accent { color: #8ab88a; }
+
+  .subtitle {
+    font-size: 17px;
+    line-height: 1.4;
+    color: #b8c0c8;
+    max-width: 780px;
+    margin-bottom: 26px;
+    font-weight: 400;
+  }
+
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: baseline;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: #8a949c;
+    border-top: 1px solid #2a2e34;
+    padding-top: 18px;
+  }
+  .byline .authors { color: #e8ebee; font-weight: 600; font-size: 13px; }
+  .byline .inst { font-family: "SF Mono", "Monaco", monospace; font-size: 11px; }
+
+  /* ── HERO STAT ─────────────────────────── */
+  .hero-stat {
+    background: var(--danger);
+    color: #fff;
+    padding: 30px 48px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero-stat .hs-label {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .hero-stat .hs-label strong {
+    display: block;
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+  .hero-stat .hs-content {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-stat .hs-number {
+    font-size: 88px;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .hero-stat .hs-desc {
+    font-size: 16px;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.92);
+    max-width: 620px;
+    font-weight: 500;
+  }
+  .hero-stat .hs-desc em {
+    font-style: normal;
+    color: #fff;
+    font-weight: 700;
+    background: rgba(0,0,0,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ── FACT STRIP ────────────────────────── */
+  .fact-strip {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 48px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+  .fact-strip .fact {
+    padding: 0 18px;
+    border-right: 1px solid var(--line);
+    text-align: center;
+  }
+  .fact-strip .fact:last-child { border-right: none; }
+  .fact-strip .fact .f-num {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    font-family: "SF Mono", "Monaco", monospace;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .fact-strip .fact .f-lbl {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* ── BANNER ────────────────────────────── */
+  .banner-band {
+    background: linear-gradient(90deg, #e8cec9 0%, #f0e2bf 50%, #d4e6d4 100%);
+    padding: 14px 48px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .banner-band .bb-kicker {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .banner-band .bb-rule {
+    flex: 1;
+    height: 1px;
+    background: rgba(20,24,29,0.2);
+  }
+  .banner-band h2 {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+
+  /* ── TWO COLUMNS ───────────────────────── */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .col {
+    padding: 34px 40px 40px;
+  }
+  .col-left {
+    border-right: 1px solid var(--line);
+  }
+
+  /* ── SECTION ───────────────────────────── */
+  .section { margin-bottom: 30px; }
+  .section:last-child { margin-bottom: 0; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .sec-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--danger);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+  .sec-title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .sec-body {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .sec-body p { margin-bottom: 10px; }
+  .sec-body p:last-child { margin-bottom: 0; }
+  .sec-body strong { color: var(--ink); font-weight: 700; }
+  .sec-body em { font-style: italic; color: var(--ink); }
+
+  /* ── MINI STATS ────────────────────────── */
+  .mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .mini-stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .mini-stat .ms-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--danger);
+    letter-spacing: -0.02em;
+    margin-bottom: 5px;
+  }
+  .mini-stat .ms-lbl {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ── METHODOLOGY TABLE ─────────────────── */
+  .method-table {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .method-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    border-bottom: 1px solid var(--paper);
+  }
+  .method-row:last-child { border-bottom: none; }
+  .method-row .mr-label {
+    background: var(--ink);
+    color: #fff;
+    padding: 11px 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: "SF Mono", "Monaco", monospace;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+  }
+  .method-row .mr-value {
+    background: var(--card);
+    padding: 11px 16px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+  }
+  .method-row .mr-value strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .method-row:nth-child(even) .mr-label { background: var(--accent); }
+  .method-row:nth-child(even) .mr-value { background: #ebeee9; }
+
+  /* ── STATE CHIPS ───────────────────────── */
+  .state-chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .state-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 11px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  .state-chip .sc-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .state-chip .sc-name { color: var(--ink); }
+  .state-chip .sc-gloss {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 10.5px;
+    margin-left: auto;
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .sc-yaqeen { background: var(--green-soft); }
+  .sc-yaqeen .sc-dot { background: var(--green); }
+  .sc-zann { background: var(--warn-soft); }
+  .sc-zann .sc-dot { background: var(--warn); }
+  .sc-shak { background: var(--blue-soft); }
+  .sc-shak .sc-dot { background: var(--blue); }
+  .sc-wahm { background: var(--danger-soft); }
+  .sc-wahm .sc-dot { background: var(--danger); }
+
+  /* ── STACKED ACCURACY BAR ──────────────── */
+  .stack-wrap { margin-top: 8px; }
+  .stack {
+    display: flex;
+    height: 52px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+  }
+  .stack .seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 800;
+    line-height: 1.05;
+    padding: 0 4px;
+    text-align: center;
+    min-width: 0;
+  }
+  .stack .seg .sv-pct {
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .stack .seg .sv-lbl {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-top: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .seg-exact { background: var(--green); }
+  .seg-close { background: #7ea87e; }
+  .seg-far   { background: var(--warn); }
+  .seg-danger{ background: var(--danger); }
+
+  .stack-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-family: "SF Mono", "Monaco", monospace;
+  }
+  .stack-caption strong {
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  /* ── IMPACT + TRY-IT COMBINED CARD ─────── */
+  .impact-cta-card {
+    margin-top: 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .impact-block {
+    padding: 22px 22px 18px;
+    background: var(--card);
+  }
+  .impact-label {
+    text-align: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .impact-headline {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .impact-fan {
+    position: relative;
+    height: 200px;
+    margin: 0 auto;
+    max-width: 420px;
+  }
+  .fan-card {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 76px;
+    height: 148px;
+    margin-left: -38px;
+    transform-origin: 50% 100%;
+    border-radius: 10px 10px 4px 4px;
+    padding: 14px 6px 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.14);
+    transition: transform 0.2s;
+  }
+  .fan-c1 { transform: rotate(-64deg); background: var(--blue); }
+  .fan-c2 { transform: rotate(-32deg); background: var(--warn); }
+  .fan-c3 { transform: rotate(0deg);   background: var(--danger); }
+  .fan-c4 { transform: rotate(32deg);  background: var(--green); }
+  .fan-c5 { transform: rotate(64deg);  background: var(--accent); }
+  .fan-c1:hover { transform: rotate(-64deg) translateY(-6px); }
+  .fan-c2:hover { transform: rotate(-32deg) translateY(-6px); }
+  .fan-c3:hover { transform: rotate(0deg) translateY(-6px); }
+  .fan-c4:hover { transform: rotate(32deg) translateY(-6px); }
+  .fan-c5:hover { transform: rotate(64deg) translateY(-6px); }
+
+  /* ── INLINE CTA (attached to impact card) ─ */
+  .cta-inline {
+    border-top: 2px dashed var(--line);
+    padding: 20px 22px 22px;
+    background: linear-gradient(180deg, #fff 0%, #faf6ea 100%);
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .cta-qr {
+    text-align: center;
+  }
+  .cta-qr img {
+    width: 128px;
+    height: 128px;
+    display: block;
+    border: 3px solid var(--ink);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .cta-qr .qr-label {
+    margin-top: 7px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .cta-body { min-width: 0; }
+  .cta-kicker {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--danger);
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .cta-headline {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .cta-headline em {
+    font-style: normal;
+    color: var(--danger);
+    background: var(--danger-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .cta-dare {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .cta-dare strong { color: var(--ink); font-weight: 800; }
+
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ink);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    word-break: break-all;
+    max-width: 100%;
+    line-height: 1.35;
+  }
+  .cta-link:hover {
+    background: #2a2e34;
+    transform: translateY(-1px);
+  }
+  .cta-link .arrow {
+    font-size: 11px;
+    margin-left: 2px;
+    flex-shrink: 0;
+  }
+
+  .cta-note {
+    margin-top: 9px;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: "SF Mono", "Monaco", monospace;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  /* ── KEY FINDING ───────────────────────── */
+  .key-finding {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px 22px 20px;
+    margin-top: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--danger);
+  }
+  .kf-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .kf-headline .kf-mult {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--danger);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .kf-headline .kf-mult-lbl {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .kf-caption {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .qcompare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .qbar { text-align: center; }
+  .qbar .qb-pct {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+  }
+  .qbar.q6 .qb-pct { color: var(--danger); }
+  .qbar.q9 .qb-pct { color: var(--green); }
+  .qbar .qb-track {
+    height: 130px;
+    background: var(--paper);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .qbar .qb-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    border-radius: 6px 6px 0 0;
+  }
+  .qbar.q6 .qb-fill { background: var(--danger); }
+  .qbar.q9 .qb-fill { background: var(--green); }
+  .qbar .qb-label {
+    margin-top: 10px;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .qbar .qb-label .qid {
+    display: block;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .kf-explain {
+    background: var(--paper);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--danger);
+  }
+  .kf-explain strong { color: var(--ink); font-weight: 700; }
+
+  /* ── CATEGORY BARS ─────────────────────── */
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 12px;
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 48px;
+    gap: 12px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .cat-row .cat-name {
+    font-size: 11.5px;
+    line-height: 1.25;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .cat-row .cat-bar-wrap {
+    height: 18px;
+    background: var(--paper);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .cat-row .cat-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--muted);
+  }
+  .cat-row.weakest .cat-bar { background: var(--danger); }
+  .cat-row.weak .cat-bar { background: var(--warn); }
+  .cat-row.mid .cat-bar { background: var(--blue); }
+  .cat-row.strong .cat-bar { background: var(--green); }
+  .cat-row .cat-val {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 12.5px;
+    font-weight: 800;
+    text-align: right;
+    color: var(--ink);
+  }
+  .cat-row.weakest .cat-val { color: var(--danger); }
+
+  .cat-note {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .cat-note strong { color: var(--ink); font-style: normal; }
+
+  /* ── COMPREHENSION DUAL ────────────────── */
+  .comp-dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .comp-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .comp-card .cc-pct {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+  .comp-card.ok .cc-pct { color: var(--green); }
+  .comp-card.gap .cc-pct { color: var(--warn); }
+  .comp-card .cc-lbl {
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .comp-card .cc-bar {
+    height: 4px;
+    background: var(--paper);
+    border-radius: 2px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .comp-card.ok .cc-bar-fill { background: var(--green); }
+  .comp-card.gap .cc-bar-fill { background: var(--warn); }
+  .comp-card .cc-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* ── BEHAVIOUR ROW ─────────────────────── */
+  .behav-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 14px 0;
+    border-top: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--line);
+  }
+  .behav-item { text-align: center; }
+  .behav-item .bi-pct {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .behav-item.good .bi-pct { color: var(--green); }
+  .behav-item.bad .bi-pct { color: var(--danger); }
+  .behav-item .bi-lbl {
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .behav-vs {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .behav-gap {
+    margin-top: 14px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .behav-gap strong { color: var(--danger); font-weight: 800; }
+
+  /* ── PULL QUOTE ────────────────────────── */
+  .pull-quote {
+    margin-top: 18px;
+    padding: 18px 20px 16px 22px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    position: relative;
+  }
+  .pull-quote::before {
+    content: "\201C";
+    position: absolute;
+    top: 8px; left: 12px;
+    font-size: 48px;
+    line-height: 0.8;
+    color: var(--warn);
+    font-family: Georgia, serif;
+    opacity: 0.7;
+  }
+  .pull-quote .pq-text {
+    font-size: 14px;
+    line-height: 1.5;
+    font-style: italic;
+    color: #e8ebee;
+    padding-left: 24px;
+    margin-bottom: 10px;
+  }
+  .pull-quote .pq-attr {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a949c;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-weight: 600;
+    padding-left: 24px;
+  }
+
+  /* ── IMPLICATIONS BAND ─────────────────── */
+  .implications {
+    background: var(--accent);
+    color: #fff;
+    padding: 32px 48px 34px;
+  }
+  .impl-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .impl-head .ih-kicker {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8ab88a;
+    font-weight: 700;
+  }
+  .impl-head h2 {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  .impl-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .impl-item {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 16px 14px 14px;
+    border-top: 3px solid #8ab88a;
+  }
+  .impl-item .ii-num {
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px;
+    font-weight: 800;
+    color: #8ab88a;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .impl-item .ii-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .impl-item .ii-body {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #b8c8c8;
+  }
+  .impl-item strong { color: #fff; font-weight: 700; }
+
+  /* ── FOOTER ────────────────────────────── */
+  .footer {
+    background: var(--ink);
+    color: #8a949c;
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "SF Mono", "Monaco", monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .footer .fc-left strong { color: #e8ebee; font-weight: 700; }
+  .footer .fc-left { line-height: 1.6; }
+  .footer .fc-right {
+    text-align: right;
+    color: #6b7580;
+    line-height: 1.6;
+  }
+
+  /* ── PRINT BUTTON ──────────────────────── */
+  .print-btn {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    letter-spacing: 0.02em;
+    transition: transform 0.15s, background 0.2s;
+    z-index: 100;
+  }
+  .print-btn:hover { transform: translateY(-2px); background: #2a2e34; }
+
+  /* ── PRINT ─────────────────────────────── */
+  @media print {
+    @page { size: A1 portrait; margin: 0; }
+    body { background: #fff; padding: 0; display: block; }
+    .poster {
+      max-width: none;
+      width: 100%;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .print-btn { display: none !important; }
+    html { font-size: 15px; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poster">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="conf-badge">ICFSE 2026 · International Conference on Foundation Studies in Education</div>
+    <h1 class="title">
+      Beyond AI Answers<span class="accent">.</span><br>
+      Transforming Higher Education<br>
+      Through Epistemic Awareness
+    </h1>
+    <p class="subtitle">
+      A design-based research study of CETALab Uni — an AI-supported learning companion that trains
+      students to distinguish grounded certainty from confident fabrication.
+    </p>
+    <div class="byline">
+      <span class="authors">Wan Nurul Afiqah Akmal W M Affandi<sup>1</sup> · Shafira Noh<sup>2</sup></span>
+      <span class="inst"><sup>1</sup>Department of Islamic Revealed Knowledge, CFS IIUM Gambang</span>
+      <span class="inst"><sup>2</sup>Fellow, Sinar Project</span>
+    </div>
+  </header>
+
+  <!-- HERO STAT -->
+  <section class="hero-stat">
+    <div class="hs-label">
+      The headline finding
+      <strong>Fabricated authority</strong>
+    </div>
+    <div class="hs-content">
+      <div class="hs-number">4.2%</div>
+      <div class="hs-desc">
+        of participants detected a <em>fabricated JAKIM fatwa</em> — invented outright by
+        Llama 3.3 70B, delivered with the full confidence of a real ruling.
+        <strong style="color:#fff;">Only 1 in 24.</strong> One third of participants classified
+        the fabrication as <em>grounded certainty</em>.
+      </div>
+    </div>
+  </section>
+
+  <!-- FACT STRIP -->
+  <section class="fact-strip">
+    <div class="fact"><div class="f-num">24</div><div class="f-lbl">Participants</div></div>
+    <div class="fact"><div class="f-num">240</div><div class="f-lbl">Classifications</div></div>
+    <div class="fact"><div class="f-num">10</div><div class="f-lbl">Sourcing questions</div></div>
+    <div class="fact"><div class="f-num">8</div><div class="f-lbl">LLM models</div></div>
+    <div class="fact"><div class="f-num">3×</div><div class="f-lbl">Runs per question</div></div>
+    <div class="fact"><div class="f-num">4</div><div class="f-lbl">Epistemic states</div></div>
+  </section>
+
+  <!-- BANNER -->
+  <section class="banner-band">
+    <span class="bb-kicker">Pilot Findings</span>
+    <span class="bb-rule"></span>
+    <h2>Results &amp; Discussion</h2>
+    <span class="bb-rule"></span>
+    <span class="bb-kicker">n = 24 · Oct 2026</span>
+  </section>
+
+  <!-- TWO COLUMNS -->
+  <div class="columns">
+
+    <!-- LEFT -->
+    <div class="col col-left">
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">01</span>
+          <h2 class="sec-title">The Problem</h2>
+        </div>
+        <div class="sec-body">
+          <p>
+            Generative AI produces fluent, confident, plausible outputs — whether or not
+            they are grounded in anything real. Fabricated citations, invented fatwas,
+            and misattributed hadith are indistinguishable from accurate ones without
+            external verification.
+          </p>
+          <p>
+            Foundation-level students are already using these tools for academic work.
+            They have no framework for judging <em>when to trust</em>.
+          </p>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="ms-num">83.3%</div>
+              <div class="ms-lbl">already used AI to suggest academic references</div>
+            </div>
+            <div class="mini-stat">
+              <div class="ms-num">79.2%</div>
+              <div class="ms-lbl">had never heard of yaqīn, ẓann, shakk, or wahm</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">02</span>
+          <h2 class="sec-title">Methodology at a Glance</h2>
+        </div>
+        <div class="method-table">
+          <div class="method-row">
+            <div class="mr-label">Population</div>
+            <div class="mr-value">CFS IIUM foundation students — RKFF 0413 cohort</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Sample</div>
+            <div class="mr-value"><strong>n = 24</strong> · female 17 · male 7</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Instrument</div>
+            <div class="mr-value">7-item pre-test · 10-question module · 12-item post-test</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Data source</div>
+            <div class="mr-value">8 LLMs via OpenRouter · 3 runs per prompt at temperature 1.0</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Sampling</div>
+            <div class="mr-value">Convenience — course-enrolled students</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Analysis</div>
+            <div class="mr-value">Descriptive · frequency · proximity scoring</div>
+          </div>
+          <div class="method-row">
+            <div class="mr-label">Framework</div>
+            <div class="mr-value">Tawhidic Epistemology — <em>yaqīn · ẓann · shakk · wahm</em></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">03</span>
+          <h2 class="sec-title">Overall Classification Accuracy</h2>
+        </div>
+        <div class="sec-body">
+          <div class="stack-wrap">
+            <div class="stack">
+              <div class="seg seg-exact" style="width: 39.2%;">
+                <div class="sv-pct">39.2%</div>
+                <div class="sv-lbl">Exact</div>
+              </div>
+              <div class="seg seg-close" style="width: 31.3%;">
+                <div class="sv-pct">31.3%</div>
+                <div class="sv-lbl">Close</div>
+              </div>
+              <div class="seg seg-far" style="width: 24.6%;">
+                <div class="sv-pct">24.6%</div>
+                <div class="sv-lbl">Far</div>
+              </div>
+              <div class="seg seg-danger" style="width: 5.0%;">
+                <div class="sv-pct">5.0%</div>
+                <div class="sv-lbl">Danger</div>
+              </div>
+            </div>
+            <div class="stack-caption">
+              <span><strong>70.4%</strong> close-or-better</span>
+              <span>n = 240 classifications</span>
+            </div>
+          </div>
+          <p style="margin-top:14px;">
+            Participants identified the correct epistemic state roughly <strong>4 in 10</strong>
+            without prior training. Nearly <strong>1 in 3</strong> classifications was widely wrong.
+            The <strong>5% dangerous rate</strong> — confusing grounded certainty with its
+            illusion — is the failure mode most consequential for academic work.
+          </p>
+
+          <div class="state-chips">
+            <div class="state-chip sc-yaqeen"><span class="sc-dot"></span><span class="sc-name">Yaqeen</span><span class="sc-gloss">Certainty</span></div>
+            <div class="state-chip sc-zann"><span class="sc-dot"></span><span class="sc-name">Zann</span><span class="sc-gloss">Conjecture</span></div>
+            <div class="state-chip sc-shak"><span class="sc-dot"></span><span class="sc-name">Shak</span><span class="sc-gloss">Doubt</span></div>
+            <div class="state-chip sc-wahm"><span class="sc-dot"></span><span class="sc-name">Wahm</span><span class="sc-gloss">Illusion</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IMPACT + TRY-IT COMBINED CARD -->
+      <div class="impact-cta-card">
+
+        <div class="impact-block">
+          <div class="impact-label">What the intervention enables</div>
+          <div class="impact-headline">Impact of Epistemic Awareness</div>
+          <div class="impact-fan">
+            <div class="fan-card fan-c1">Critical<br>Evaluation</div>
+            <div class="fan-card fan-c2">Source<br>Verification</div>
+            <div class="fan-card fan-c3">Fabrication<br>Detection</div>
+            <div class="fan-card fan-c4">Reflective<br>Engagement</div>
+            <div class="fan-card fan-c5">Responsible<br>AI Use</div>
+          </div>
+        </div>
+
+        <!-- INLINE CTA -->
+        <div class="cta-inline">
+          <div class="cta-qr">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=https%3A%2F%2Fbankbench-sinar.pages.dev%2Fpublic%2Foutreach%2Funi%2Frater"
+              alt="QR code — scan to try the CETALab Uni rater"
+            />
+            <div class="qr-label">Scan to try</div>
+          </div>
+          <div class="cta-body">
+            <div class="cta-kicker">Your turn · Dare accepted?</div>
+            <div class="cta-headline">
+              Can <em>you</em> detect the fabricated fatwa?
+            </div>
+            <div class="cta-dare">
+              One-third of our participants called an invented JAKIM ruling <strong>grounded certainty</strong>.
+              Only 1 in 24 caught it. Think you can do better?
+            </div>
+            <a class="cta-link" href="https://bankbench-sinar.pages.dev/public/outreach/uni/rater" target="_blank" rel="noopener">
+              bankbench-sinar.pages.dev/public/outreach/uni/rater
+              <span class="arrow">↗</span>
+            </a>
+            <div class="cta-note">~10 min · no signup · no private data collected</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- RIGHT -->
+    <div class="col col-right">
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">04</span>
+          <h2 class="sec-title">The Key Finding — Tenfold Lift</h2>
+        </div>
+        <div class="key-finding">
+          <div class="kf-headline">
+            <span class="kf-mult">10×</span>
+            <span class="kf-mult-lbl">Difference in detection</span>
+          </div>
+          <p class="kf-caption">
+            Same model family. Same fabrication class. One fabricated authority was invisible;
+            one contradiction was caught.
+          </p>
+
+          <div class="qcompare">
+            <div class="qbar q6">
+              <div class="qb-pct">4.2%</div>
+              <div class="qb-track">
+                <div class="qb-fill" style="height: 4.2%;"></div>
+              </div>
+              <div class="qb-label">
+                <span class="qid">Q6 · Fabricated JAKIM fatwa</span>
+                Confident, consistent, invented
+              </div>
+            </div>
+            <div class="qbar q9">
+              <div class="qb-pct">41.7%</div>
+              <div class="qb-track">
+                <div class="qb-fill" style="height: 41.7%;"></div>
+              </div>
+              <div class="qb-label">
+                <span class="qid">Q9 · Contradicting runs</span>
+                Same model, self-contradicting
+              </div>
+            </div>
+          </div>
+
+          <div class="kf-explain">
+            <strong>Students cannot see a fabricated authority.</strong> But they can see a
+            contradiction. Non-determinism — running the same prompt three times — is what makes
+            <em>wahm</em> observable. Without it, fabrication is invisible.
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">05</span>
+          <h2 class="sec-title">Where the Deficit Lives</h2>
+        </div>
+        <div class="sec-body">
+          <div class="cat-list">
+            <div class="cat-row weakest">
+              <div class="cat-name">Source Verification</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 22.9%;"></div></div>
+              <div class="cat-val">22.9%</div>
+            </div>
+            <div class="cat-row weak">
+              <div class="cat-name">Current Scholarship</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 58.3%;"></div></div>
+              <div class="cat-val">58.3%</div>
+            </div>
+            <div class="cat-row weak">
+              <div class="cat-name">Citation Fabrication</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 66.7%;"></div></div>
+              <div class="cat-val">66.7%</div>
+            </div>
+            <div class="cat-row mid">
+              <div class="cat-name">Hadith Application</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 79.2%;"></div></div>
+              <div class="cat-val">79.2%</div>
+            </div>
+            <div class="cat-row strong">
+              <div class="cat-name">Meaning &amp; Understanding</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 85.4%;"></div></div>
+              <div class="cat-val">85.4%</div>
+            </div>
+            <div class="cat-row strong">
+              <div class="cat-name">Scholarly Opinion</div>
+              <div class="cat-bar-wrap"><div class="cat-bar" style="width: 94.4%;"></div></div>
+              <div class="cat-val">94.4%</div>
+            </div>
+          </div>
+          <p class="cat-note">
+            The deficit is not in reasoning. It is in detecting <strong>fabricated authority</strong>.
+            Participants read scholarly conjecture at 94.4% accuracy — but fabricated institutional
+            authority at 22.9%.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <span class="sec-num">06</span>
+          <h2 class="sec-title">Comprehension &amp; Behaviour</h2>
+        </div>
+        <div class="sec-body">
+          <div class="comp-dual">
+            <div class="comp-card ok">
+              <div class="cc-pct">87.5%</div>
+              <div class="cc-lbl">Correctly explained non-determinism</div>
+              <div class="cc-bar"><div class="cc-bar-fill" style="width: 87.5%;"></div></div>
+            </div>
+            <div class="comp-card gap">
+              <div class="cc-pct">54.2%</div>
+              <div class="cc-lbl">Correctly defined <em>wahm</em></div>
+              <div class="cc-bar"><div class="cc-bar-fill" style="width: 54.2%;"></div></div>
+            </div>
+          </div>
+          <p style="margin-top:12px;">
+            A <strong>33-point gap</strong> between understanding the technical fact and
+            understanding the epistemic one. The deficit is epistemic, not technical.
+          </p>
+
+          <div class="behav-row">
+            <div class="behav-item good">
+              <div class="bi-pct">62.5%</div>
+              <div class="bi-lbl">would verify an unfindable fatwa</div>
+            </div>
+            <div class="behav-vs">VS</div>
+            <div class="behav-item bad">
+              <div class="bi-pct">4.2%</div>
+              <div class="bi-lbl">actually detected one when it appeared</div>
+            </div>
+          </div>
+
+          <p class="behav-gap">
+            Participants <strong>know what to do</strong>. They cannot <strong>see when to do it</strong>.
+            Self-report overstates behaviour by an order of magnitude — which is why the
+            classification task, not the survey, is the right measure.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="pull-quote">
+          <div class="pq-text">
+            If they were not run three times, I doubt I would have noticed any difference.
+          </div>
+          <div class="pq-attr">— Participant UIA-20260928-9A8A</div>
+        </div>
+      </section>
+
+    </div><!-- /right -->
+
+  </div><!-- /columns -->
+
+  <!-- IMPLICATIONS -->
+  <section class="implications">
+    <div class="impl-head">
+      <span class="ih-kicker">What this validates</span>
+      <h2>Five Propositions for CETALab Uni</h2>
+    </div>
+    <div class="impl-grid">
+      <div class="impl-item">
+        <span class="ii-num">01</span>
+        <div class="ii-title">Measurable problem</div>
+        <div class="ii-body">39.2% exact, 5% dangerous confusion — epistemic risk is a quantifiable construct.</div>
+      </div>
+      <div class="impl-item">
+        <span class="ii-num">02</span>
+        <div class="ii-title">Fabrication is highest-risk</div>
+        <div class="ii-body">A fabricated JAKIM fatwa was detected by only 4.2% — the core product value proposition.</div>
+      </div>
+      <div class="impl-item">
+        <span class="ii-num">03</span>
+        <div class="ii-title">Three-run design is essential</div>
+        <div class="ii-body">The 10× gap between Q6 and Q9 shows non-determinism is the diagnostic mechanism.</div>
+      </div>
+      <div class="impl-item">
+        <span class="ii-num">04</span>
+        <div class="ii-title">Behaviour beats self-report</div>
+        <div class="ii-body">Likert items did not shift. Classification performance did. Measure behaviourally.</div>
+      </div>
+      <div class="impl-item">
+        <span class="ii-num">05</span>
+        <div class="ii-title">Framework is teachable</div>
+        <div class="ii-body">79.2% entered with no vocabulary. 87.5% learned non-determinism. The framework transfers.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="fc-left">
+      <strong>CETALab Uni · ICFSE 2026</strong><br>
+      Data collection: 23 Sep – 2 Oct 2026 · n = 24 participants · 240 classifications
+    </div>
+    <div class="fc-right">
+      <strong style="color:#8ab88a;">afiqahaffandi@iium.edu.my</strong><br>
+      Centre for Foundation Studies, IIUM Gambang
+    </div>
+  </footer>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨 Print as A1</button>
+
+</body>
+</html>
