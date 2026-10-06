@@ -7,7 +7,7 @@
 // Request: POST /api/proxy?target=<full upstream chat/completions URL>
 //          Authorization: Bearer <the caller's key>  (forwarded as-is)
 
-const ALLOWED_HOSTS = ['integrate.api.nvidia.com', 'openrouter.ai'];
+const ALLOWED_HOSTS = ['integrate.api.nvidia.com', 'openrouter.ai', 'inference-api.nousresearch.com'];
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',

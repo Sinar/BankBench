@@ -10,7 +10,7 @@
 //   2. no longer double-decodes the (already decoded) ?target= param
 //   3. forwards only Content-Type/Authorization/HTTP-Referer/X-Title
 
-const ALLOWED_HOSTS = ['integrate.api.nvidia.com', 'openrouter.ai'];
+const ALLOWED_HOSTS = ['integrate.api.nvidia.com', 'openrouter.ai', 'inference-api.nousresearch.com'];
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
