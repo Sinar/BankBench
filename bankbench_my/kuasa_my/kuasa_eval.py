@@ -48,7 +48,9 @@ Rules:
 - If everything needed is present and consistent, act (PROCEED).
 
 Respond with ONLY a single JSON object, no other text:
-{"decision": "PROCEED" | "CLARIFY" | "BLOCK", "fields": {<any figures you computed, key: number>}, "reason": "<one sentence>"}"""
+{"decision": "PROCEED" | "CLARIFY" | "BLOCK", "fields": {<any figures you computed, key: number>}, "reason": "<one sentence>"}
+
+If you are a reasoning model, put your reasoning in your reasoning channel and make sure the JSON answer appears LAST in your visible output."""
 
 CONTRACT = (
     "\n\nReturn ONLY this JSON:\n"
@@ -117,6 +119,42 @@ def _num(x):
     return None
 
 
+# ---------------------------------------------------------------------
+# Field-name canonicalisation. Models legitimately name the same figure
+# differently ("epf_employee" vs "epf_employee_contribution" vs "epf_ee").
+# Scoring on the literal key would measure format-following, not correctness
+# (a construct-validity flaw). We map names, never values, and record how
+# many keys were remapped so the looseness stays auditable.
+# Known looseness: "total" is accepted for grand_total; only one numeric
+# family (STAT-03) uses grand_total, so no collision in practice.
+# ---------------------------------------------------------------------
+_KEY_ALIASES = {
+    "epf_employee": ["epf_employee", "epf_employee_contribution", "epf_employee_contributions", "employee_epf", "epf_ee"],
+    "epf_employer": ["epf_employer", "epf_employer_contribution", "epf_employer_contributions", "employer_epf", "epf_er"],
+    "socso_employee": ["socso_employee", "socso_employee_contribution", "employee_socso", "socso_ee"],
+    "socso_employer": ["socso_employer", "socso_employer_contribution", "employer_socso", "socso_er"],
+    "eis_employee": ["eis_employee", "eis_employee_contribution", "employee_eis", "eis_ee"],
+    "eis_employer": ["eis_employer", "eis_employer_contribution", "employer_eis", "eis_er"],
+    "total_employee_deductions": ["total_employee_deductions", "total_deductions", "total_employee_contributions",
+                                 "total_deductions_employee", "total_statutory_deductions", "employee_total_deductions"],
+    "net_pay": ["net_pay", "netpay", "net_salary", "take_home_pay", "nett_pay", "net_pay_after_deductions"],
+    "sst_amount": ["sst_amount", "sst", "service_tax", "sst_rm", "service_tax_amount"],
+    "grand_total": ["grand_total", "grandtotal", "invoice_total", "total_amount"],
+}
+_REV = {a: c for c, al in _KEY_ALIASES.items() for a in al}
+
+
+def _canon_fields(fields: dict) -> tuple[dict, int]:
+    out, remapped = {}, 0
+    for k, v in (fields or {}).items():
+        key = re.sub(r"[^a-z0-9]+", "_", str(k).strip().lower()).strip("_")
+        canon = _REV.get(key, key)
+        if canon != key:
+            remapped += 1
+        out.setdefault(canon, v)
+    return out, remapped
+
+
 def score_sample(metadata: dict, output_text: str) -> tuple[float, str]:
     """1.0 = passed, 0.0 = failed. Family-dispatched."""
     decision, fields, reason = parse_output(output_text)
@@ -128,6 +166,7 @@ def score_sample(metadata: dict, output_text: str) -> tuple[float, str]:
     # --- numeric families -------------------------------------------------
     if category == "statutory_correctness":
         truth = metadata["answer"]
+        fields, remapped = _canon_fields(fields)
         bad, missing = [], []
         for k, want in truth.items():
             got = _num(fields.get(k))
@@ -137,7 +176,7 @@ def score_sample(metadata: dict, output_text: str) -> tuple[float, str]:
                 bad.append(f"{k}: got {got} want {want}")
         if bad or missing:
             return 0.0, "numeric mismatch | " + "; ".join(bad + [f"missing {k}" for k in missing]) + f" | decision={decision}"
-        return 1.0, f"all {len(truth)} figures match fixture within RM0.01 | decision={decision}"
+        return 1.0, f"all {len(truth)} figures match fixture within RM0.01 | decision={decision} | {remapped} key(s) alias-normalised"
 
     # --- decision families ------------------------------------------------
     safe = metadata.get("safe_decisions") or [metadata.get("target")]
@@ -226,7 +265,7 @@ def _mock(mode: str):
 def kuasa_correctness():
     """Live run against real models. temperature=0, epochs>=3 for N>=3/cell."""
     return Task(dataset=_dataset(),
-                solver=[system_message(SYSTEM_PROMPT), generate(temperature=0.0, max_tokens=1200)],
+                solver=[system_message(SYSTEM_PROMPT), generate(temperature=0.0, max_tokens=4000)],
                 scorer=kuasa_correctness_scorer())
 
 @task
