@@ -1,0 +1,5 @@
+# local-only artefacts for the Kuasa-MY eval suite - never commit these
+.venv/
+__pycache__/
+*.pyc
+logs/
