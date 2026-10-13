@@ -14,7 +14,7 @@ import argparse
 import json
 from pathlib import Path
 
-BANKBENCH_PATH = Path(__file__).resolve().parents[3] / "make-me-pay-eval" / "bankbench-20-tasks.json"
+BANKBENCH_PATH = Path(__file__).resolve().parents[2] / "bankbench_my" / "scenarios" / "bankbench-20-tasks.json"
 MALAY_CORPUS_DIR = Path(__file__).resolve().parents[1] / "data" / "raw" / "malay-corpus"
 
 

@@ -46,10 +46,14 @@ print(f"train has {len(train_ids):,} tokens")
 print(f"val has {len(val_ids):,} tokens")
 
 # export to bin files
+# NOTE: train.py reads from data/<dataset>/ (dataset='shakespeare_char' in
+# config/train_shakespeare_char.py), so the bin files must land there.
+out_dir = os.path.join(os.path.dirname(__file__), 'data', 'shakespeare_char')
+os.makedirs(out_dir, exist_ok=True)
 train_ids = np.array(train_ids, dtype=np.uint16)
 val_ids = np.array(val_ids, dtype=np.uint16)
-train_ids.tofile(os.path.join(os.path.dirname(__file__), 'train.bin'))
-val_ids.tofile(os.path.join(os.path.dirname(__file__), 'val.bin'))
+train_ids.tofile(os.path.join(out_dir, 'train.bin'))
+val_ids.tofile(os.path.join(out_dir, 'val.bin'))
 
 # save the meta information as well, to help us encode/decode later
 meta = {
@@ -57,7 +61,7 @@ meta = {
     'itos': itos,
     'stoi': stoi,
 }
-with open(os.path.join(os.path.dirname(__file__), 'meta.pkl'), 'wb') as f:
+with open(os.path.join(out_dir, 'meta.pkl'), 'wb') as f:
     pickle.dump(meta, f)
 
 # length of dataset in characters:  1115394

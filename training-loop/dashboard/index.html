@@ -97,19 +97,20 @@
 // ============================================================
 const DATA = {
   budgetUsedUsd: 0.00,
-  lastUpdated: "2026-08-12 · local run (S-02/S-05 pending VastAI rental)",
+  lastUpdated: "2026-10-13 · local run (S-01 nanoGPT done on Mac MPS; S-02/S-05 pending VastAI rental)",
   stages: [
     {
       id: "S-01",
       title: "nanoGPT from scratch",
-      status: "in_progress",
-      grade: null,
+      status: "done",
+      grade: "B",
       metrics: [
-        { label: "params", value: "10.7M" },
-        { label: "loss (start→end)", value: "— (pending run)" },
-        { label: "steps", value: "500 (planned)" }
+        { label: "params", value: "10.66M" },
+        { label: "val loss (start→best→end)", value: "4.47 → 2.68 → 3.25" },
+        { label: "train loss (end)", value: "0.22 (overfit, 25k chars)" },
+        { label: "steps", value: "500 · 22 min · batch 32" }
       ],
-      note: "nanoGPT flattened into s01-nanogpt/. Corpus = BankBench-MY prompts + Sinar civic text (see data/ECOSYSTEMS_DATA_SOURCES.md). Training run is yours to execute locally (MPS, free); wire numbers here once done."
+      note: "Run on Mac MPS, $0. Corpus = 25k chars of BankBench-MY EN/BM/Manglish prompts (no Kaggle filler yet). Best ckpt @ iter 200. Samples on-domain (RM amounts, 12-digit accounts). Loop-sanity proof, not a quality claim. See s01-nanogpt/RESULT.md + RUN_LOG.md."
     },
     {
       id: "S-02",

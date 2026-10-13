@@ -1,0 +1,116 @@
+Overriding config with config/train_shakespeare_char.py:
+# train a miniature character-level shakespeare model
+# good for debugging and playing on macbooks and such
+
+out_dir = 'out-shakespeare-char'
+eval_interval = 250 # keep frequent because we'll overfit
+eval_iters = 200
+log_interval = 10 # don't print too too often
+
+# we expect to overfit on this small dataset, so only save when val improves
+always_save_checkpoint = False
+
+wandb_log = False # override via command line if you like
+wandb_project = 'shakespeare-char'
+wandb_run_name = 'mini-gpt'
+
+dataset = 'shakespeare_char'
+gradient_accumulation_steps = 1
+batch_size = 64
+block_size = 256 # context of up to 256 previous characters
+
+# baby GPT model :)
+n_layer = 6
+n_head = 6
+n_embd = 384
+dropout = 0.2
+
+learning_rate = 1e-3 # with baby networks can afford to go a bit higher
+max_iters = 5000
+lr_decay_iters = 5000 # make equal to max_iters usually
+min_lr = 1e-4 # learning_rate / 10 usually
+beta2 = 0.99 # make a bit bigger because number of tokens per iter is small
+
+warmup_iters = 100 # not super necessary potentially
+
+# on macbook also add
+# device = 'cpu'  # run on cpu only
+# compile = False # do not torch compile the model
+
+Overriding: device = mps
+Overriding: compile = False
+Overriding: max_iters = 500
+Overriding: eval_interval = 100
+Overriding: eval_iters = 20
+Overriding: batch_size = 32
+Overriding: out_dir = ./out
+tokens per iteration will be: 8,192
+found vocab_size = 88 (inside data/shakespeare_char/meta.pkl)
+Initializing a new model from scratch
+number of parameters: 10.66M
+/Users/nshfnoh/dyad-apps/Antigravity/BankBench/training-loop/s01-nanogpt/train.py:196: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == 'float16'))
+/Users/nshfnoh/dyad-apps/Antigravity/BankBench/training-loop/s01-nanogpt/.venv/lib/python3.11/site-packages/torch/cuda/amp/grad_scaler.py:31: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  super().__init__(
+num decayed parameter tensors: 26, with 10,748,928 parameters
+num non-decayed parameter tensors: 13, with 4,992 parameters
+using fused AdamW: False
+step 0: train loss 4.4596, val loss 4.4370
+iter 0: loss 4.4781, time 22893.01ms, mfu -100.00%
+iter 10: loss 3.2951, time 1657.90ms, mfu 0.11%
+iter 20: loss 2.8990, time 1849.00ms, mfu 0.11%
+iter 30: loss 2.6772, time 1852.39ms, mfu 0.11%
+iter 40: loss 2.5803, time 713.35ms, mfu 0.13%
+iter 50: loss 2.4991, time 1792.74ms, mfu 0.12%
+iter 60: loss 2.5326, time 1812.02ms, mfu 0.12%
+iter 70: loss 2.4640, time 1732.26ms, mfu 0.12%
+iter 80: loss 2.4187, time 1602.17ms, mfu 0.12%
+iter 90: loss 2.3504, time 1724.86ms, mfu 0.12%
+step 100: train loss 2.2695, val loss 2.7336
+saving checkpoint to ./out
+iter 100: loss 2.4391, time 19546.58ms, mfu 0.11%
+iter 110: loss 2.4152, time 2120.91ms, mfu 0.11%
+iter 120: loss 2.3965, time 1806.73ms, mfu 0.11%
+iter 130: loss 2.1645, time 1746.53ms, mfu 0.11%
+iter 140: loss 2.0150, time 1765.56ms, mfu 0.11%
+iter 150: loss 2.0655, time 4394.25ms, mfu 0.10%
+iter 160: loss 1.9286, time 1923.02ms, mfu 0.10%
+iter 170: loss 1.8973, time 2075.62ms, mfu 0.10%
+iter 180: loss 1.8846, time 1648.12ms, mfu 0.10%
+iter 190: loss 1.6856, time 1541.42ms, mfu 0.10%
+step 200: train loss 1.4990, val loss 2.6846
+saving checkpoint to ./out
+iter 200: loss 1.7746, time 36401.39ms, mfu 0.09%
+iter 210: loss 1.5573, time 4894.80ms, mfu 0.09%
+iter 220: loss 1.6471, time 3629.41ms, mfu 0.08%
+iter 230: loss 1.5123, time 1842.10ms, mfu 0.08%
+iter 240: loss 1.3745, time 836.58ms, mfu 0.10%
+iter 250: loss 1.3675, time 1707.19ms, mfu 0.10%
+iter 260: loss 1.3054, time 2444.17ms, mfu 0.10%
+iter 270: loss 1.1461, time 1965.02ms, mfu 0.10%
+iter 280: loss 1.2123, time 1741.10ms, mfu 0.10%
+iter 290: loss 0.9129, time 1857.39ms, mfu 0.10%
+step 300: train loss 0.7108, val loss 2.8500
+iter 300: loss 1.0606, time 20362.85ms, mfu 0.09%
+iter 310: loss 0.9062, time 1786.15ms, mfu 0.09%
+iter 320: loss 0.8024, time 1870.87ms, mfu 0.09%
+iter 330: loss 0.9834, time 1952.91ms, mfu 0.09%
+iter 340: loss 0.9057, time 1798.71ms, mfu 0.09%
+iter 350: loss 0.9009, time 1796.24ms, mfu 0.09%
+iter 360: loss 0.7767, time 1706.95ms, mfu 0.10%
+iter 370: loss 0.6280, time 1979.43ms, mfu 0.10%
+iter 380: loss 0.5533, time 1739.92ms, mfu 0.10%
+iter 390: loss 0.5999, time 1916.54ms, mfu 0.10%
+step 400: train loss 0.3254, val loss 3.3246
+iter 400: loss 0.6191, time 32735.74ms, mfu 0.09%
+iter 410: loss 0.5590, time 1708.63ms, mfu 0.09%
+iter 420: loss 0.5213, time 2465.19ms, mfu 0.09%
+iter 430: loss 0.4389, time 1851.34ms, mfu 0.09%
+iter 440: loss 0.5240, time 1776.29ms, mfu 0.09%
+iter 450: loss 0.4973, time 1771.60ms, mfu 0.09%
+iter 460: loss 0.4498, time 1815.71ms, mfu 0.09%
+iter 470: loss 0.4439, time 1712.37ms, mfu 0.10%
+iter 480: loss 0.4178, time 1810.15ms, mfu 0.10%
+iter 490: loss 0.4418, time 1733.40ms, mfu 0.10%
+step 500: train loss 0.2184, val loss 3.2475
+iter 500: loss 0.3754, time 20277.45ms, mfu 0.09%
