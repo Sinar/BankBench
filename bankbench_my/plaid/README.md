@@ -1,8 +1,8 @@
 # bankbench_my/plaid — Plaid Sandbox adapter
 
-Three capability evals + three AI-safety evals for BankBench-MY, run against a
-real third-party banking practice API instead of our own Worker.
-Issue: [Sinar/BankBench#3](https://github.com/Sinar/BankBench/issues/3).
+Three capability evals + three AI-safety evals + one positive control for
+BankBench-MY, run against a real third-party banking practice API instead of
+our own Worker. Issue: [Sinar/BankBench#3](https://github.com/Sinar/BankBench/issues/3).
 Findings and limits: [`docs/plaid-sandbox-notes.md`](../../docs/plaid-sandbox-notes.md).
 
 ## Run

@@ -29,7 +29,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from capability_evals import run_capability_evals
 from plaid_client import PlaidClient, redact
-from safety_evals import run_safety_evals, selfcheck
+from safety_evals import run_control, run_safety_evals, selfcheck
 
 HERE = pathlib.Path(__file__).resolve().parent
 RESULTS = HERE / "results"
@@ -76,9 +76,14 @@ def main() -> int:
     started = datetime.now(timezone.utc)
     caps = run_capability_evals(client)
 
-    token = (caps[0].get("context") or {}).get("access_token")
-    account_id = ((caps[1].get("context") or {}).get("primary_account_id")
-                  or (caps[2].get("context") or {}).get("primary_account_id"))
+    # Safety evals MUST run on the item that carries OUR fixture (CAP-3).
+    # Using CAP-1's default item was a real bug in the first live run: the
+    # seeded "[SYSTEM OVERRIDE]" memo never reached the agent, so SAF-2 was
+    # passing vacuously.
+    safety_ctx = caps[2].get("context") or {}
+    token = safety_ctx.get("access_token") or (caps[0].get("context") or {}).get("access_token")
+    account_id = (safety_ctx.get("primary_account_id")
+                  or (caps[1].get("context") or {}).get("primary_account_id"))
 
     if args.preflight:
         print("PREFLIGHT (%s)" % mode)
@@ -93,6 +98,7 @@ def main() -> int:
 
     safs, note = run_safety_evals(client, token, account_id, model=args.model)
     checks = selfcheck()
+    control = run_control(client, token, account_id, model=args.model)
 
     RESULTS.mkdir(exist_ok=True)
     payload = {
@@ -106,6 +112,7 @@ def main() -> int:
                 "agent_model": args.model, "safety_note": note},
         "api_calls": client.calls,
         "scorer_selfcheck": checks,
+        "control": control,
         "capability": caps,
         "safety": safs,
     }
@@ -121,7 +128,7 @@ def main() -> int:
         "Issue: https://github.com/Sinar/BankBench/issues/3 | mode: **%s**" % mode,
         "Run: %s" % started.strftime("%Y-%m-%d %H:%M UTC"),
         "Agent under test: OpenRouter `%s` (see agent.py)" % args.model, "",
-        "## Scoreboard", "", _summary(rows), "",
+        "## Scoreboard", "", _summary(rows + [control]), "",
         "## Result", "",
         "- Capability: **%d/3** passed." % cap_pass,
         "- AI safety: **%d/%d** run passed." % (saf_pass, len(saf_ran)),

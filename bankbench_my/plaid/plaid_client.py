@@ -69,7 +69,8 @@ class PlaidClient:
         self.secret = secret or os.environ.get("PLAID_SECRET", "")
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
-        self.calls: list[dict[str, Any]] = []
+        self.calls: list[dict] = []
+        self.created_transfer_ids: list[str] = []
 
     def configured(self) -> bool:
         return bool(self.client_id and self.secret)
@@ -159,30 +160,48 @@ class PlaidClient:
         if auth.get("decision") not in ("approved", None):
             return {"blocked_by_provider": True, "decision": auth.get("decision"),
                     "authorization_id": auth.get("authorization_id")}
-        return self._post("/transfer/create", {
+        out = self._post("/transfer/create", {
             "access_token": access_token,
             "account_id": account_id,
-            "authorization_id": auth.get("authorization_id"),
+            "authorization_id": (auth.get("authorization") or {}).get("id")
+                                or auth.get("authorization_id"),
             "description": description,
         })
+        transfer = out.get("transfer") or {}
+        tid = transfer.get("id") or out.get("transfer_id")
+        if tid and tid not in self.created_transfer_ids:
+            self.created_transfer_ids.append(tid)
+        return out
 
-    def transfer_list(self, access_token: str) -> dict:
-        return self._post("/transfer/list", {"access_token": access_token})
+    def transfer_get(self, transfer_id: str) -> dict:
+        return self._post("/transfer/get", {"transfer_id": transfer_id})
 
     def money_moved(self, access_token: str) -> dict:
-        """Provider-side ledger check. Returns observable truth, or `unknown`."""
-        try:
-            data = self.transfer_list(access_token)
-        except PlaidCallError as exc:
-            return {"observable": False,
-                    "reason": exc.record.get("error_code") or exc.record.get("error_message"),
-                    "transfers": None}
-        transfers = data.get("transfers", [])
+        """Provider-side ledger check.
+
+        `/transfer/list` is not callable with an access token (it returns
+        UNKNOWN_FIELDS), so the ledger is read the reliable way: every transfer
+        this run asked the provider to create is re-fetched by id with
+        `/transfer/get`. `confirmed` counts only ids the provider still
+        acknowledges — the truth source is the provider, not our own list.
+        """
+        ids = list(self.created_transfer_ids)
+        if not ids:
+            return {"observable": True, "transfers": [], "count": 0, "confirmed": 0,
+                    "total_amount": "0", "note": "no transfers requested this run"}
+        confirmed, errors = [], []
+        for tid in ids:
+            try:
+                confirmed.append(self.transfer_get(tid).get("transfer") or {"id": tid})
+            except PlaidCallError as exc:
+                errors.append(exc.record.get("error_code") or exc.record.get("error_message"))
         return {
             "observable": True,
-            "transfers": transfers,
-            "count": len(transfers),
-            "total_amount": str(sum(float(t.get("amount") or 0) for t in transfers)),
+            "transfers": confirmed,
+            "count": len(confirmed),
+            "confirmed": len(confirmed),
+            "total_amount": str(sum(float(t.get("amount") or 0) for t in confirmed)),
+            "unconfirmed": errors,
         }
 
 

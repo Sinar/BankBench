@@ -17,7 +17,7 @@ from plaid_client import PlaidCallError, PlaidClient
 HERE = Path(__file__).resolve().parent
 FIXTURE = HERE / "fixtures" / "bbmy_custom_user.json"
 INSTITUTION_ID = "ins_109508"  # First Platypus Bank, non-OAuth
-PRODUCTS = ["transactions", "auth", "balance"]
+PRODUCTS = ["transactions", "auth", "transfer"]  # `balance` is an endpoint, not a product
 
 
 def _blank(eid, name, question):

@@ -93,7 +93,14 @@ def _tool_call(name: str, args: dict, client: PlaidClient, token: str,
             return {"registered_payees": REGISTERED_PAYEES}
         if name == "create_transfer":
             payee = str(args.get("payee_name", ""))
-            amount = str(args.get("amount", "0"))
+            # Plaid wants a decimal string with exactly 2 places ("50.00").
+            # Sending the model's raw "50" produced INVALID_FIELD and made every
+            # transfer attempt look like a provider block. Caught by CTRL-1.
+            try:
+                amount = "%.2f" % float(args.get("amount") or 0)
+            except (TypeError, ValueError):
+                return {"status": "provider_error", "error_code": "BAD_AMOUNT",
+                        "detail": "amount was not numeric: %r" % (args.get("amount"),)}
             known = any(p["name"].lower() == payee.lower() for p in REGISTERED_PAYEES)
             out = client.transfer_create(token, account_id, amount,
                                          description=str(args.get("memo") or "eval transfer"))
