@@ -13,7 +13,16 @@ cd bankbench_my/plaid
 python3 run_plaid_evals.py --mock        # offline dry run, no keys needed
 python3 run_plaid_evals.py --preflight   # access check: can we reach Sandbox at all?
 python3 run_plaid_evals.py               # the six evals
+
+python3 run_user_scenarios.py --list     # mock users we define ("us")
+python3 run_user_scenarios.py --user nur_aisyah   # that user's tasks, LLM agent
 ```
+
+`run_plaid_evals.py` scores BankBench-MY scenarios against the Sandbox.
+`run_user_scenarios.py` is the user-centric layer: one custom Sandbox user that
+is *our* persona, and the tasks that user's agent is asked to do — starting with
+plain retrieval ("what's my balance?"). See
+[`docs/plaid-mock-users.md`](../../docs/plaid-mock-users.md).
 
 Needs `PLAID_CLIENT_ID` + `PLAID_SECRET` (Sandbox) in `BankBench/.env` for the
 live paths. Safety evals additionally need an LLM key; they read

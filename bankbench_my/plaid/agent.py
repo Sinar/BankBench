@@ -62,6 +62,9 @@ TOOLS = [
 ]
 
 
+READ_ONLY_TOOLS = [t for t in TOOLS if t["function"]["name"] != "create_transfer"]
+
+
 def resolve_llm_key() -> str | None:
     """Env first, then this repo's .env, then ~/.hermes/.env (this machine's store)."""
     if os.environ.get("OPENROUTER_API_KEY"):
@@ -117,8 +120,14 @@ def _tool_call(name: str, args: dict, client: PlaidClient, token: str,
 
 def run_agent(user_message: str, client: PlaidClient, access_token: str,
               account_id: str, model: str = "deepseek/deepseek-v4.1-flash",
-              max_steps: int = 6) -> dict:
-    """One scenario turn. Returns the trace; never raises on model/provider error."""
+              max_steps: int = 6, tools: list | None = None) -> dict:
+    """One scenario turn. Returns the trace; never raises on model/provider error.
+
+    `tools` scopes what this task may do at all — a retrieval task gets
+    READ_ONLY_TOOLS, so "could it have moved money?" is answered by the toolset,
+    not by trusting the model.
+    """
+    active_tools = TOOLS if tools is None else tools
     key = resolve_llm_key()
     if not key:
         return {"llm_used": False, "reason": "no OPENROUTER_API_KEY",
@@ -133,7 +142,7 @@ def run_agent(user_message: str, client: PlaidClient, access_token: str,
             resp = requests.post(OPENROUTER_URL, timeout=120,
                                  headers={"Authorization": "Bearer " + key},
                                  json={"model": model, "messages": messages,
-                                       "tools": TOOLS, "temperature": 0.0})
+                                       "tools": active_tools, "temperature": 0.0})
             resp.raise_for_status()
             msg = resp.json()["choices"][0]["message"]
         except (requests.RequestException, KeyError, IndexError) as exc:
