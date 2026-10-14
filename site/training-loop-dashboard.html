@@ -69,6 +69,27 @@
   .note { font-size: 12.5px; color: var(--g4); margin-top: 10px; line-height: 1.5; border-top: 1px dashed var(--g2); padding-top: 10px; }
   footer { margin-top: 40px; font-size: 12px; color: var(--g3); text-align: center; }
   a { color: var(--sig); }
+
+  /* collapsible metric glossary */
+  details.glossary {
+    margin: 28px auto 0; max-width: 760px;
+    background: #fff; border: 1px solid var(--g2); border-radius: 10px;
+    padding: 4px 18px;
+  }
+  details.glossary > summary {
+    cursor: pointer; font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 600; font-size: 14px; color: var(--deep);
+    padding: 12px 0; list-style: none;
+  }
+  details.glossary > summary::-webkit-details-marker { display: none; }
+  details.glossary > summary::before { content: "▸ "; color: var(--sig); }
+  details.glossary[open] > summary::before { content: "▾ "; }
+  details.glossary dl { margin: 0 0 14px; }
+  details.glossary dt {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    color: var(--sighi); font-weight: 600; margin-top: 12px;
+  }
+  details.glossary dd { margin: 2px 0 0; font-size: 13px; color: var(--ink); line-height: 1.55; }
 </style>
 </head>
 <body>
@@ -84,6 +105,8 @@
   </div>
 
   <div class="grid" id="grid"></div>
+
+  <details class="glossary" id="glossary"><summary>What do these numbers mean?</summary></details>
 
   <footer>
     No-code dashboard — edit the <code>DATA</code> object in this file's &lt;script&gt; block, save, refresh. No build step.<br>
@@ -159,6 +182,12 @@ const DATA = {
       ],
       note: "TOP PRIORITY, PAUSED for now: depends on the S-02 model checkpoint (needs the VastAI rental first). The FastAPI wrapper (s05-deploy/serve.py) is already written and ready to wrap the checkpoint once it exists."
     }
+  ],
+  glossary: [
+    { term: "params · 10.66M", def: "Short for parameters — the knobs the model learns. 10.66 million of them. More knobs usually means a bigger, more capable model; this one is small on purpose, to prove the loop works cheaply." },
+    { term: "val loss (start→best→end) · 4.47 → 2.68 → 3.25", def: "Val loss (validation loss) measures how surprised the model is by text it has NOT seen before — lower is better. 4.47 is the random-guess starting point; 2.68 is the best it reached (at step 200); 3.25 is where it ended. The rise after 2.68 is the model starting to memorise the small practice set rather than learn generally." },
+    { term: "train loss (end) · 0.22 (memorised, 25k chars)", def: "Train loss is the same surprise-measure but on the text it practised on. Dropping to 0.22 means it essentially memorised those 25,000 characters — expected for such a tiny dataset, and a sign this was a sanity check, not a real product." },
+    { term: "steps · 500 · 22 min · batch 32", def: "The model trained for 500 steps (rounds of learning), took about 22 minutes, processing 32 bits of text at a time (batch size 32). These describe the size and cost of the run." }
   ]
 };
 // ============================================================
@@ -186,6 +215,9 @@ for (const s of DATA.stages) {
   `;
   grid.appendChild(card);
 }
+
+const gl = document.getElementById("glossary");
+gl.innerHTML += "<dl>" + DATA.glossary.map(g => `<dt>${g.term}</dt><dd>${g.def}</dd>`).join("") + "</dl>";
 </script>
 </body>
 </html>
