@@ -29,6 +29,14 @@ for f in factory.html factory-v1.html platform.html platform-v1.html models.js n
   fi
 done
 
+# training-loop dashboard: training-loop/dashboard/index.html is the single
+# source of truth. Mirror it into site/ on every deploy so the live
+# /training-loop-dashboard page can never silently drift from the canonical copy.
+if [[ -f "training-loop/dashboard/index.html" ]]; then
+  cp "training-loop/dashboard/index.html" "site/training-loop-dashboard.html"
+  echo "synced site/training-loop-dashboard.html <- training-loop/dashboard/index.html"
+fi
+
 OUT=dist
 rm -rf "$OUT" && mkdir -p "$OUT"
 cp -R site/. "$OUT"/
