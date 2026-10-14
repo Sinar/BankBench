@@ -99,19 +99,20 @@
 // ============================================================
 const DATA = {
   budgetUsedUsd: 0.00,
-  lastUpdated: "not yet run",
+  lastUpdated: "2026-10-13 · local run (S-01 nanoGPT done on Mac MPS; S-02/S-05 pending VastAI rental)",
   stages: [
     {
       id: "S-01",
       title: "nanoGPT from scratch",
-      status: "ghosted",
-      grade: null,
+      status: "done",
+      grade: "B",
       metrics: [
-        { label: "params", value: "—" },
-        { label: "loss (start→end)", value: "—" },
-        { label: "steps", value: "—" }
+        { label: "params", value: "10.66M" },
+        { label: "val loss (start→best→end)", value: "4.47 → 2.68 → 3.25" },
+        { label: "train loss (end)", value: "0.22 (overfit, 25k chars)" },
+        { label: "steps", value: "500 · 22 min · batch 32" }
       ],
-      note: "Proves you can run a full pretrain loop from random init. Local/free, no VastAI spend."
+      note: "Run on Mac MPS, $0. Corpus = 25k chars of BankBench-MY EN/BM/Manglish prompts (no Kaggle filler yet). Best ckpt @ iter 200. Samples on-domain (RM amounts, 12-digit accounts). Loop-sanity proof, not a quality claim. See s01-nanogpt/RESULT.md + RUN_LOG.md."
     },
     {
       id: "S-02",
@@ -123,7 +124,7 @@ const DATA = {
         { label: "held-out refusal % (ft)", value: "—" },
         { label: "over-refusal delta", value: "—" }
       ],
-      note: "PRIORITY. Clears the securefast.ai bar. Produces the scorecard's new trainability row."
+      note: "PRIORITY, BLOCKED today: needs a VastAI GPU rental (no account/card on file) + Kaggle/AdaptationAI creds. sft_train.jsonl (17) / sft_heldout.jsonl (5) already built. ECOSYSTEMS civic data (data/raw/sinar-civic) can substitute the Kaggle Banking77 benign smoke set."
     },
     {
       id: "S-03",
@@ -156,7 +157,7 @@ const DATA = {
         { label: "endpoint", value: "—" },
         { label: "latency", value: "—" }
       ],
-      note: "PRIORITY. Turns S-02's checkpoint into a live BankBench-MY-evaluable target."
+      note: "PRIORITY, BLOCKED today: depends on the S-02 checkpoint (needs VastAI rental first). FastAPI wrapper (s05-deploy/serve.py) is ready to wrap the checkpoint once it exists."
     }
   ]
 };
