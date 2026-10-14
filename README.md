@@ -4,7 +4,7 @@
 
 The migration plan this repo followed lives in the source repo's `MIGRATION_TO_SINAR.md` (private working repo, not part of this public one).
 
-**Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard. The no-code eval console is live at [bankbench-sinar.pages.dev/bankbench_my/platform](https://bankbench-sinar.pages.dev/bankbench_my/platform) (Scenario Factory: [/bankbench_my/factory](https://bankbench-sinar.pages.dev/bankbench_my/factory)) — bring your own OpenRouter / NVIDIA key; nothing is stored server-side.
+**Live site:** [bankbench-sinar.pages.dev](https://bankbench-sinar.pages.dev) — the general overview page (`site/index.html`), not a raw dashboard. It links out to the live sandbox and the training-loop progress dashboard. The no-code eval console is live at [bankbench-sinar.pages.dev/bankbench_my/platform](https://bankbench-sinar.pages.dev/bankbench_my/platform) (Scenario Factory: [/bankbench_my/factory](https://bankbench-sinar.pages.dev/bankbench_my/factory)) — bring your own OpenRouter / NVIDIA key; nothing is stored server-side. The **agentic sandbox console** — a real tool-calling agent against the Plaid Sandbox with an LLM-as-judge scorer — is live at [/bankbench_my/no-code-eval](https://bankbench-sinar.pages.dev/bankbench_my/no-code-eval).
 
 ## Executive summary — why this work, and what society gets back
 
@@ -122,6 +122,7 @@ BankBench/
 │   ├── models.js               ← shared model catalogue: live /models per provider via /api/proxy
 │   ├── platform-v1.html        ← v1 variant of the console (tabbed views) — October scope
 │   ├── factory-v1.html         ← v1 variant of the factory (tabbed views) — October scope
+│   ├── no-code-eval.html       ← LIVE: agentic sandbox console — real tool-calling agent vs Plaid Sandbox + LLM-as-judge scorer
 │   ├── scenarios/
 │   │   └── bankbench-20-tasks.json   ← canonical dataset (from bankbench/bankbench_tasks.json)
 │   ├── tamperbank/             ← TamperBank scorecard: validity notebooks, live runner, dashboard builder
@@ -129,7 +130,7 @@ BankBench/
 │   └── research/               ← amp.md (agentic-payment contribution proposals), bnm-watch.md (BNM watcher)
 ├── eval-scorecard/             ← the "+ Scorecard" surface, generalised: BankBench-MY vs HLE vs Cybench
 ├── training-loop/              ← the "+ Model" surface — see its own README for the S-01..S-05 sprint
-├── docs/                       ← cso-auto-deploy-guide.md, phase4_guide.md, research-log-2026-08-13.md
+├── docs/                       ← cso-auto-deploy-guide.md, phase4_guide.md, research-log-2026-08-13.md, agent_setup.md (run-it-yourself guide), bankbench_review_packet.md
 ├── public/                     ← public-facing writing and outreach
 │   ├── masses/                 ← "Running a Safe Local LLM" five-part series (drafts + landing page)
 │   ├── reading-machine-syllabus.md
@@ -159,7 +160,7 @@ At a glance:
 |---|---|
 | **August 2026** | Repo cut from the private working repo; meta-overview + diagram; `bankbench_my/` eval core; `training-loop/` S-01→S-05 scaffolding; unified `eval-scorecard/` (BankBench-MY vs HLE vs Cybench); live site + GitHub Action auto-deploy; Public Education surface (1 live + 5 ghosted explainers, bilingual interactive demo); fellow bio; IDFR diplomacy book backup; Open Finance research log |
 | **September 2026** | TamperBank scorecard (3 open-weight models, 20 tamper scenarios + 2 controls); open-weight safety guidance article + five-part series draft; `3-4_LLM_tamper_harbor` Harbor merge into `bankbench_my/`; folder reorganisation; IDFR Ch.5 submitted; AISA pitch; AMP contribution proposals; BNM watcher; `ops` evals v0.1 skeleton; CETALab Uni rater + RKFF 0413 outreach pages; live no-code eval console + Scenario Factory; same-origin Pages Function API proxy and live model catalogue |
-| **October 2026** | v1 tabbed variants of the eval console and factory (`platform-v1.html`, `factory-v1.html`) staged |
+| **October 2026** | v1 tabbed variants of the eval console and factory; "101 to AI evals" explainer (developer + non-tech versions, incl. an AMP agentic-mobile-protocol variant); real-LLM demo runs; Apart Hackathon collusion on `mybanksim`; Cetaval Uni poster (first academia use); scenario review packet for Issue #1; sandbox infrastructure notes (LXC + BoxCompute + `sandbox-infra.md`); KuasaOS sprint — preliminary eval results, public-comms slides + banner, and the confirmed scalable flow; **Plaid Sandbox adapter with live agent runs** (issue #3) incl. mock-user bundles and adversarial balance retrieval; **first nanoGPT run** on our own corpus (S-01 done); **`no-code-eval.html` — the agentic sandbox console** (Plaid tool-calling + LLM-as-judge, live); **run-it-yourself guide** (`docs/agent_setup.md`, 3 pathways); **issue decomposition** — #3 split into #5 (Hermes) / #6 (Box Compute) / #8 (Sinar LXC), plus #9 (catalog scaling: Plaid+Stripe+Billplz) and #10 (guide, closed) |
 
 The log is **append-only** — new weeks are added, earlier ones are never rewritten.
 Full detail, week by week: **[PROGRESS_LOG.md](PROGRESS_LOG.md)**.
