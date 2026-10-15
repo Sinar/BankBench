@@ -8,10 +8,10 @@ Every scenario sits in the schema of `bankbench_my/scenarios/bankbench-20-tasks.
 
 | Provider | Capabilities | Scenarios | benign (`proceed`) | adversarial (`block`/`clarify`) |
 |---|---:|---:|---:|---:|
-| **Billplz** | 8 | 16 | 6 | 10 |
-| **Plaid** | 17 | 34 | 17 | 17 |
+| **Billplz** | 8 | 18 | 6 | 12 |
+| **Plaid** | 17 | 38 | 17 | 21 |
 | **Stripe** | 9 | 18 | 9 | 9 |
-| **Total** | **34** | **68** | **32** | **36** |
+| **Total** | **34** | **74** | **32** | **42** |
 
 ## Files
 
@@ -21,10 +21,11 @@ Every scenario sits in the schema of `bankbench_my/scenarios/bankbench-20-tasks.
 | `bankbench_my/scenarios/plaid-capability-scenarios.json` | `docs/issue9-plaid-scenarios.md` |
 | `bankbench_my/scenarios/stripe-capability-scenarios.json` | `docs/issue9-stripe-scenarios.md` |
 | — | `docs/issue9-payment-sandbox-capabilities-spec.md` |
+| — | `docs/issue9-bnm-alignment.md` *(how the scenarios map to BNM's FTFC + RMiT, with the gaps)* |
 
 ## Capability map
 
-### Billplz — 8 capabilities, 16 scenarios
+### Billplz — 8 capabilities, 18 scenarios
 
 | Capability | Benign | Adversarial |
 |---|---|---|
@@ -33,11 +34,11 @@ Every scenario sits in the schema of `bankbench_my/scenarios/bankbench-20-tasks.
 | `billplz.fpx_status` | BIL-FPX-01 | BIL-FPX-02 |
 | `billplz.webhook` | BIL-SIG-01 | BIL-SIG-02 |
 | `billplz.split_rule` | BIL-SPL-01 | BIL-SPL-02 |
-| `billplz.payment_order` | BIL-PO-01 | BIL-PO-02 |
+| `billplz.payment_order` | BIL-PO-01 | BIL-PO-02, BIL-PO-03 |
 | `billplz.refund` | — | BIL-REF-01, BIL-REF-02 |
-| `billplz.agreement` | — | BIL-AGR-01, BIL-AGR-02 |
+| `billplz.agreement` | — | BIL-AGR-01, BIL-AGR-02, BIL-AGR-03 |
 
-### Plaid — 17 capabilities, 34 scenarios
+### Plaid — 17 capabilities, 38 scenarios
 
 | Capability | Benign | Adversarial |
 |---|---|---|
@@ -47,14 +48,14 @@ Every scenario sits in the schema of `bankbench_my/scenarios/bankbench-20-tasks.
 | `plaid.transactions` | PLA-TXN-01 | PLA-TXN-02 |
 | `plaid.investments` | PLA-INV-01 | PLA-INV-02 |
 | `plaid.liabilities` | PLA-LIAB-01 | PLA-LIAB-02 |
-| `plaid.transfer` | PLA-TRF-01 | PLA-TRF-02 |
-| `plaid.payment_initiation` | PLA-PAY-01 | PLA-PAY-02 |
+| `plaid.transfer` | PLA-TRF-01 | PLA-TRF-02, PLA-TRF-03 |
+| `plaid.payment_initiation` | PLA-PAY-01 | PLA-PAY-02, PLA-PAY-03 |
 | `plaid.income` | PLA-INC-01 | PLA-INC-02 |
 | `plaid.assets` | PLA-AST-01 | PLA-AST-02 |
 | `plaid.employment` | PLA-EMP-01 | PLA-EMP-02 |
-| `plaid.signal` | PLA-SIG-01 | PLA-SIG-02 |
+| `plaid.signal` | PLA-SIG-01 | PLA-SIG-02, PLA-SIG-03 |
 | `plaid.monitor` | PLA-MON-01 | PLA-MON-02 |
-| `plaid.identity_verification` | PLA-IDV-01 | PLA-IDV-02 |
+| `plaid.identity_verification` | PLA-IDV-01 | PLA-IDV-02, PLA-IDV-03 |
 | `plaid.enrich` | PLA-ENR-01 | PLA-ENR-02 |
 | `plaid.credit` | PLA-CRD-01 | PLA-CRD-02 |
 | `plaid.link` | PLA-LNK-01 | PLA-LNK-02 |
