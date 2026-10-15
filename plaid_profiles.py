@@ -1,31 +1,43 @@
 #!/usr/bin/env python3
-"""Plaid Sandbox multi-profile client (official plaid-python SDK).
+"""Plaid Sandbox multi-profile client (official plaid-python v45 SDK).
 
-Each "user profile" is a Plaid sandbox test-user credential. The SDK
-handles routing + API version for the pinned 2020-09-14 project.
+Each "user profile" = a Plaid sandbox test-user credential. The SDK handles
+routing + the pinned 2020-09-14 API version. Sandbox maps any live institution
+to the simulated test bank, so the test-user login is what differentiates profiles.
 
 Usage:
-  python3 plaid_profiles.py list            # show the profile catalog
-  python3 plaid_profiles.py <profile>       # create item + balances for one
-  python3 plaid_profiles.py all             # balances for every profile
-
-Profiles map to Plaid's sandbox test bank login behaviors:
-  good      -> clean login, normal balances
-  mfa       -> login OK but demands an MFA code (auth 123456)
-  mfa_sms   -> login OK but demands SMS MFA
-  bad       -> wrong password (LOGIN_REQUIRED error)
-  locked    -> account locked
-  update    -> login triggers account-update flow
+  python3 plaid_profiles.py list          # profile catalog
+  python3 plaid_profiles.py <profile>     # one profile: item -> balances
+  python3 plaid_profiles.py all           # balances for every profile
 """
-import json
 import os
 import sys
 from pathlib import Path
 
 import plaid
-from plaid import Error as PlaidError
+from plaid.api.plaid_api import PlaidApi
+from plaid.api_client import ApiClient
+from plaid.configuration import Configuration
+from plaid.exceptions import ApiException
+from plaid.model.sandbox_public_token_create_request import (
+    SandboxPublicTokenCreateRequest as SP,
+)
+from plaid.model.sandbox_public_token_create_request_options import (
+    SandboxPublicTokenCreateRequestOptions as OPT,
+)
+from plaid.model.item_public_token_exchange_request import (
+    ItemPublicTokenExchangeRequest as EX,
+)
+from plaid.model.accounts_balance_get_request import AccountsBalanceGetRequest as BAL
+from plaid.model.accounts_balance_get_request_options import (
+    AccountsBalanceGetRequestOptions as BLO,
+)
+from plaid.model.accounts_get_request import AccountsGetRequest as ACCT
+from plaid.model.transactions_get_request import TransactionsGetRequest as TXN
+from plaid.model.products import Products
 
 HERE = Path(__file__).parent
+
 
 def load_env():
     env = {}
@@ -37,74 +49,109 @@ def load_env():
         env[k.strip()] = v.strip()
     return env
 
+
 ENV = load_env()
 CID = ENV["PLAID_CLIENT_ID"]
 SEC = ENV["PLAID_SECRET"]
-VERSION = ENV.get("PLAID_VERSION", "2020-09-14")
-CONFIG = plaid.ClientConfiguration(CID, SEC, plaid.Environment.sandbox, VERSION)
-client = plaid.Client(CONFIG)
+API_HOST = plaid.Environment.Sandbox  # 'https://sandbox.plaid.com'
+api = PlaidApi(ApiClient(Configuration(host=API_HOST)))
 
-# Plaid sandbox test bank institution. ins_1 (Tartan) is deprecated in this
-# catalog, so use a live catalog id; the sandbox maps any of them to the
-# simulated test bank, so the test-user credentials are what matter.
-INSTITUTION_ID = os.environ.get("PLAID_TEST_INSTITUTION", "ins_130958")
+# Sandbox test bank: any live catalog institution maps to the simulated bank.
+INSTITUTION_ID = os.environ.get("PLAID_TEST_INSTITUTION", "ins_128026")
 
 PROFILES = {
-    "good":   {"username": "user_good",   "password": "passw0rd", "note": "clean login"},
-    "mfa":    {"username": "user_mfa",    "password": "passw0rd", "note": "needs MFA code (123456)"},
-    "mfa_sms":{"username": "user_mfa_sms","password": "passw0rd", "note": "needs SMS MFA"},
-    "bad":    {"username": "user_bad",    "password": "passw0rd", "note": "wrong password"},
-    "locked": {"username": "user_locked", "password": "passw0rd", "note": "account locked"},
-    "update": {"username": "user_update", "password": "passw0rd", "note": "account-update flow"},
+    "good":    {"username": "user_good",    "note": "clean login"},
+    "mfa":     {"username": "user_mfa",     "note": "needs MFA (123456)"},
+    "mfa_sms": {"username": "user_mfa_sms", "note": "needs SMS MFA"},
+    "bad":     {"username": "user_bad",     "note": "wrong password"},
+    "locked":  {"username": "user_locked",  "note": "account locked"},
+    "update":  {"username": "user_update",  "note": "account-update flow"},
 }
+PASSWORD = "passw0rd"
+
+
+def _call(fn, req):
+    try:
+        return fn(req)
+    except ApiException as e:
+        body = getattr(e, "body", None) or getattr(e, "reason", "")
+        return {"_error": str(e.status), "body": (str(body)[:400])}
+
 
 def make_item(profile):
-    """Create a sandbox item for a profile -> (public_token, access_token)."""
     c = PROFILES[profile]
-    req = plaid.SandboxPublicTokenCreateRequest(
+    opts = OPT(override_username=c["username"], override_password=PASSWORD)
+    req = SP(
         institution_id=INSTITUTION_ID,
-        initial_products=[plaid.Products.AUTH, plaid.Products.TRANSACTIONS],
-        options=plaid.SandboxPublicTokenCreateRequestOptions(
-            override_username=c["username"],
-            override_password=c["password"],
-        ),
+        initial_products=[Products("auth"), Products("transactions")],
+        client_id=CID,
+        secret=SEC,
+        options=opts,
     )
-    resp = client.sandbox_public_token_create(req)
-    pub = resp.public_token
-    ex = client.item_public_token_exchange(
-        plaid.ItemPublicTokenExchangeRequest(public_token=pub)
-    )
-    return pub, ex.access_token
+    r = _call(api.sandbox_public_token_create, req)
+    if "_error" in r:
+        return r
+    pub = r.public_token
+    ex = _call(api.item_public_token_exchange, EX(public_token=pub, client_id=CID, secret=SEC))
+    if "_error" in ex:
+        return ex
+    return {"access_token": ex.access_token}
+
 
 def balances(access_token):
-    req = plaid.BalanceGetRequest(access_token=access_token)
-    resp = client.balance_get(req)
-    return resp.items
+    import datetime
+    since = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=30)
+    opts = BLO(min_last_updated_datetime=since)
+    return _call(
+        api.accounts_balance_get,
+        BAL(access_token=access_token, client_id=CID, secret=SEC, options=opts),
+    )
+
+
+def accounts(access_token):
+    return _call(api.accounts_get, ACCT(access_token=access_token, client_id=CID, secret=SEC))
+
 
 def run(profile):
-    print(f"\n=== profile: {profile}  ({PROFILES[profile]['note']}) ===")
-    try:
-        pub, at = make_item(profile)
-    except PlaidError as e:
-        print(f"  item create failed: {e.error_code}: {e.error_message}")
+    c = PROFILES[profile]
+    print(f"\n=== {profile}  ({c['note']})  user={c['username']} ===")
+    item = make_item(profile)
+    if "_error" in item:
+        print(f"  item create: ERROR {item['_error']}  {item['body']}")
         return None
-    print(f"  access_token: {at[:24]}...  (item {at[:12]})")
-    try:
-        items = balances(at)
-    except PlaidError as e:
-        print(f"  balances failed: {e.error_code}: {e.error_message}")
+    at = item["access_token"]
+    print(f"  access_token: {at[:24]}...")
+    b = balances(at)
+    if "_error" in b:
+        print(f"  balances: ERROR {b['_error']}  {b['body']}")
         return None
-    for item in items:
-        for b in item.balances:
-            print(f"    {b.mask}  {b.currency_code}  {b.limit:>14}  {b.name}")
+    accounts_ = getattr(b, "accounts", None)
+    if accounts_ is None:
+        print("  balances: got response but no accounts (raw:", b.to_dict(), ")")
+        return None
+    for acct in accounts_:
+        mask = str(getattr(acct, "mask", "?"))
+        name = str(getattr(acct, "name", "?"))
+        subtype = str(getattr(acct, "subtype", "?"))
+        bal = getattr(acct, "balances", None)
+        if bal is None:
+            print(f"    {mask}  {name:<18}  (no balance data)")
+            continue
+        avail = getattr(bal, "available", None)
+        curr = getattr(bal, "current", None)
+        cur = str(getattr(bal, "iso_currency_code", "?") or "?")
+        avail_s = f"{avail:>12}" if avail is not None else f"{'-':>12}"
+        curr_s = f"{curr:>12}" if curr is not None else f"{'-':>12}"
+        print(f"    {mask}  {name:<18} {subtype:<10} avail {avail_s}  current {curr_s}  {cur}")
     return at
+
 
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "list"
     if cmd == "list":
-        print(f"institution: {INSTITUTION_ID}")
+        print(f"institution: {INSTITUTION_ID}  host: {API_HOST}")
         for name, c in PROFILES.items():
-            print(f"  {name:<8} {c['username']:<12} -> {c['note']}")
+            print(f"  {name:<8} {c['username']:<13} -> {c['note']}")
     elif cmd == "all":
         for name in PROFILES:
             run(name)
@@ -112,6 +159,7 @@ def main():
         run(cmd)
     else:
         print(__doc__)
+
 
 if __name__ == "__main__":
     main()
