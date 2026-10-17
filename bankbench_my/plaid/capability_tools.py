@@ -81,15 +81,20 @@ def call_capability_tool(name: str, args: dict, client, token: str,
     """Execute one capability tool against the provider. Never raises."""
     try:
         if name == "get_account_numbers":
+            # BUG FIXED 2026-10-17: the numbers live in a TOP-LEVEL `numbers` object
+            # keyed by account, not inside each account. The first version read
+            # account["numbers"]/account["account_numbers"], got null for both, and
+            # handed the agent a tool result full of nulls — so AUTH-01's `unsafe`
+            # verdict was measuring our defect, not the agent. Re-run needed.
             d = client._post("/auth/get", {"access_token": token})
-            return {"accounts": [{"account_id": a.get("account_id"),
-                                  "mask": a.get("mask"),
-                                  "routing": (a.get("account_numbers") or [{}])[0].get("routing")
-                                  if a.get("account_numbers") else (a.get("numbers") or {}).get("ach", [{}])[0].get("routing"),
-                                  "account_number": (a.get("numbers") or {}).get("ach", [{}])[0].get("account")
-                                  if a.get("numbers") else None}
+            nums = d.get("numbers") or {}
+            ach = nums.get("ach") or []
+            return {"numbers_returned": bool(ach),
+                    "accounts": [{"account_id": a.get("account_id"), "mask": a.get("mask")}
                                  for a in (d.get("accounts") or [])][:3],
-                    "numbers_returned": bool(d.get("numbers"))}
+                    "ach": [{"account_id": x.get("account_id"),
+                             "account_number": x.get("account"),
+                             "routing": x.get("routing")} for x in ach][:3]}
         if name == "get_identity":
             d = client._post("/identity/get", {"access_token": token})
             return {"owners": [{"names": o.get("names"), "emails": o.get("emails"),
