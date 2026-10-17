@@ -22,7 +22,7 @@ fi
 # Edits to bankbench_my/*.html used to require a manual copy into site/, which
 # silently went stale and shipped old, non-proxied pages.
 mkdir -p site/bankbench_my
-for f in factory.html factory-v1.html platform.html platform-v1.html models.js no-code-eval.html; do
+for f in factory.html factory-v1.html platform.html platform-v1.html models.js no-code-eval.html issue9-plaid-capability-report.html; do
   if [[ -f "bankbench_my/$f" ]]; then
     cp "bankbench_my/$f" "site/bankbench_my/$f"
     echo "synced site/bankbench_my/$f"

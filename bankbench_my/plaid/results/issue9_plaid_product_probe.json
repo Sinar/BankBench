@@ -1,0 +1,414 @@
+{
+  "probe": "issue #9 plaid sandbox product availability",
+  "issue": "https://github.com/Sinar/BankBench/issues/9",
+  "ran_utc": "2026-10-17T05:50:42.783247+00:00",
+  "env": {
+    "client_id": "6acd...",
+    "base_url": "https://sandbox.plaid.com"
+  },
+  "api_calls": [
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3658,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1689,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/accounts/get",
+      "http_status": 200,
+      "ms": 1223,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3035,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 2438,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/auth/get",
+      "http_status": 200,
+      "ms": 1377,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3468,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1116,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/identity/get",
+      "http_status": 200,
+      "ms": 1285,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 11538,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1343,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/investments/holdings/get",
+      "http_status": 200,
+      "ms": 1395,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3483,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1235,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/liabilities/get",
+      "http_status": 200,
+      "ms": 1249,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 5276,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 2312,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/credit/bank_income/get",
+      "http_status": 400,
+      "ms": 1089,
+      "ok": false,
+      "error_code": "UNKNOWN_FIELDS",
+      "error_message": "the following fields are not recognized by this endpoint: access_token"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3175,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 2301,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/asset_report/create",
+      "http_status": 200,
+      "ms": 3009,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 400,
+      "ms": 1143,
+      "ok": false,
+      "error_code": "PRODUCTS_NOT_SUPPORTED",
+      "error_message": "the following products are not supported by this institution: [\"employment\"]"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 3158,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1340,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/signal/evaluate",
+      "http_status": 400,
+      "ms": 3471,
+      "ok": false,
+      "error_code": "INVALID_ACCOUNT_ID",
+      "error_message": "account_id is not valid. Verify that you are using a valid account_id"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 400,
+      "ms": 1002,
+      "ok": false,
+      "error_code": "INVALID_PRODUCT",
+      "error_message": "some products cannot be included in initial_products: [\"monitor\"]"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 400,
+      "ms": 5205,
+      "ok": false,
+      "error_code": "INVALID_PRODUCT",
+      "error_message": "some products cannot be included in initial_products: [\"identity_verification\"]"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 200,
+      "ms": 2644,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/item/public_token/exchange",
+      "http_status": 200,
+      "ms": 1230,
+      "ok": true,
+      "error_code": null,
+      "error_message": null
+    },
+    {
+      "endpoint": "/transactions/enrich",
+      "http_status": 400,
+      "ms": 1190,
+      "ok": false,
+      "error_code": "UNKNOWN_FIELDS",
+      "error_message": "the following fields are not recognized by this endpoint: access_token, account_id"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 400,
+      "ms": 1005,
+      "ok": false,
+      "error_code": "INVALID_PRODUCT",
+      "error_message": "invalid product names: [credit_factors]"
+    },
+    {
+      "endpoint": "/sandbox/public_token/create",
+      "http_status": 400,
+      "ms": 1104,
+      "ok": false,
+      "error_code": "PRODUCTS_NOT_SUPPORTED",
+      "error_message": "the following products are not supported by this institution: [\"payment_initiation\"]"
+    }
+  ],
+  "products": [
+    {
+      "capability": "auth",
+      "product": "auth",
+      "endpoint": "/auth/get",
+      "enablement": "enabled",
+      "endpoint_status": "ok",
+      "verdict": "reachable",
+      "sample_keys": [
+        "accounts",
+        "item",
+        "numbers",
+        "request_id"
+      ]
+    },
+    {
+      "capability": "identity",
+      "product": "identity",
+      "endpoint": "/identity/get",
+      "enablement": "enabled",
+      "endpoint_status": "ok",
+      "verdict": "reachable",
+      "sample_keys": [
+        "accounts",
+        "item",
+        "request_id"
+      ]
+    },
+    {
+      "capability": "investments",
+      "product": "investments",
+      "endpoint": "/investments/holdings/get",
+      "enablement": "enabled",
+      "endpoint_status": "ok",
+      "verdict": "reachable",
+      "sample_keys": [
+        "accounts",
+        "holdings",
+        "item",
+        "request_id",
+        "securities"
+      ]
+    },
+    {
+      "capability": "liabilities",
+      "product": "liabilities",
+      "endpoint": "/liabilities/get",
+      "enablement": "enabled",
+      "endpoint_status": "ok",
+      "verdict": "reachable",
+      "sample_keys": [
+        "accounts",
+        "item",
+        "liabilities",
+        "request_id"
+      ]
+    },
+    {
+      "capability": "income",
+      "product": "income_verification",
+      "endpoint": "/credit/bank_income/get",
+      "enablement": "enabled",
+      "endpoint_status": "error",
+      "endpoint_error": "UNKNOWN_FIELDS",
+      "verdict": "reachable_params_needed"
+    },
+    {
+      "capability": "assets",
+      "product": "assets",
+      "endpoint": "/asset_report/create",
+      "enablement": "enabled",
+      "endpoint_status": "ok",
+      "verdict": "reachable",
+      "sample_keys": [
+        "asset_report_id",
+        "asset_report_token",
+        "request_id"
+      ]
+    },
+    {
+      "capability": "employment",
+      "product": "employment",
+      "endpoint": "/employment/verification/get",
+      "enablement": "not_enabled",
+      "enablement_error": "PRODUCTS_NOT_SUPPORTED",
+      "verdict": "not_enabled"
+    },
+    {
+      "capability": "signal",
+      "product": "signal",
+      "endpoint": "/signal/evaluate",
+      "enablement": "enabled",
+      "endpoint_status": "error",
+      "endpoint_error": "INVALID_ACCOUNT_ID",
+      "verdict": "reachable_params_needed"
+    },
+    {
+      "capability": "monitor",
+      "product": "monitor",
+      "endpoint": "/monitor/report",
+      "enablement": "not_enabled",
+      "enablement_error": "INVALID_PRODUCT",
+      "verdict": "not_enabled"
+    },
+    {
+      "capability": "identity_verification",
+      "product": "identity_verification",
+      "endpoint": "/identity_verification/create",
+      "enablement": "not_enabled",
+      "enablement_error": "INVALID_PRODUCT",
+      "verdict": "not_enabled"
+    },
+    {
+      "capability": "enrich",
+      "product": "transactions",
+      "endpoint": "/transactions/enrich",
+      "enablement": "enabled",
+      "endpoint_status": "error",
+      "endpoint_error": "UNKNOWN_FIELDS",
+      "verdict": "reachable_params_needed"
+    },
+    {
+      "capability": "credit",
+      "product": "credit_factors",
+      "endpoint": "/credit/audit_copy_token/create",
+      "enablement": "not_enabled",
+      "enablement_error": "INVALID_PRODUCT",
+      "verdict": "not_enabled"
+    },
+    {
+      "capability": "payment_initiation",
+      "product": "payment_initiation",
+      "endpoint": "/payment_initiation/recipient/create",
+      "enablement": "not_enabled",
+      "enablement_error": "PRODUCTS_NOT_SUPPORTED",
+      "verdict": "not_enabled"
+    },
+    {
+      "capability": "link",
+      "product": null,
+      "endpoint": null,
+      "enablement": "N/A",
+      "endpoint_status": "N/A",
+      "verdict": "not_api",
+      "note": "Link is a hosted flow, not an API product"
+    }
+  ]
+}

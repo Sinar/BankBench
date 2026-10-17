@@ -1,0 +1,20 @@
+### INCOME: which product actually enables bank income? ###
+  item product=['income_verification'] inst=ins_109508 INTERNAL_SERVER_ERROR an unexpected error occurred
+  item product=['income_verification'] inst=ins_109508 INTERNAL_SERVER_ERROR an unexpected error occurred
+  item product=['income_verification'] inst=ins_109512 INTERNAL_SERVER_ERROR an unexpected error occurred
+  item product=['income_verification'] inst=ins_109512 INTERNAL_SERVER_ERROR an unexpected error occurred
+  item product=['transactions'] inst=ins_109508        OK
+    /credit/bank_income/get                            UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token
+    /income/verification/paystubs/get                  INCOME_VERIFICATION_NOT_FOUND the requested data was not found. Please check the ID supplied.
+    /income/verification/summary/get                   NOT_FOUND          invalid route: /income/verification/summary/get
+
+### ENRICH: what does /transactions/enrich actually accept? ###
+  access_token only                                    UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token
+  + account_id                                         UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token, account_id
+  + account_id + count                                 UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token, account_id, count
+  + count only                                         UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token, count
+  + options.include_original                           UNKNOWN_FIELDS     the following fields are not recognized by this endpoint: access_token, options.include_or
+
+### fallback: does /transactions/sync carry enrichment anyway? ###
+  transactions/sync count=5                            OK   keys=['accounts', 'added', 'has_more', 'modified', 'next_cursor', 'removed']
+     first txn fields: ['account_id', 'account_owner', 'amount', 'authorized_date', 'authorized_datetime', 'category', 'category_id', 'check_number', 'counterparties', 'date', 'datetime', 'iso_currency_code', 'location', 'logo_url']
