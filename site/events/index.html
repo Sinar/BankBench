@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<title>Would Your Bank's AI Say No? — BankBench-MY hands-on lab (draft)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A hands-on AI safety × banking lab: run a real safety evaluation on Malaysian banking scenarios, write your own, and tell us what we got wrong. Draft concept — date and venue not yet confirmed.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --g0: #F5F5F3; --g1: #EAEAE7; --g2: #D4D4D0; --g3: #AFAFAB; --g4: #6B6B68;
+    --ink: #3A3A38; --deep: #1A1A18;
+    --sig: #4E7A51; --siglo: #D6E6D7; --sighi: #2C5A2F;
+    --warn: #9B5B1A; --warnlo: #F5E6D5;
+    --err: #8B2A2A; --errlo: #F3DEDE;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  body {
+    margin: 0; background: var(--g0); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6; text-wrap: pretty;
+  }
+  h1, h2, h3, .brand, nav a, .btn { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  code, .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+  a { color: var(--sig); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--sighi); outline-offset: 2px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* language toggle: every string exists twice */
+  html[data-lang="en"] .ms { display: none; }
+  html[data-lang="ms"] .en { display: none; }
+
+  /* draft banner */
+  .draft {
+    background: var(--warnlo); color: var(--warn); border-bottom: 1px solid #E2C9A8;
+    font-size: 13px; padding: 9px 0;
+  }
+  .draft strong { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+  nav { border-bottom: 1px solid var(--g2); background: #fff; position: sticky; top: 0; z-index: 10; }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 60px; gap: 16px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sig); display: inline-block; margin-right: 8px; }
+  .brand { font-weight: 700; font-size: 17px; color: var(--deep); text-decoration: none; display: flex; align-items: center; }
+  .navright { display: flex; align-items: center; gap: 12px; }
+  .langtoggle { display: inline-flex; border: 1px solid var(--g2); border-radius: 7px; overflow: hidden; background: #fff; }
+  .langtoggle button {
+    min-width: 44px; min-height: 44px; border: 0; background: #fff; color: var(--g4);
+    font: 600 13px 'JetBrains Mono', monospace; cursor: pointer;
+  }
+  html[data-lang="en"] .langtoggle button[data-set="en"],
+  html[data-lang="ms"] .langtoggle button[data-set="ms"] { background: var(--sig); color: #fff; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+    padding: 10px 20px; border-radius: 7px; font-size: 14px; font-weight: 600; text-decoration: none;
+  }
+  .btn.primary { background: var(--sig); color: #fff; }
+  .btn.primary:hover { background: var(--sighi); }
+  .btn.secondary { background: #fff; color: var(--ink); border: 1px solid var(--g2); }
+  .btn.secondary:hover { border-color: var(--sig); color: var(--sig); }
+  .btn.disabled { background: var(--g1); color: var(--g3); border: 1px dashed var(--g3); cursor: not-allowed; }
+
+  /* hero: left-aligned, with the event facts beside it */
+  header.hero { padding: 64px 0 56px; }
+  .herogrid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+  .eyebrow {
+    display: inline-block; font: 600 11.5px 'JetBrains Mono', monospace; letter-spacing: .04em;
+    color: var(--sighi); background: var(--siglo); padding: 4px 11px; border-radius: 999px; margin-bottom: 18px;
+  }
+  header.hero h1 { font-size: 42px; line-height: 1.12; margin: 0 0 14px; color: var(--deep); letter-spacing: -0.01em; }
+  .reframe { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; color: var(--sighi); margin: 0 0 18px; }
+  header.hero p.sub { max-width: 560px; margin: 0 0 26px; color: var(--ink); font-size: 16.5px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .riskline { font-size: 13px; color: var(--g4); margin: 0; }
+
+  .facts { background: #fff; border: 1px solid var(--g2); border-radius: 10px; padding: 6px 22px; }
+  .facts dl { margin: 0; }
+  .facts .row { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--g1); font-size: 14px; }
+  .facts .row:last-child { border-bottom: 0; }
+  .facts dt { color: var(--g4); font: 600 11.5px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .04em; padding-top: 2px; }
+  .facts dd { margin: 0; color: var(--deep); }
+  .tbc { font: 600 11px 'JetBrains Mono', monospace; background: var(--g1); color: var(--g4); padding: 2px 8px; border-radius: 4px; }
+
+  section { padding: 56px 0; }
+  section.alt { background: #fff; border-top: 1px solid var(--g2); border-bottom: 1px solid var(--g2); }
+  h2 { font-size: 26px; line-height: 1.2; color: var(--deep); margin: 0 0 10px; }
+  p.lede { color: var(--g4); font-size: 15.5px; margin: 0 0 28px; max-width: 700px; }
+  .narrow { max-width: 700px; }
+  .narrow p { font-size: 16.5px; margin: 0 0 14px; }
+
+  /* agenda: a real timeline, not a card grid */
+  ol.agenda { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--g2); }
+  ol.agenda li { display: grid; grid-template-columns: 96px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--g2); }
+  .t { font: 600 13px 'JetBrains Mono', monospace; color: var(--sighi); padding-top: 3px; }
+  ol.agenda h3 { font-size: 17px; margin: 0 0 4px; color: var(--deep); }
+  ol.agenda p { margin: 0; font-size: 14.5px; color: var(--g4); max-width: 640px; }
+  .tag { font: 600 10.5px 'JetBrains Mono', monospace; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: 2px; }
+  .tag.live { background: var(--siglo); color: var(--sighi); }
+  .tag.planned { background: var(--warnlo); color: var(--warn); }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .col { border: 1px solid var(--g2); border-radius: 10px; padding: 24px; background: #fff; }
+  .col h3 { margin: 0 0 12px; font-size: 14px; font: 700 12px 'JetBrains Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .col.for h3 { color: var(--sighi); }
+  .col.notfor h3 { color: var(--err); }
+  .col ul { margin: 0; padding-left: 20px; font-size: 14.5px; }
+  .col li { margin-bottom: 8px; }
+
+  table.gaps { width: 100%; border-collapse: collapse; font-size: 14.5px; background: #fff; border: 1px solid var(--g2); border-radius: 10px; overflow: hidden; }
+  table.gaps th { text-align: left; font: 600 11.5px 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .04em; color: var(--g4); background: var(--g1); padding: 12px 16px; }
+  table.gaps td { padding: 14px 16px; border-top: 1px solid var(--g1); vertical-align: top; }
+  table.gaps td:first-child { color: var(--err); font-weight: 600; width: 38%; }
+  .honest { margin-top: 18px; font-size: 13.5px; color: var(--g4); max-width: 700px; }
+
+  .guard { border: 1px solid var(--g2); border-left: 0; background: #fff; border-radius: 10px; padding: 22px 24px; max-width: 760px; }
+  .guard ul { margin: 8px 0 0; padding-left: 20px; font-size: 14.5px; }
+  .guard li { margin-bottom: 6px; }
+
+  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; border-top: 1px solid var(--g2); }
+  .links a { display: block; padding: 18px 4px; border-bottom: 1px solid var(--g2); text-decoration: none; color: var(--deep); font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+  .links a span { display: block; font: 400 13.5px 'Inter', sans-serif; color: var(--g4); margin-top: 2px; }
+  .links a:hover { color: var(--sig); }
+
+  .finalcta { background: var(--deep); color: #fff; padding: 56px 0; }
+  .finalcta h2 { color: #fff; }
+  .finalcta p { color: var(--g2); max-width: 620px; margin: 0 0 22px; }
+  .finalcta .btn.secondary { background: transparent; color: #fff; border-color: var(--g4); }
+  .finalcta .btn.secondary:hover { border-color: #fff; color: #fff; }
+
+  footer { padding: 28px 0; font-size: 13px; color: var(--g4); }
+
+  /* let grid/flex children shrink instead of forcing the page wider than the viewport */
+  .herogrid > *, .two > *, ol.agenda li > *, .facts .row > * { min-width: 0; }
+  h1, h2, h3, p, dd, td, li { overflow-wrap: anywhere; }
+
+  @media (max-width: 820px) {
+    .herogrid, .two { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    header.hero { padding: 40px 0 40px; }
+    header.hero h1 { font-size: 33px; }
+    ol.agenda li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .facts .row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    nav .wrap { flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
+    .navright { width: 100%; justify-content: space-between; }
+    .navright .btn { padding: 10px 14px; font-size: 13px; }
+    table.gaps th, table.gaps td { padding: 12px; }
+    table.gaps td:first-child { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="draft">
+  <div class="wrap">
+    <strong>DRAFT</strong>
+    <span class="en"> — concept page. Date, venue, cost and registration are not confirmed. Nothing here is an announcement.</span>
+    <span class="ms"> — halaman konsep. Tarikh, tempat, kos dan pendaftaran belum disahkan. Ini bukan pengumuman.</span>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="../index.html"><span class="dot"></span>BANKBENCH-MY</a>
+    <div class="navright">
+      <div class="langtoggle" role="group" aria-label="Language">
+        <button type="button" data-set="en" aria-label="English">EN</button>
+        <button type="button" data-set="ms" aria-label="Bahasa Malaysia">BM</button>
+      </div>
+      <a class="btn primary" href="../public-education/interactive.html">
+        <span class="en">Try the live demo</span><span class="ms">Cuba demo langsung</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap herogrid">
+    <div>
+      <span class="eyebrow">
+        <span class="en">AI SAFETY × BANKING · HANDS-ON LAB</span>
+        <span class="ms">KESELAMATAN AI × PERBANKAN · BENGKEL AMALI</span>
+      </span>
+      <h1>
+        <span class="en">Would your bank's AI say no?</span>
+        <span class="ms">Adakah AI bank anda akan berkata tidak?</span>
+      </h1>
+      <p class="reframe">
+        <span class="en">A fluent answer isn't a safe answer. Test it.</span>
+        <span class="ms">Jawapan yang lancar belum tentu selamat. Uji sendiri.</span>
+      </p>
+      <p class="sub">
+        <span class="en">A half-day lab where you run a real safety evaluation on Malaysian banking scenarios, write one of your own, and tell us what our evaluation gets wrong.</span>
+        <span class="ms">Bengkel separuh hari: jalankan penilaian keselamatan sebenar ke atas senario perbankan Malaysia, tulis satu senario anda sendiri, dan beritahu kami apa yang silap pada penilaian kami.</span>
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="../public-education/interactive.html">
+          <span class="en">Try the live demo now</span><span class="ms">Cuba demo langsung sekarang</span>
+        </a>
+        <!-- TODO(Sha): swap for a real registration link once a date + venue exist. -->
+        <span class="btn disabled" aria-disabled="true">
+          <span class="en">Register interest — not open yet</span><span class="ms">Daftar minat — belum dibuka</span>
+        </span>
+      </div>
+      <p class="riskline">
+        <span class="en">Nothing to sign up for yet. The demo works today, in English and Bahasa Malaysia.</span>
+        <span class="ms">Belum ada pendaftaran. Demo ini boleh digunakan hari ini, dalam Bahasa Inggeris dan Bahasa Malaysia.</span>
+      </p>
+    </div>
+
+    <aside class="facts" aria-label="Event facts">
+      <dl>
+        <div class="row"><dt><span class="en">When</span><span class="ms">Bila</span></dt>
+          <dd><span class="tbc"><span class="en">TO BE CONFIRMED</span><span class="ms">AKAN DIMAKLUMKAN</span></span></dd></div>
+        <div class="row"><dt><span class="en">Where</span><span class="ms">Di mana</span></dt>
+          <dd><span class="tbc"><span class="en">TO BE CONFIRMED</span><span class="ms">AKAN DIMAKLUMKAN</span></span></dd></div>
+        <div class="row"><dt><span class="en">Length</span><span class="ms">Tempoh</span></dt>
+          <dd><span class="en">About 4 hours. A 2.5-hour version if time is short.</span><span class="ms">Kira-kira 4 jam. Versi 2.5 jam jika masa terhad.</span></dd></div>
+        <div class="row"><dt><span class="en">Bring</span><span class="ms">Bawa</span></dt>
+          <dd><span class="en">A laptop. Most of the lab needs no coding.</span><span class="ms">Komputer riba. Kebanyakan bengkel ini tidak memerlukan pengaturcaraan.</span></dd></div>
+        <div class="row"><dt><span class="en">Cost</span><span class="ms">Kos</span></dt>
+          <dd><span class="tbc"><span class="en">TO BE CONFIRMED</span><span class="ms">AKAN DIMAKLUMKAN</span></span></dd></div>
+        <div class="row"><dt><span class="en">Language</span><span class="ms">Bahasa</span></dt>
+          <dd><span class="en">English and Bahasa Malaysia, including Manglish scenarios.</span><span class="ms">Bahasa Inggeris dan Bahasa Malaysia, termasuk senario Manglish.</span></dd></div>
+      </dl>
+    </aside>
+  </div>
+</header>
+
+<section class="alt" id="why">
+  <div class="wrap narrow">
+    <h2>
+      <span class="en">The assumption we're testing</span>
+      <span class="ms">Andaian yang kami uji</span>
+    </h2>
+    <p>
+      <span class="en">Most talk about AI safety assumes the model that sounds best is the model you can trust. These tools reply in fluent, confident language whether they are right or wrong, and they work far better in English than in the Bahasa Malaysia and Manglish that Malaysians actually type.</span>
+      <span class="ms">Kebanyakan perbincangan tentang keselamatan AI menganggap model yang paling meyakinkan ialah model yang boleh dipercayai. Alat ini menjawab dengan bahasa yang lancar dan yakin sama ada betul atau salah, dan ia berfungsi jauh lebih baik dalam Bahasa Inggeris berbanding Bahasa Malaysia dan Manglish yang benar-benar ditaip rakyat Malaysia.</span>
+    </p>
+    <p>
+      <span class="en">Until now there was no locally built, multilingual way to check whether a banking assistant stays safe when it is put under pressure. BankBench-MY is that check, and this lab is where you run it yourself.</span>
+      <span class="ms">Sehingga kini, tiada cara berbilang bahasa yang dibina di Malaysia untuk menyemak sama ada pembantu perbankan kekal selamat apabila ditekan. BankBench-MY ialah semakan itu, dan bengkel ini ialah tempat anda menjalankannya sendiri.</span>
+    </p>
+  </div>
+</section>
+
+<section id="agenda">
+  <div class="wrap">
+    <h2><span class="en">What you'll do</span><span class="ms">Apa yang anda akan lakukan</span></h2>
+    <p class="lede">
+      <span class="en">Six blocks, in order. Tools marked live exist today. The tuning block is planned and depends on a hardware check before we promise it.</span>
+      <span class="ms">Enam blok, mengikut urutan. Alat bertanda "live" sudah wujud hari ini. Blok penalaan ialah rancangan dan bergantung pada semakan perkakasan sebelum kami menjanjikannya.</span>
+    </p>
+    <ol class="agenda">
+      <li>
+        <div class="t">0:00 · 20 min</div>
+        <div>
+          <h3><span class="en">Watch it fail</span><span class="ms">Lihat ia gagal</span><span class="tag live">LIVE</span></h3>
+          <p><span class="en">Watch a real scam play out against a safe and a vulnerable chatbot. Predict which is which, then see the answer.</span><span class="ms">Tonton penipuan sebenar dimainkan terhadap chatbot yang selamat dan yang terdedah. Teka yang mana satu, kemudian lihat jawapannya.</span></p>
+        </div>
+      </li>
+      <li>
+        <div class="t">0:20 · 35 min</div>
+        <div>
+          <h3><span class="en">Run an evaluation</span><span class="ms">Jalankan penilaian</span><span class="tag live">LIVE</span></h3>
+          <p><span class="en">In the no-code console, run five Malaysian banking scenarios against a model and grade each answer with the rubric. You bring your own model key; nothing is stored server-side.</span><span class="ms">Dalam konsol tanpa kod, jalankan lima senario perbankan Malaysia ke atas satu model dan nilai setiap jawapan dengan rubrik. Anda membawa kunci model sendiri; tiada apa disimpan di pelayan.</span></p>
+        </div>
+      </li>
+      <li>
+        <div class="t">0:55 · 40 min</div>
+        <div>
+          <h3><span class="en">Write a scenario</span><span class="ms">Tulis satu senario</span><span class="tag live">LIVE</span></h3>
+          <p><span class="en">In small teams, write one new scenario where the language shifts mid-conversation (English, then Bahasa Malaysia, then Manglish). Check it against the existing library, then run it.</span><span class="ms">Dalam kumpulan kecil, tulis satu senario baharu di mana bahasa bertukar semasa perbualan (Inggeris, kemudian Bahasa Malaysia, kemudian Manglish). Semak dengan pustaka sedia ada, kemudian jalankannya.</span></p>
+        </div>
+      </li>
+      <li>
+        <div class="t">1:50 · 60 min</div>
+        <div>
+          <h3><span class="en">Tune a small model, then re-measure</span><span class="ms">Latih model kecil, kemudian ukur semula</span><span class="tag planned">PLANNED</span></h3>
+          <p><span class="en">Fine-tune a small open model toward the safe behaviour using open-source, no-code tooling such as Unsloth Studio, then re-run your scenarios to see whether the numbers moved. A pre-trained checkpoint is the fallback if a laptop can't train.</span><span class="ms">Latih satu model terbuka yang kecil ke arah tingkah laku selamat menggunakan alat sumber terbuka tanpa kod seperti Unsloth Studio, kemudian jalankan semula senario anda untuk melihat sama ada angka berubah. Titik semak yang telah dilatih ialah pilihan sandaran jika komputer riba tidak dapat melatih.</span></p>
+        </div>
+      </li>
+      <li>
+        <div class="t">2:50 · 30 min</div>
+        <div>
+          <h3><span class="en">Grade the evaluation itself</span><span class="ms">Nilai penilaian itu sendiri</span><span class="tag live">LIVE</span></h3>
+          <p><span class="en">Rate the same outputs as the person next to you and compare. Then learn how to read results honestly: why capability is not safety, and why BankBench grades itself Category D.</span><span class="ms">Nilai output yang sama seperti orang di sebelah anda dan bandingkan. Kemudian pelajari cara membaca keputusan dengan jujur: kenapa keupayaan bukan keselamatan, dan kenapa BankBench menggred dirinya Kategori D.</span></p>
+        </div>
+      </li>
+      <li>
+        <div class="t">3:20 · 40 min</div>
+        <div>
+          <h3><span class="en">Feedback clinic</span><span class="ms">Klinik maklum balas</span></h3>
+          <p><span class="en">A structured critique of the evaluation. Each team files one issue or one scenario on the repository before leaving.</span><span class="ms">Kritikan berstruktur terhadap penilaian ini. Setiap pasukan menghantar satu isu atau satu senario ke repositori sebelum pulang.</span></p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="alt" id="who">
+  <div class="wrap">
+    <h2><span class="en">Who it's for, and who it isn't</span><span class="ms">Untuk siapa, dan bukan untuk siapa</span></h2>
+    <p class="lede"><span class="en">Honest scoping first, so nobody spends a morning on the wrong thing.</span><span class="ms">Skop yang jujur dahulu, supaya tiada sesiapa membazir masa pada perkara yang salah.</span></p>
+    <div class="two">
+      <div class="col for">
+        <h3><span class="en">For</span><span class="ms">Untuk</span></h3>
+        <ul>
+          <li><span class="en">CSO staff and new activists who will be told "the AI is safe" and want a way to check.</span><span class="ms">Kakitangan NGO dan aktivis baharu yang akan diberitahu "AI ini selamat" dan mahu cara untuk menyemak.</span></li>
+          <li><span class="en">Students and journalists who use AI chatbots for money, law or faith questions.</span><span class="ms">Pelajar dan wartawan yang menggunakan chatbot AI untuk soalan wang, undang-undang atau agama.</span></li>
+          <li><span class="en">Bank and fintech practitioners who want local, multilingual test cases.</span><span class="ms">Pengamal bank dan fintech yang mahu kes ujian tempatan berbilang bahasa.</span></li>
+          <li><span class="en">Anyone who types in Bahasa Malaysia or Manglish and has noticed AI getting it wrong.</span><span class="ms">Sesiapa yang menaip dalam Bahasa Malaysia atau Manglish dan pernah perasan AI tersilap.</span></li>
+        </ul>
+      </div>
+      <div class="col notfor">
+        <h3><span class="en">Not for</span><span class="ms">Bukan untuk</span></h3>
+        <ul>
+          <li><span class="en">Anyone looking to learn how to defraud a bank. We publish scores and verdicts, not attack scripts.</span><span class="ms">Sesiapa yang ingin belajar cara menipu bank. Kami menerbitkan skor dan keputusan, bukan skrip serangan.</span></li>
+          <li><span class="en">People who want a validated certification. This is an early evaluation, and it says so.</span><span class="ms">Mereka yang mahu pensijilan yang disahkan. Ini penilaian awal, dan ia menyatakannya.</span></li>
+          <li><span class="en">Anyone who expects to leave with a production-ready safety system.</span><span class="ms">Sesiapa yang menjangka pulang dengan sistem keselamatan siap pakai.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="feedback">
+  <div class="wrap">
+    <h2><span class="en">What we're asking from the room</span><span class="ms">Apa yang kami minta daripada peserta</span></h2>
+    <p class="lede">
+      <span class="en">BankBench grades its own work against a published quality scorecard, and it scores Category D. These are the named weaknesses. This lab exists to close them with real people and real runs.</span>
+      <span class="ms">BankBench menggred kerjanya sendiri berdasarkan kad skor kualiti yang diterbitkan, dan ia mendapat Kategori D. Inilah kelemahan yang dinamakan. Bengkel ini wujud untuk menutupnya dengan orang sebenar dan larian sebenar.</span>
+    </p>
+    <table class="gaps">
+      <thead>
+        <tr>
+          <th><span class="en">Where we're weak</span><span class="ms">Di mana kami lemah</span></th>
+          <th><span class="en">What the room gives us</span><span class="ms">Apa yang peserta berikan</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="en">One run per scenario</span><span class="ms">Satu larian bagi setiap senario</span></td>
+          <td><span class="en">Many people running the same scenarios, so we get repeat runs.</span><span class="ms">Ramai orang menjalankan senario yang sama, jadi kami mendapat larian berulang.</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">No agreement check between raters</span><span class="ms">Tiada semakan persetujuan antara penilai</span></td>
+          <td><span class="en">Everyone rates the same outputs, so we can measure how much raters agree.</span><span class="ms">Semua orang menilai output yang sama, jadi kami boleh mengukur setakat mana penilai bersetuju.</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Only two of four deployment conditions tested</span><span class="ms">Hanya dua daripada empat keadaan pelaksanaan diuji</span></td>
+          <td><span class="en">Teams propose and try the missing conditions.</span><span class="ms">Pasukan mencadang dan mencuba keadaan yang tiada.</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Thin Bahasa Malaysia and Manglish coverage</span><span class="ms">Liputan Bahasa Malaysia dan Manglish yang nipis</span></td>
+          <td><span class="en">Scenarios written in the way you actually type.</span><span class="ms">Senario yang ditulis seperti cara anda sebenarnya menaip.</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="honest">
+      <span class="en">Our first university pilot (24 students, one run) found that only 39% of their calls on whether an AI answer was trustworthy were right. Our first model pilot used three low-cost models on 20 scenarios and is graded low-confidence. Results from this lab will be reported as a workshop sample, not a validated study.</span>
+      <span class="ms">Perintis universiti pertama kami (24 pelajar, satu larian) mendapati hanya 39% penilaian mereka tentang sama ada jawapan AI boleh dipercayai adalah betul. Perintis model pertama kami menggunakan tiga model kos rendah pada 20 senario dan digred keyakinan rendah. Keputusan bengkel ini akan dilaporkan sebagai sampel bengkel, bukan kajian yang disahkan.</span>
+    </p>
+  </div>
+</section>
+
+<section class="alt" id="guardrails">
+  <div class="wrap">
+    <h2><span class="en">Guardrails</span><span class="ms">Pagar keselamatan</span></h2>
+    <div class="guard">
+      <strong><span class="en">This is evaluation, not exploitation.</span><span class="ms">Ini penilaian, bukan eksploitasi.</span></strong>
+      <ul>
+        <li><span class="en">Test only models you are allowed to test.</span><span class="ms">Uji hanya model yang anda dibenarkan menguji.</span></li>
+        <li><span class="en">Synthetic data only. No real MyKad numbers, accounts, or bank credentials.</span><span class="ms">Data sintetik sahaja. Tiada nombor MyKad, akaun atau kelayakan bank sebenar.</span></li>
+        <li><span class="en">We share scores and verdicts. Working attack scripts stay out of the room's outputs.</span><span class="ms">Kami berkongsi skor dan keputusan. Skrip serangan yang berfungsi tidak dimasukkan dalam output bengkel.</span></li>
+        <li><span class="en">You bring your own model key and pay your own provider. Keep scenarios short.</span><span class="ms">Anda membawa kunci model sendiri dan membayar penyedia anda sendiri. Pastikan senario ringkas.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="behind">
+  <div class="wrap">
+    <h2><span class="en">Who's behind it, and what you can use today</span><span class="ms">Siapa di sebaliknya, dan apa yang boleh digunakan hari ini</span></h2>
+    <p class="lede">
+      <span class="en">Built by Nurshafira Noh (Sha) as fellowship work under the Sinar Project Civic Tech Fellowship. Everything below is open and runs without a server of ours.</span>
+      <span class="ms">Dibina oleh Nurshafira Noh (Sha) sebagai kerja felo di bawah Felo Teknologi Sivik Sinar Project. Semua di bawah ini terbuka dan berjalan tanpa pelayan kami.</span>
+    </p>
+    <div class="links">
+      <a href="../public-education/interactive.html">
+        <span class="en">Interactive scam demo</span><span class="ms">Demo penipuan interaktif</span>
+        <span><span class="en">Bilingual. Safe versus vulnerable AI, side by side.</span><span class="ms">Dwibahasa. AI selamat berbanding terdedah, bersebelahan.</span></span>
+      </a>
+      <a href="../bankbench_my/platform.html">
+        <span class="en">No-code evaluation console</span><span class="ms">Konsol penilaian tanpa kod</span>
+        <span><span class="en">Ask, draft, check, run, review. Bring your own key.</span><span class="ms">Tanya, draf, semak, jalan, ulas. Bawa kunci sendiri.</span></span>
+      </a>
+      <a href="../bankbench_my/factory.html">
+        <span class="en">Scenario Factory</span><span class="ms">Kilang Senario</span>
+        <span><span class="en">Write a scenario and check it against the library.</span><span class="ms">Tulis senario dan semak dengan pustaka.</span></span>
+      </a>
+      <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">
+        <span class="en">The repository</span><span class="ms">Repositori</span>
+        <span><span class="en">Scenarios, scoring, scorecard. CC BY-SA 4.0.</span><span class="ms">Senario, pemarkahan, kad skor. CC BY-SA 4.0.</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="finalcta">
+  <div class="wrap">
+    <h2><span class="en">A fluent answer isn't a safe answer.</span><span class="ms">Jawapan yang lancar belum tentu selamat.</span></h2>
+    <p>
+      <span class="en">The date isn't set yet. You can run the same kind of test today, then tell us what you found on the repository.</span>
+      <span class="ms">Tarikh belum ditetapkan. Anda boleh menjalankan ujian yang sama hari ini, kemudian beritahu kami apa yang anda temui di repositori.</span>
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="../public-education/interactive.html"><span class="en">Try the live demo</span><span class="ms">Cuba demo langsung</span></a>
+      <a class="btn secondary" href="https://github.com/Sinar/BankBench/issues" target="_blank" rel="noopener"><span class="en">Tell us what we got wrong</span><span class="ms">Beritahu kami apa yang silap</span></a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    Sinar/BankBench · CC BY-SA 4.0 · <a href="https://github.com/Sinar/BankBench" target="_blank" rel="noopener">github.com/Sinar/BankBench</a> · built under the Sinar fellowship
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem('bb-lang'); } catch (e) {}
+  function setLang(l) {
+    root.setAttribute('data-lang', l);
+    root.setAttribute('lang', l === 'ms' ? 'ms' : 'en');
+    try { localStorage.setItem('bb-lang', l); } catch (e) {}
+  }
+  if (saved === 'ms' || saved === 'en') { setLang(saved); }
+  var btns = document.querySelectorAll('.langtoggle button');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener('click', function () { setLang(this.getAttribute('data-set')); });
+  }
+})();
+</script>
+</body>
+</html>
