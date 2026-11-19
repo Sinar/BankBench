@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Ecosystem Map — Assurance Across Four Domains</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#12161c; --ink2:#4b5563; --ink3:#7b8494;
+    --line:#e3e6ec; --line2:#d2d7e0;
+    --dip:#1d4ed8; --bank:#0f766e; --start:#b45309; --cso:#6d28d9;
+    --neutral:#64748b; --spine:#0f172a;
+    --dip-bg:#eef3fe; --bank-bg:#ecf7f5; --start-bg:#fdf5e8; --cso-bg:#f3effe;
+    --neutral-bg:#f1f3f7; --spine-bg:#e8ebf1;
+    --warn:#b42318; --warn-bg:#fef3f2;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  .wrap{max-width:1560px; margin:0 auto; padding:28px 22px 80px}
+  header.top{border-bottom:2px solid var(--ink); padding-bottom:16px; margin-bottom:22px}
+  .kicker{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); font-weight:600}
+  h1{font-size:27px; line-height:1.2; margin:8px 0 6px; letter-spacing:-.02em}
+  .sub{color:var(--ink2); max-width:96ch; font-size:14.5px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+  .pill{font-size:11.5px; padding:4px 10px; border:1px solid var(--line2); border-radius:999px; background:var(--card); color:var(--ink2)}
+  h2{font-size:19px; margin:0 0 4px; letter-spacing:-.01em}
+  h3{font-size:14.5px; margin:22px 0 8px}
+  section{margin:34px 0 0}
+  .sec-note{color:var(--ink2); font-size:13.5px; margin:0 0 14px; max-width:104ch}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px}
+</style>
+<style>
+  .controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 12px}
+  .btn{font:inherit; font-size:12.5px; padding:6px 13px; border-radius:999px; border:1px solid var(--line2);
+       background:var(--card); color:var(--ink2); cursor:pointer; transition:.13s}
+  .btn:hover{border-color:var(--ink3); color:var(--ink)}
+  .btn.on{background:var(--spine); border-color:var(--spine); color:#fff}
+  .spacer{flex:1}
+  .hint{font-size:12px; color:var(--ink3)}
+  .graph-shell{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:6px; overflow-x:auto}
+  svg#graph{display:block; width:100%; min-width:1180px; height:auto}
+  .band{fill:#fbfcfd}
+  .band.alt{fill:#f4f6f9}
+  .band-label{font-size:11.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; fill:var(--ink3)}
+  .band-rule{stroke:var(--line); stroke-width:1}
+  .node{cursor:pointer}
+  .node rect{fill:#fff; stroke:var(--line2); stroke-width:1.6; rx:9}
+  .node:hover rect{stroke-width:2.4}
+  .node text{font-size:11.5px; font-weight:700; fill:var(--ink); pointer-events:none}
+  .node .tag{font-size:9px; font-weight:600; fill:var(--ink3); letter-spacing:.05em; text-transform:uppercase}
+  .node[data-cat="diplomacy"] rect{fill:var(--dip-bg); stroke:var(--dip)}
+  .node[data-cat="banking"] rect{fill:var(--bank-bg); stroke:var(--bank)}
+  .node[data-cat="startups"] rect{fill:var(--start-bg); stroke:var(--start)}
+  .node[data-cat="cso"] rect{fill:var(--cso-bg); stroke:var(--cso)}
+  .node[data-cat="neutral"] rect{fill:var(--neutral-bg); stroke:var(--neutral)}
+  .node[data-cat="assurance"] rect{fill:var(--spine); stroke:var(--spine)}
+  .node[data-cat="assurance"] text{fill:#fff}
+  .node[data-cat="assurance"] .tag{fill:#a9b4c7}
+  .edge{fill:none; stroke-width:1.5}
+  .edge.est{stroke:#8a93a5}
+  .edge.prop{stroke:var(--dip); stroke-dasharray:6 5}
+  .edge.dim{opacity:.06}
+  .node.dim{opacity:.14}
+  .node.hl rect{stroke-width:3.2}
+  .edge.hl{stroke-width:2.6}
+  .elabel{font-size:9.5px; fill:var(--ink3); paint-order:stroke; stroke:#fbfcfd; stroke-width:3.4px; stroke-linejoin:round; pointer-events:none}
+  .elabel.dim{opacity:0}
+  .detail{margin-top:12px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--neutral);
+          border-radius:10px; padding:16px 18px; min-height:76px}
+  .detail .dt{font-size:15.5px; font-weight:700; margin:0 0 2px}
+  .detail .dsub{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink3); font-weight:600; margin-bottom:9px}
+  .detail dl{margin:0; display:grid; grid-template-columns:110px 1fr; gap:5px 14px; font-size:13.5px}
+  .detail dt{color:var(--ink3); font-weight:600; font-size:12.5px}
+  .detail dd{margin:0}
+  .placeholder{color:var(--ink3); font-size:13.5px}
+</style>
+<style>
+  .loop-grid{display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,1fr); gap:22px; align-items:start}
+  svg#loop{display:block; width:100%; height:auto}
+  .loop-out{list-style:none; margin:0; padding:0; font-size:13.5px}
+  .loop-out li{padding:8px 0 8px 24px; border-bottom:1px dashed var(--line2); position:relative}
+  .loop-out li:last-child{border-bottom:0}
+  .loop-out li::before{content:""; position:absolute; left:5px; top:15px; width:7px; height:7px; border-radius:50%; background:var(--spine)}
+  .ix-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(272px,1fr)); gap:12px}
+  .ix{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:14px 15px; cursor:pointer; transition:.14s}
+  .ix:hover{border-color:var(--dip); box-shadow:0 2px 10px rgba(29,78,216,.07)}
+  .ix.on{border-color:var(--dip); background:#f7f9ff}
+  .ix .pair{display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-bottom:8px}
+  .dot{width:9px; height:9px; border-radius:50%; flex:none}
+  .ix .prob{font-size:13.5px; margin:0 0 9px; font-weight:500}
+  .ix .art{font-size:12.5px; color:var(--ink2); margin:0}
+  .ix .art b{color:var(--ink3); font-weight:600; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; display:block; margin-bottom:2px}
+  .ix .actors{display:flex; flex-wrap:wrap; gap:4px; margin-top:9px}
+  .chip{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:5px; background:var(--neutral-bg); color:var(--ink2); border:1px solid var(--line2)}
+  .bd-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:11px}
+  .bd{background:var(--warn-bg); border:1px solid #fbd6d2; border-left:3px solid var(--warn); border-radius:10px; padding:13px 15px}
+  .bd .neq{font-size:13.5px; font-weight:700; color:#7a271a; margin:0 0 6px; line-height:1.4}
+  .bd p{margin:0; font-size:12.5px; color:#7a3b33; line-height:1.5}
+  table{width:100%; border-collapse:collapse; font-size:13px; background:var(--card)}
+  table caption{text-align:left; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink3); font-weight:700; padding:0 0 8px}
+  th{text-align:left; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink3);
+     font-weight:700; padding:9px 11px; border-bottom:1px solid var(--line2); background:#fafbfc; vertical-align:top}
+  td{padding:10px 11px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink)}
+  tbody tr:hover td{background:#fafbfc}
+  .tbl-wrap{border:1px solid var(--line); border-radius:11px; overflow:hidden}
+  .two{display:grid; grid-template-columns:repeat(auto-fit,minmax(316px,1fr)); gap:16px}
+  .travel{background:var(--card); border:1px solid var(--line); border-radius:11px; padding:16px 18px}
+  .travel h4{margin:0 0 10px; font-size:13.5px}
+  .travel ul{margin:0; padding-left:20px; font-size:13px; color:var(--ink2)}
+  .travel li{margin:5px 0}
+  .travel.yes{border-left:3px solid #027a48}
+  .travel.no{border-left:3px solid var(--warn)}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px 22px; font-size:12.5px; color:var(--ink2)}
+  .lg{display:flex; align-items:center; gap:9px}
+  .sw{width:15px; height:15px; border-radius:4px; border:1.6px solid var(--line2); flex:none}
+  .ln{width:34px; height:0; border-top:2px solid #8a93a5; flex:none}
+  .ln.d{border-top-style:dashed; border-color:var(--dip)}
+  .ln.t{border-top-style:dotted; border-color:var(--ok)}
+  footer{margin-top:44px; padding-top:16px; border-top:1px solid var(--line2); font-size:12px; color:var(--ink3)}
+  @media (max-width:900px){.loop-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="kicker">Ecosystem Mapping · Diagram-Ready Structure</div>
+  <h1>Assurance Across Four Domains</h1>
+  <p class="sub">
+    Your work is not primarily “AI for CSOs.” It sits at the intersection of <b>diplomacy</b>,
+    <b>regulated finance</b>, <b>technology ventures</b> and <b>civil society</b> — joined by one
+    organising concept: <b>assurance</b>. The evidence can travel across sectors; the mandates,
+    confidential data and decision rights usually cannot.
+  </p>
+  <p class="sub" style="margin-top:10px">
+    Public-interest technical governance across diplomacy, financial services and emerging technology:
+    translating institutional requirements and community concerns into evaluations, evidence and adoption decisions.
+  </p>
+  <div class="meta">
+    <span class="pill">Source: mapping.md</span>
+    <span class="pill">Multilayer network — not a single Venn</span>
+    <span class="pill">Established relationships vs proposed hypotheses</span>
+    <span class="pill">31 nodes · 4 domains · 6 layers</span>
+  </div>
+</header>
+
+<section>
+  <h2>How to read this</h2>
+  <p class="sec-note">
+    Three things are being held apart on purpose. <b>Institutional roles</b> are verified and drawn as
+    relationships. <b>Pain points</b> and <b>data opportunities</b> are hypotheses to validate with each
+    organisation — not assertions that a dataset exists or that you can access it. Nodes appear in more
+    than one layer where they carry more than one function; that reflects roles, not confusion.
+  </p>
+  <div class="card">
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:var(--dip-bg); border-color:var(--dip)"></span> Diplomacy &amp; foreign affairs</div>
+      <div class="lg"><span class="sw" style="background:var(--bank-bg); border-color:var(--bank)"></span> Banking &amp; consumer finance</div>
+      <div class="lg"><span class="sw" style="background:var(--start-bg); border-color:var(--start)"></span> Startups &amp; technology development</div>
+      <div class="lg"><span class="sw" style="background:var(--cso-bg); border-color:var(--cso)"></span> Civil society &amp; communities</div>
+      <div class="lg"><span class="sw" style="background:var(--neutral-bg); border-color:var(--neutral)"></span> Authority · capacity · public</div>
+      <div class="lg"><span class="sw" style="background:var(--spine); border-color:var(--spine)"></span> Shared assurance layer (your work)</div>
+      <div class="lg"><span class="ln"></span> Established institutional relationship</div>
+      <div class="lg"><span class="ln d"></span> Proposed — to investigate, not existing</div>
+    </div>
+  </div>
+</section>
+<section>
+  <h2>1 · The symbiosis — why the four domains need each other</h2>
+  <p class="sec-note">
+    No single domain can produce assurance alone. Each holds a vantage the others cannot substitute for,
+    and each is structurally blind in a way the others are not. The four feed one shared layer; the layer
+    returns evidence all four can act on. That loop — not any single project — is the spine of the work.
+  </p>
+  <div class="loop-grid">
+    <div class="card" style="padding:10px">
+      <svg id="loop" viewBox="0 0 620 366" role="img"
+           aria-label="Four domains contribute to one shared assurance layer, which returns decision-ready evidence to all four">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8a93a5"/>
+          </marker>
+          <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0f172a"/>
+          </marker>
+        </defs>
+        <rect x="6" y="14" width="174" height="50" rx="8" fill="#eef3fe" stroke="#1d4ed8" stroke-width="1.6"/>
+        <text x="16" y="34" font-size="12" font-weight="700" fill="#12161c">Diplomacy</text>
+        <text x="16" y="50" font-size="9.5" fill="#4b5563">positions · legitimacy · training</text>
+
+        <rect x="6" y="74" width="174" height="50" rx="8" fill="#ecf7f5" stroke="#0f766e" stroke-width="1.6"/>
+        <text x="16" y="94" font-size="12" font-weight="700" fill="#12161c">Banking</text>
+        <text x="16" y="110" font-size="9.5" fill="#4b5563">workflow reality · harm · uptake</text>
+
+        <rect x="6" y="134" width="174" height="50" rx="8" fill="#fdf5e8" stroke="#b45309" stroke-width="1.6"/>
+        <text x="16" y="154" font-size="12" font-weight="700" fill="#12161c">Startups &amp; deep tech</text>
+        <text x="16" y="170" font-size="9.5" fill="#4b5563">buildable systems · readiness</text>
+
+        <rect x="6" y="194" width="174" height="50" rx="8" fill="#f3effe" stroke="#6d28d9" stroke-width="1.6"/>
+        <text x="16" y="214" font-size="12" font-weight="700" fill="#12161c">Civil society</text>
+        <text x="16" y="230" font-size="9.5" fill="#4b5563">independent scrutiny · reach</text>
+        <g stroke-width="1.7" fill="none">
+          <path d="M182,39 C206,39 206,140 224,140" stroke="#1d4ed8" marker-end="url(#ahd)"/>
+          <path d="M182,99 C206,99 206,143 224,143" stroke="#0f766e" marker-end="url(#ah)"/>
+          <path d="M182,159 C206,159 206,147 224,147" stroke="#b45309" marker-end="url(#ahd)"/>
+          <path d="M182,219 C206,219 206,152 224,152" stroke="#6d28d9" marker-end="url(#ah)"/>
+        </g>
+        <rect x="224" y="52" width="152" height="182" rx="10" fill="#0f172a"/>
+        <text x="300" y="90" font-size="12.5" font-weight="700" fill="#ffffff" text-anchor="middle">SHARED</text>
+        <text x="300" y="107" font-size="12.5" font-weight="700" fill="#ffffff" text-anchor="middle">ASSURANCE</text>
+        <text x="300" y="124" font-size="12.5" font-weight="700" fill="#ffffff" text-anchor="middle">LAYER</text>
+        <text x="300" y="146" font-size="9.5" fill="#a9b4c7" text-anchor="middle">your work</text>
+        <text x="300" y="168" font-size="8.5" fill="#a9b4c7" text-anchor="middle">schemas · methods</text>
+        <text x="300" y="180" font-size="8.5" fill="#a9b4c7" text-anchor="middle">findings · decisions</text>
+        <g stroke="#8a93a5" stroke-width="1.6" fill="none">
+          <path d="M376,84 C398,62 400,42 420,42" marker-end="url(#ah)"/>
+          <path d="M376,104 C398,104 400,96 420,96" marker-end="url(#ah)"/>
+          <path d="M376,138 C398,138 400,150 420,150" marker-end="url(#ah)"/>
+          <path d="M376,168 C398,178 400,204 420,204" marker-end="url(#ah)"/>
+        </g>
+        <g font-family="inherit">
+          <rect x="420" y="22" width="194" height="40" rx="7" fill="#ffffff" stroke="#d2d7e0" stroke-width="1.4"/>
+          <text x="431" y="39" font-size="11.5" font-weight="700" fill="#12161c">Benchmarks &amp; test protocols</text>
+          <text x="431" y="53" font-size="9.5" fill="#7b8494">reproducible, domain-adapted</text>
+          <rect x="420" y="76" width="194" height="40" rx="7" fill="#ffffff" stroke="#d2d7e0" stroke-width="1.4"/>
+          <text x="431" y="93" font-size="11.5" font-weight="700" fill="#12161c">Risk registers &amp; taxonomies</text>
+          <text x="431" y="107" font-size="9.5" fill="#7b8494">harm, incident, escalation</text>
+          <rect x="420" y="130" width="194" height="40" rx="7" fill="#ffffff" stroke="#d2d7e0" stroke-width="1.4"/>
+          <text x="431" y="147" font-size="11.5" font-weight="700" fill="#12161c">Dependency maps</text>
+          <text x="431" y="161" font-size="9.5" fill="#7b8494">what relies on whom, abroad</text>
+          <rect x="420" y="184" width="194" height="40" rx="7" fill="#ffffff" stroke="#d2d7e0" stroke-width="1.4"/>
+          <text x="431" y="201" font-size="11.5" font-weight="700" fill="#12161c">Decision briefs</text>
+          <text x="431" y="215" font-size="9.5" fill="#7b8494">adopt · revise · stop · refuse</text>
+          <text x="300" y="262" font-size="9.5" fill="#7b8494" text-anchor="middle">evidence is the only thing that travels between all four</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">What the layer is actually for</h3>
+      <ul class="loop-out">
+        <li><b>One demand, four dialects.</b> Each domain asks the same question in different words: is this technology useful, safe, accountable and worth supporting?</li>
+        <li><b>Requirements recur; mandates do not.</b> The same test framework cannot erase sector-specific obligations — so the method travels and the compliance claim stays home.</li>
+        <li><b>Evidence moves, data does not.</b> Shared schemas and methods; separately controlled source data; selectively shared findings.</li>
+        <li><b>Scrutiny is load-bearing.</b> CSOs and communities catch what bank workflow logs and training curricula structurally cannot see.</li>
+      </ul>
+      <p class="sec-note" style="margin:14px 0 0; font-size:13px; border-left:3px solid var(--ink3); padding-left:12px">
+        A bank sees interactions with its own services. A complaints organisation sees people who seek help.
+        A community organisation may reach people who never use the service or never complain.
+        None of these is a complete population sample — which is why <b>triangulation matters more than
+        assembling a larger dataset</b>.
+      </p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2>2 · The ecosystem — multilayer network</h2>
+  <p class="sec-note">
+    A multilayer network, not a single Venn diagram. Nodes appear in more than one layer where they carry
+    more than one function — that reflects roles, not confusion. <b>Solid</b> edges are documented
+    institutional relationships. <b>Dashed</b> edges are proposed relationships to investigate, not existing
+    partnerships. No unlabelled “partners with” arrows: those hide who is responsible for what.
+  </p>
+  <div class="controls">
+    <button class="btn on" data-filter="all">All edges</button>
+    <button class="btn" data-filter="est">Established only</button>
+    <button class="btn" data-filter="prop">Proposed only</button>
+    <span class="spacer"></span>
+    <span class="hint">Hover a node to isolate its links · click it for role, pain point and evidence</span>
+  </div>
+  <div class="graph-shell">
+    <svg id="graph" role="img"
+         aria-label="Multilayer ecosystem network: public authorities, operators and builders, evidence and scrutiny organisations, capacity providers, the public, and one shared assurance layer">
+    </svg>
+  </div>
+  <div class="detail" id="detail">
+    <div class="placeholder">Select any node to see its institutional role, the pain point to validate, and the distinctive evidence it may hold or generate.</div>
+  </div>
+</section>
+
+<section>
+  <h2>3 · Where the domains overlap</h2>
+  <p class="sec-note">
+    Proposed working intersections for your research and portfolio. Each is a shared problem with an
+    evidence artifact — the artifact, not the meeting, is the deliverable. <b>Click a card to highlight
+    its actors in the network above.</b>
+  </p>
+  <div class="ix-grid" id="ixGrid"></div>
+</section>
+
+<section>
+  <h2>4 · Where they do <em>not</em> overlap — and should stay separate</h2>
+  <p class="sec-note">
+    A strong ecosystem map needs boundaries as much as connections. These are the collapses that look
+    harmless in a slide and become misstatements in a proposal, a procurement or a pitch.
+  </p>
+  <div class="bd-grid" id="bdGrid"></div>
+</section>
+<section>
+  <h2>5 · The data architecture — exchange evidence, not everybody’s raw data</h2>
+  <p class="sec-note">
+    The safest and most useful common layer: <b>shared schemas and evaluation methods; separately
+    controlled source data; selectively shared findings.</b>
+  </p>
+  <div class="tbl-wrap">
+    <table>
+      <caption>Suggested evidence layers</caption>
+      <thead><tr><th style="width:200px">Layer</th><th>Examples</th><th style="width:33%">Default approach</th></tr></thead>
+      <tbody id="evBody"></tbody>
+    </table>
+  </div>
+  <div class="two" style="margin-top:16px">
+    <div class="travel yes"><h4>What can travel between domains</h4><ul id="travelYes"></ul></div>
+    <div class="travel no"><h4>What should not automatically travel</h4><ul id="travelNo"></ul></div>
+  </div>
+  <p class="sec-note" style="margin-top:14px; border-left:3px solid var(--warn); padding-left:12px">
+    Anonymisation alone may not resolve confidentiality, contractual restrictions or re-identification risks.
+  </p>
+</section>
+
+<section>
+  <h2>6 · What this means for the master’s</h2>
+  <div class="card">
+    <h3 style="margin-top:0">Broaden the framing — not the empirical scope</h3>
+    <p style="margin:0 0 14px; font-size:13.5px; color:var(--ink2)">
+      Name the ecosystem in the title: <em>Evidence for Trustworthy AI Adoption in Malaysia — Technical
+      Evaluation Across Public Institutions, Financial Services and Civil Society</em>. Then keep the case
+      design tightly bounded: <b>one</b> primary deployment context, <b>one</b> structured institutional
+      comparison, <b>one</b> independent scrutiny component.
+    </p>
+    <h3>Contribution — which requirement falls where</h3>
+    <ol id="contrib" style="margin:0; padding-left:22px; font-size:13.5px"></ol>
+    <p class="sec-note" style="margin:14px 0 0">
+      Resulting spine: requirement mapping → reproducible tests → domain-specific risk analysis →
+      decision-ready evidence. <em>Can Small Tech Work?</em> is the public-learning layer around that
+      work — not a substitute for the institutional expertise you already have.
+    </p>
+  </div>
+</section>
+
+<footer>
+  Mapping derived from <code>mapping.md</code> (BankBench · masses/events). Institutional roles are drawn
+  as relationships; pain points and data opportunities are <b>hypotheses to validate</b>, not assertions
+  that particular datasets exist or that access is available. Source links are preserved in the original
+  document. Light-theme build · self-contained · no external assets.
+</footer>
+</div>
+<script>
+/* mapping.md → ecosystem map.  Array form: [id, label, cat, layers, role, pain, evidence] */
+const NODES = [
+["MFA","Ministry of Foreign Affairs","dip","1","Foreign-policy and diplomatic context; parent ministry of IDFR.","Translating fast-moving technology into defensible positions; coordination with technical and economic agencies.","Public statements and diplomatic instruments; internally, policy briefs, consultation records, negotiation material — subject to classification."],
+["IDFR","IDFR","dip","1,4","Diplomatic training and research; convenes Malaysian and international officials. Capacity-building domain — not the AI regulator.","Identifying technical-governance capability gaps; demonstrating that training improves professional judgment.","Curricula, training exercises, assessments and feedback where collected; participant-generated scenarios with consent."],
+["KD","Ministry of Digital","neutral","1","National digital-policy ecosystem; oversees AI Malaysia Berhad and the personal-data-protection institutions.","Coherent adoption policy across sectors; measuring implementation rather than announcements.","Policy consultations, programme reporting, implementation indicators, stakeholder submissions."],
+["AI_MY","AI Malaysia Berhad","neutral","1","Lead AI agency under the Ministry of Digital, institutionalising NAIO and driving the national AI action plan.","Translating national ambitions into sector-specific practice; comparable evidence on benefits and risks.","Consultation inputs, implementation reporting and sectoral assessments where collected."],
+["MOSTI","MOSTI","neutral","1,4","Science, technology and innovation; launched AIGE; ecosystem includes MRANTI, Cradle and MYSA.","Connecting R&D, responsible experimentation and commercialisation; distinguishing technical promise from deployment readiness.","Research and innovation programme records, grant milestones, technical reviews, funded-project outputs."],
+["MITI","MITI","dip","1","Industrial development, investment and trade; coordinates Malaysia's positions on digital trade in relevant negotiations.","Attracting investment while developing domestic capability; understanding cross-border digital dependencies.","Trade and investment evidence, industry consultations, public agreements, internal negotiating material."],
+["PDP","PDP Commissioner (JPDP)","neutral","1","Commissioner and supporting department within the Ministry of Digital ecosystem; commercial-transaction personal-data governance and enforcement.","Interpreting data obligations in complex deployments; identifying responsibility across vendors and deployers.","Guidance and consultation papers; complaint, breach and enforcement information where lawfully collectable and releasable."],
+["BNM","Bank Negara Malaysia","bank","1","Banking and financial-sector oversight; operates a financial-technology sandbox combining experimentation with safeguards.","Encouraging useful innovation without weakening operational controls or consumer protection.","Public policy documents; restricted supervisory, sandbox and complaint information within its mandate."],
+["SC","Securities Commission","bank","1","Capital-market regulator — perimeter distinct from banking and payments.","Assessing innovative investment and fundraising services while protecting investors.","Public registers and guidance; restricted supervisory and market-conduct information."],
+["KPDN","KPDN","neutral","1","General consumer-policy connection. Not the default redress authority for regulated financial disputes.","Digital-market integrity, misleading offers, consumer awareness and accessible remedies.","Public consumer guidance; complaint and enforcement information within its jurisdiction."],
+["FMOS","FMOS","neutral","1,3","Independent financial dispute-resolution service established by BNM and SC — not a ministry, CSO or prudential regulator.","Resolving eligible disputes and identifying recurring failures in service and redress.","Published findings and reports; restricted dispute files, submissions and resolution outcomes."]
+];
+const NODES2 = [
+["BANKS","Banks & providers","bank","2","Regulated providers and other adopters.","Consumer harm, inconsistent service, legacy integration, vendor risk, expensive assurance.","Product rules; workflow records; channel logs; complaints; incident histories; transactions and decision outcomes where applicable."],
+["OPS","Frontline & operations","bank","2","Bank frontline and operations teams — incentives and evidence differ from risk and from product.","Rework, unclear escalation, automation failures, difficult customer cases.","Actual workarounds, queue and handoff records, escalation reasons, operational knowledge."],
+["CONTROL","Risk, compliance, audit","bank","2","Bank risk, compliance, audit and legal teams.","Converting broad principles into testable controls; proving controls operate.","Control inventories, audit findings, policy interpretations, approvals and exception records."],
+["STARTUPS","Fintech & AI startups","start","2","Fintech and AI startups building deployable systems.","Finding a viable buyer; proving performance; meeting integration and regulatory expectations.","Prototype results, architecture, usage telemetry, failure logs, deployment costs."],
+["DEEPTECH","Deep-tech ventures","start","2","Emerging and deep-tech ventures with long cycles.","Long development cycles, uncertain milestones, expensive testing.","Experiment records, simulations, uncertainty estimates, component and interface requirements."],
+["VENDORS","Cloud / model vendors","neutral","2","Cloud, model and software vendors.","Enterprise trust, deployment support and product reliability.","Model and configuration details, platform telemetry, service incidents, commercial terms — often only partially disclosed."],
+["SINAR","Sinar Project","cso","3","Civic technology, open data, public information and accountability; also digital-rights work.","Maintaining public-interest tools; obtaining usable information; turning technical findings into institutional change.","Public-data workflows, provenance problems, information-access barriers, technical observations, civic-user requirements."],
+["AOD","Architects of Diversity","cso","3","Inclusion across racial and religious divisions; participation and community perspectives. Not an AI regulator or testing lab.","Ensuring inclusion affects decisions rather than only attendance; representing differences without claiming to speak for everyone.","Participant perspectives, programme learning, agreed surveys; sensitive identity data requires particular care."],
+["FOMCA","FOMCA","cso","3","Consumer advocacy, digital-market integrity and consumer literacy.","Identifying recurring harm; helping consumers navigate fragmented remedies; influencing product and policy changes.","Complaint themes, consumer narratives and observed patterns, subject to consent and data rights."],
+["NCCC","NCCC","cso","3","Complaint-based consumer evidence within FOMCA's ecosystem.","Converting individual complaints into actionable patterns without losing context.","Complaints on non-delivery, refunds, hidden charges, dark patterns, sales practices — not a substitute for bank-wide transaction evidence."],
+["C4","C4 Center","cso","3","Anti-corruption, transparency, procurement and institutional-reform scrutiny.","Obtaining evidence about procurement decisions; assessing whether grievance and oversight mechanisms work.","Procurement-policy research, case analysis, public-document trails and reform recommendations."],
+["COMMUNITY","Community orgs","cso","3","Community, disability, language or migrant organisations — selected for the actual affected population, not assumed representatives of all users.","Participation burdens, inaccessible processes, exposure to harm, insufficient influence.","Contextual knowledge, accessibility barriers, language practices, experiences formal logs may miss."],
+["RESEARCH","Universities & labs","neutral","3","Universities and research laboratories.","Research validity, suitable data, reproducibility and publication.","Experimental results, annotated datasets, methods and peer-reviewed work."]
+];
+const NODES3 = [
+["INNOVATION","MRANTI & Cradle","start","4","Support ventures and translate development into credible outcomes; both sit in MOSTI's ecosystem.","Supporting ventures and translating development into credible outcomes.","Programme-specific application, milestone and support records where retained."],
+["MYSA","MYSA","neutral","4","Relevant to the space-technology extension; listed within MOSTI's agency ecosystem.","Relevant to space-technology extension; do not assume access to facilities or mission data.","Project-specific space research, technical expertise and public information."],
+["FUNDERS","Funders & investors","start","4","Funders and investors judging technical claims.","Judging technical claims, execution risk and credible milestones.","Due-diligence records, portfolio experience, funding decisions, milestone histories."],
+["PUBLIC","Consumers & non-users","neutral","5","Consumers and affected non-users — including people who never use the service or never complain.","Incorrect decisions, exclusion, inaccessible information, loss of money or recourse.","Lived experience, task context, understanding and practical consequences."],
+["TINTABUDI","Tintabudi","neutral","5","Proposed host and reading/public-discourse partner, consistent with its bookshop and discussion identity.","Proposed host and public-discourse partner.","Event questions, reading discussions and voluntary feedback — not automatic research data."],
+["ASSURANCE","Your assurance work","assurance","6","Public-interest technical governance across diplomacy, financial services and emerging technology.","Translating institutional requirements and community concerns into evaluations, evidence and adoption decisions.","Benchmarks, test protocols, risk registers, dependency maps, decision briefs — the connective layer."]
+];
+const LAYERS = [
+ {n:"Public authority and policy", k:"1"},
+ {n:"Operators and builders", k:"2"},
+ {n:"Evidence and scrutiny", k:"3"},
+ {n:"Capacity and resources", k:"4"},
+ {n:"Affected people and public learning", k:"5"},
+ {n:"Shared assurance layer — your work", k:"6"}
+];
+const EDGES = [
+["MFA","IDFR","institutional parent of","est"],
+["KD","AI_MY","oversees","est"],
+["KD","PDP","ministry ecosystem for","est"],
+["MOSTI","INNOVATION","agency / support ecosystem","est"],
+["MOSTI","MYSA","agency / support ecosystem","est"],
+["BNM","BANKS","supervises within mandate","est"],
+["SC","FUNDERS","regulates within mandate","est"],
+["BNM","STARTUPS","bounded experimentation route — admission not automatic","est"],
+["FMOS","PUBLIC","independent dispute resolution","est"],
+["FMOS","BANKS","independent dispute resolution","est"],
+["IDFR","ASSURANCE","capacity-building collaboration — existing work","est"],
+["BANKS","ASSURANCE","evaluation / advisory engagement — existing work","est"],
+["SINAR","ASSURANCE","contributes requirements and scrutiny","prop"],
+["AOD","ASSURANCE","contributes requirements and scrutiny","prop"],
+["FOMCA","ASSURANCE","contributes requirements and scrutiny","prop"],
+["RESEARCH","ASSURANCE","validates methods","prop"],
+["STARTUPS","ASSURANCE","supplies testable system","prop"],
+["BANKS","STARTUPS","defines workflow and acceptance needs — controlled pilot","prop"],
+["ASSURANCE","BNM","produces findings for the relevant decision-maker","prop"],
+["TINTABUDI","PUBLIC","hosts public learning — Can Small Tech Work?","prop"],
+["PUBLIC","ASSURANCE","generates questions, not automatic consent","prop"],
+["C4","ASSURANCE","procurement and oversight scrutiny","prop"],
+["NCCC","ASSURANCE","complaint-based evidence","prop"],
+["COMMUNITY","ASSURANCE","contextual knowledge and reach","prop"],
+["DEEPTECH","ASSURANCE","claim–evidence registers and stage gates","prop"],
+["OPS","ASSURANCE","realistic scenarios and human–AI workflow tests","prop"],
+["CONTROL","ASSURANCE","requirement-to-test traceability","prop"],
+["VENDORS","STARTUPS","supplies models and platforms","prop"],
+["FUNDERS","STARTUPS","technical diligence","prop"],
+["KPDN","FOMCA","consumer policy connection","prop"],
+["MITI","BANKS","cross-border digital trade","prop"]
+];
+const IX = [
+["Diplomacy × Banking","dip,bank","Cross-border digital finance, trust, data dependencies and resilience","Scenario brief linking technical dependencies to institutional choices",["MFA","IDFR","MITI","BNM","BANKS"]],
+["Diplomacy × Startups","dip,start","International partnerships, credible capability claims, technology transfer and market entry","Partnership due-diligence framework and capability evidence",["IDFR","MFA","MITI","MOSTI","STARTUPS"]],
+["Diplomacy × CSOs","dip,cso","Public legitimacy, rights, inclusion and evidence for international policy discussions","Structured consultation synthesis with traceable sources and disagreements",["IDFR","MFA","SINAR","AOD","FOMCA"]],
+["Banking × Startups","bank,start","Safe pilots, integration, vendor assessment and consumer outcomes","Acceptance tests, risk register and pilot stop conditions",["BANKS","STARTUPS","BNM","SC"]],
+["Banking × CSOs","bank,cso","Consumer experience, exclusion, complaints and access to remedies","Harm taxonomy and consent-based test scenarios",["BANKS","FOMCA","NCCC","COMMUNITY","FMOS"]],
+["Startups × CSOs","start,cso","Problem discovery, accessible design and public-interest adoption","Co-designed requirements and a benefit/burden assessment",["STARTUPS","SINAR","AOD","COMMUNITY"]],
+["All four domains","all","Whether evidence justifies adoption, partnership, support or refusal","Evidence register, independent evaluation and a decision memo — with different decision rights per actor","ALL"]
+];
+const BD = [
+["Diplomatic capacity-building ≠ regulatory approval","Training officials in AI governance does not authorise a financial product or establish legal compliance."],
+["Public discussion ≠ representative consultation","A Tintabudi audience cannot automatically stand in for financial consumers, diplomats or excluded communities."],
+["CSO participation ≠ product endorsement","A consultation or workshop should not become a marketing claim that a product is “community approved.”"],
+["Technical performance ≠ institutional legitimacy","A model can answer accurately while the workflow remains inaccessible or lacks recourse."],
+["Commercial usefulness ≠ public value","A profitable service may shift costs or risks onto users; a valuable public resource may not have a viable sales model."],
+["Complaint records ≠ prevalence estimates","Complaint channels reflect who notices, understands and can report a problem."],
+["Local deployment ≠ full technological autonomy","Hardware, model development, updates and support may remain externally dependent."],
+["Research access ≠ permission to publish or commercialise","Employment, client work, event participation and university research carry different permissions."],
+["Common method ≠ common legal regime","The same test framework cannot erase sector-specific obligations."],
+["Government exempt from the PDPA — exemption is not permission","JPDP states federal and state governments are exempt from the PDPA, while the Act addresses personal-data processing in commercial transactions. Do not apply the same PDPA-compliance claim indiscriminately to IDFR and to a bank. Government information still requires appropriate confidentiality, security and administrative controls.",1],
+["BNM, SC, KPDN and FMOS are not interchangeable","Their jurisdictions and functions differ, and BNM’s own complaint guidance distinguishes these routes. Do not draw them as one “consumer protection” node.",1]
+];
+const EV = [
+["Public reference material","Published regulations, public speeches, product information, official reports","Check licence, provenance, date and permitted reuse"],
+["Partner-approved research material","Agreed interview excerpts, consented workshop outputs, approved scenario descriptions","Use under explicit research and publication terms"],
+["Restricted institutional information","Internal SOPs, vendor assessments, audit findings, unpublished policy material","Keep within the partner’s approved environment; publish only cleared findings"],
+["Highly sensitive records","Identifiable complaints, transactions, security information, diplomatic materials","Avoid collecting unless essential and formally authorised; prefer alternatives"],
+["Derived evidence","Aggregated error rates, synthetic scenarios, approved taxonomies","Review disclosure risk — “derived” does not automatically mean safe to release"]
+];
+const TRAVEL_YES = [
+"A generic test for unsupported factual claims",
+"A requirement-to-test traceability template",
+"A dependency-mapping method",
+"An incident taxonomy, adapted to context",
+"A decision framework for deploying, revising or stopping a pilot",
+"Synthetic scenarios reviewed for realism and disclosure risk"
+];
+const TRAVEL_NO = [
+"Bank customer or transaction data into public workshops",
+"Diplomatic training discussions into commercial product development",
+"CSO complainants’ narratives into benchmarks without appropriate permission",
+"Client deliverables into a university dissertation",
+"A startup’s confidential experiment results into investor-facing promotion"
+];
+const CONTRIB = [
+"Which evaluation requirements <b>recur</b> across domains.",
+"Which are <b>specific</b> to finance, diplomacy or community context.",
+"Which concerns can be <b>tested technically</b>.",
+"Which instead require <b>institutional controls, accountability or recourse</b>."
+];
+
+/* ---------- assemble ---------- */
+const ALL = NODES.concat(NODES2, NODES3);
+const BY = {}; ALL.forEach(n => BY[n[0]] = n);
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+function wrap(s, max){
+  const w = s.split(" "); const out = []; let cur = "";
+  w.forEach(x => { if ((cur + " " + x).trim().length > max) { if (cur) out.push(cur); cur = x; } else cur = (cur + " " + x).trim(); });
+  if (cur) out.push(cur); return out;
+}
+
+/* ---------- layout ---------- */
+const W = 1520, LP = 176, RP = 26, BW = 152, BH = 52, ROWH = 80, PER = 7;
+const pos = {}; let cy = 0; const bands = [];
+LAYERS.forEach((L, li) => {
+  const members = ALL.filter(n => n[3].split(",").includes(L.k));
+  const rows = []; for (let i = 0; i < members.length; i += PER) rows.push(members.slice(i, i + PER));
+  const bh = 42 + rows.length * ROWH + 10;
+  bands.push({ y: cy, h: bh, label: L.n, alt: li % 2 === 1 });
+  rows.forEach((row, ri) => {
+    const slot = (W - LP - RP) / row.length;
+    row.forEach((n, i) => {
+      const x = LP + i * slot + (slot - BW) / 2, y = cy + 42 + ri * ROWH;
+      pos[n[0]] = { x, y, w: BW, h: BH, cx: x + BW / 2, cy: y + BH / 2, cat: n[2], id: n[0] };
+    });
+  });
+  cy += bh;
+});
+const H = cy + 10;
+/* ---------- build ---------- */
+const svg = document.getElementById("graph");
+svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+svg.setAttribute("width", W); svg.setAttribute("height", H);
+const defs = el("defs");
+[["aEst","#8a93a5"],["aProp","#1d4ed8"]].forEach(p => {
+  const m = el("marker",{id:p[0],viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:6,markerHeight:6,orient:"auto-start-reverse"});
+  m.appendChild(el("path",{d:"M0,0 L10,5 L0,10 z",fill:p[1]})); defs.appendChild(m);
+});
+svg.appendChild(defs);
+bands.forEach(b => {
+  svg.appendChild(el("rect",{x:0,y:b.y,width:W,height:b.h,class:"band"+(b.alt?" alt":"")}));
+  const t = el("text",{x:16,y:b.y+26,class:"band-label"}); t.textContent = b.label; svg.appendChild(t);
+  svg.appendChild(el("line",{x1:0,y1:b.y,x2:W,y2:b.y,class:"band-rule"}));
+});
+const gEdges = el("g"), gNodes = el("g");
+svg.appendChild(gEdges); svg.appendChild(gNodes);
+function trim(a,b){
+  const dx=b.cx-a.cx, dy=b.cy-a.cy, d=Math.hypot(dx,dy)||1, ux=dx/d, uy=dy/d;
+  const sameBand = Math.abs(a.y-b.y) < 4;
+  const r = sameBand ? Math.min(d*0.34, 72) : 44;
+  return { s:{x:a.cx+ux*r,y:a.cy+uy*r}, e:{x:b.cx-ux*r,y:b.cy-uy*r}, sameBand };
+}
+function dpath(s,e,sameBand){
+  if (sameBand){ const mid=(s.x+e.x)/2, up=Math.min(s.y,e.y)-46;
+    return "M"+s.x+","+s.y+" C"+mid+","+up+" "+mid+","+up+" "+e.x+","+e.y; }
+  const my=(s.y+e.y)/2;
+  return "M"+s.x+","+s.y+" C"+s.x+","+my+" "+e.x+","+my+" "+e.x+","+e.y;
+}
+const edgeEls = [];
+EDGES.forEach(ed => {
+  const a=pos[ed[0]], b=pos[ed[1]]; if(!a||!b) return;
+  const t=trim(a,b);
+  const p=el("path",{d:dpath(t.s,t.e,t.sameBand),class:"edge "+ed[3],
+                     "marker-end": ed[3]==="est" ? "url(#aEst)" : "url(#aProp)"});
+  p.dataset.s=ed[0]; p.dataset.t=ed[1]; p.dataset.kind=ed[3];
+  gEdges.appendChild(p);
+  const tx=el("text",{x:(t.s.x+t.e.x)/2,y:(t.s.y+t.e.y)/2-5,class:"elabel dim"});
+  tx.textContent=ed[2]; gEdges.appendChild(tx);
+  edgeEls.push({p:p,tx:tx,s:ed[0],t:ed[1],kind:ed[3]});
+});
+const CATNAME={dip:"Diplomacy",bank:"Banking",start:"Startups",cso:"Civil society",neutral:"Authority · capacity",assurance:"Assurance layer"};
+const nodeEls = {};
+ALL.forEach(n => {
+  const q=pos[n[0]], g=el("g",{class:"node","data-cat":n[2],"data-id":n[0]});
+  g.appendChild(el("rect",{x:q.x,y:q.y,width:q.w,height:q.h,rx:9}));
+  const lines=wrap(n[1],19).slice(0,2), y0=q.y+(lines.length===1?27:20);
+  lines.forEach((ln,i)=>{ const t=el("text",{x:q.x+q.w/2,y:y0+i*13,"text-anchor":"middle"}); t.textContent=ln; g.appendChild(t); });
+  const tg=el("text",{x:q.x+q.w/2,y:q.y+q.h-7,class:"tag","text-anchor":"middle"});
+  tg.textContent=CATNAME[n[2]]||""; g.appendChild(tg);
+  gNodes.appendChild(g); nodeEls[n[0]]=g;
+});
+/* ---------- interaction ---------- */
+let hoverId = null, pinset = null, filt = "all";
+function neighbors(id){ const s = new Set();
+  edgeEls.forEach(e => { if (e.s === id) s.add(e.t); if (e.t === id) s.add(e.s); }); return s; }
+function apply(){
+  let keep = null, focus = pinset;
+  if (hoverId){ keep = new Set([hoverId]); neighbors(hoverId).forEach(x => keep.add(x)); focus = keep; }
+  ALL.forEach(n => {
+    const g = nodeEls[n[0]];
+    g.classList.toggle("dim", !!focus && !focus.has(n[0]));
+    g.classList.toggle("hl", n[0] === hoverId);
+  });
+  edgeEls.forEach(e => {
+    const off = filt !== "all" && e.kind !== filt;
+    const active = !!focus && focus.has(e.s) && focus.has(e.t)
+                   && (!hoverId || e.s === hoverId || e.t === hoverId);
+    e.p.classList.toggle("dim", off || (!!focus && !active));
+    e.p.classList.toggle("hl", active && !off);
+    e.tx.classList.toggle("dim", !(active && !off));
+  });
+}
+function detail(id){
+  const n = BY[id], d = document.getElementById("detail");
+  const conn = edgeEls.filter(e => e.s === id || e.t === id).map(e => {
+    const other = e.s === id ? e.t : e.s, arrow = e.s === id ? "→ " : "← ";
+    const st = e.kind === "est" ? "" : " · proposed";
+    return '<span class="chip">' + arrow + (BY[other] ? BY[other][1] : other) + st + '</span>';
+  }).join(" ");
+  d.innerHTML = '<div class="dt">' + n[1] + '</div>'
+    + '<div class="dsub">' + (CATNAME[n[2]] || "") + ' · layer ' + n[3] + ' · ' + n[0] + '</div>'
+    + '<dl><dt>Role</dt><dd>' + n[4] + '</dd>'
+    + '<dt>Pain point to validate</dt><dd>' + n[5] + '</dd>'
+    + '<dt>Distinctive evidence</dt><dd>' + n[6] + '</dd>'
+    + '<dt>Connections</dt><dd>' + (conn || '<span class="placeholder">none drawn</span>') + '</dd></dl>';
+}
+Object.keys(nodeEls).forEach(id => {
+  const g = nodeEls[id];
+  g.addEventListener("pointerenter", () => { hoverId = id; apply(); });
+  g.addEventListener("pointerleave", () => { hoverId = null; apply(); });
+  g.addEventListener("click", () => { detail(id); });
+});
+document.querySelectorAll("[data-filter]").forEach(b => {
+  b.addEventListener("click", () => {
+    filt = b.dataset.filter;
+    document.querySelectorAll("[data-filter]").forEach(x => x.classList.toggle("on", x === b));
+    apply();
+  });
+});
+/* ---------- intersection / boundary / evidence renders ---------- */
+const CATC = {dip:"#1d4ed8",bank:"#0f766e",start:"#b45309",cso:"#6d28d9"};
+const ixG = document.getElementById("ixGrid");
+IX.forEach((x, i) => {
+  const keys = x[1] === "all" ? ["dip","bank","start","cso"] : x[1].split(",");
+  const ids = x[4][0] === "ALL" ? ALL.map(n => n[0]) : x[4];
+  const d = document.createElement("div");
+  d.className = "ix";
+  d.innerHTML = '<div class="pair">'
+    + keys.map(k => '<span class="dot" style="background:' + CATC[k] + '"></span>').join("")
+    + '<span>' + x[0] + '</span></div>'
+    + '<p class="prob">' + x[2] + '</p>'
+    + '<p class="art"><b>Evidence artifact</b>' + x[3] + '</p>'
+    + '<div class="actors">' + ids.map(a => '<span class="chip">' + a + '</span>').join("") + '</div>';
+  d.addEventListener("click", () => {
+    const was = d.classList.contains("on");
+    document.querySelectorAll(".ix").forEach(y => y.classList.remove("on"));
+    if (was) { pinset = null; } else { d.classList.add("on"); pinset = new Set(ids); }
+    hoverId = null; apply();
+  });
+  ixG.appendChild(d);
+});
+BD.forEach(b => {
+  const d = document.createElement("div");
+  d.className = "bd";
+  d.innerHTML = '<p class="neq">' + b[0] + '</p><p>' + b[1] + '</p>';
+  document.getElementById("bdGrid").appendChild(d);
+});
+EV.forEach(r => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = '<td><b>' + r[0] + '</b></td><td>' + r[1] + '</td><td>' + r[2] + '</td>';
+  document.getElementById("evBody").appendChild(tr);
+});
+TRAVEL_YES.forEach(t => { const li = document.createElement("li"); li.textContent = t; document.getElementById("travelYes").appendChild(li); });
+TRAVEL_NO.forEach(t => { const li = document.createElement("li"); li.textContent = t; document.getElementById("travelNo").appendChild(li); });
+CONTRIB.forEach(t => { const li = document.createElement("li"); li.innerHTML = t; document.getElementById("contrib").appendChild(li); });
+apply();
+</script>
+</body>
+</html>
