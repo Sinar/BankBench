@@ -1,0 +1,12 @@
+# Local runtime artifacts — never commit these.
+.venv/
+logs/
+void_logs/
+__pycache__/
+*.pyc
+.env
+
+# Built dataset outputs (regenerate from items/ with build_fomca_dataset.py)
+suites/*/fomca_tasks.json
+suites/*/fomca_tasks.jsonl
+suites/*/fomca_tasks.csv
