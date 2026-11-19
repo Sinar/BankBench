@@ -1,0 +1,20 @@
+{
+  "suite": "FOMCA Consumer-Harm Eval Set v0.1",
+  "status": "demo fixtures \u2014 Category E (exploratory). Must not be cited for external governance action.",
+  "scores": {
+    "construct_validity": 3,
+    "internal_validity": 2,
+    "external_validity": 4,
+    "reliability": 2,
+    "correctness": 4
+  },
+  "category": "E",
+  "category_index": 5,
+  "category_label": "Exploratory research \u2014 results not indicative of real abilities",
+  "capping": [
+    "external_validity",
+    "correctness"
+  ],
+  "self_assessed": true,
+  "paper": "Scorecard of AI Evaluation Quality (San Joaquin, Gipiskis, Chin \u2014 Feb 2026)"
+}
