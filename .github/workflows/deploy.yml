@@ -17,7 +17,14 @@ on:
       - .github/workflows/deploy.yml
   workflow_dispatch:
 
-permissions: {}
+# Least-privilege permissions for the GITHUB_TOKEN used by this workflow.
+# `contents: read` lets actions/checkout fetch the repo; `pages` + `deployments`
+# let the Cloudflare Pages publish step report status. The Cloudflare token
+# itself comes from secrets.CLOUDFLARE_API_TOKEN (must have Pages:Edit + Workers:Edit).
+permissions:
+  contents: read
+  pages: write
+  deployments: write
 
 concurrency:
   group: pages-deploy
