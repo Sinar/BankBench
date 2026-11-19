@@ -36,6 +36,17 @@ it only to the AI service you choose. Nothing is saved.
 
 ## Run it — the easy way
 
+**0. Make the skill available to your agent (once).**
+
+```bash
+# from inside this repo
+cp -r skills/inspect-eval-runner ~/.hermes/skills/
+```
+
+(Any agent that loads skills from a folder works the same way — point it at
+`inspect-eval-runner/`. The folder is self-contained: it carries its own
+scripts and an example test set.)
+
 **1. Open your AI assistant** (Hermes, or any assistant that can use skills from
 this folder).
 
