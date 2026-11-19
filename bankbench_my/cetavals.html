@@ -397,15 +397,6 @@
             <div class="srow"><label>Trials / task</label><input id="trials" type="number" value="3" min="1" max="10"></div>
             <div class="srow"><label>Budget cap (USD)</label><input id="maxusd" type="number" value="4" min="0" step="0.5"></div>
           </div>
-          <div class="srow" style="grid-template-columns:1fr;align-items:flex-start">
-            <label>Registers to expand</label>
-            <select id="registers" multiple size="4" style="height:auto">
-              <option value="BM Baku" selected>BM Baku</option>
-              <option value="BM Pasar" selected>BM Pasar</option>
-              <option value="Manglish" selected>Manglish</option>
-              <option value="Code-switch">Code-switch</option>
-            </select>
-          </div>
           <div class="secure">Keys are stored in <b>your browser's localStorage</b> only — never sent anywhere except the chosen provider endpoint, never written to disk or the repo.</div>
         </div>
 
@@ -882,6 +873,9 @@ function onProvider(){
       : (p==='nous' ? 'Nous key: paste in the field below (or set the server NOUS_API_KEY secret).' : '');
   }
   if (window.BBModels) syncModelSelect(p, '');
+  // Re-populate the Run-tab Solver model list for the newly selected provider
+  // (Lemonade included) so it always mirrors what's chosen in Settings.
+  if (typeof v1LoadModels === 'function') v1LoadModels();
 }
 function toggleSettings(){ document.getElementById('settings').classList.toggle('open'); }
 
@@ -1329,7 +1323,9 @@ document.addEventListener('click', (e) => {
 // ---------- run matrix ----------
 function buildMatrix(){
   const approved=currentSeeds.filter(s=>s.status==='approved');
-  const regs=[...document.getElementById('registers').selectedOptions].map(o=>o.value);
+  const regsEl = document.getElementById('registers');
+  const regs = regsEl ? [...regsEl.selectedOptions].map(o=>o.value)
+                       : ['BM Baku','BM Pasar','Manglish','Code-switch','English'];
   const trials=parseInt(document.getElementById('trials').value||'3',10);
   const maxusd=parseFloat(document.getElementById('maxusd').value||'4');
   const provider=document.getElementById('provider').value;
@@ -1766,7 +1762,7 @@ async function v1LoadModels(){
   if (window.BBModels){
     try {
       const rows = await BBModels.detailed(document.getElementById('provider').value, cleanedKey());
-      sel.innerHTML = rows.slice(0, 60).map(r => '<option value="' + escapeHtml(r.id) + '">' + escapeHtml(r.id) + (r.price != null ? '  ($' + r.price + '/M)' : '') + '</option>').join('');
+      sel.innerHTML = rows.slice(0, 200).map(r => '<option value="' + escapeHtml(r.id) + '">' + escapeHtml(r.id) + (r.price != null ? '  ($' + r.price + '/M)' : '') + '</option>').join('');
     } catch (e){ /* falls through to manual entry below */ }
   }
   if (!sel.options.length){
