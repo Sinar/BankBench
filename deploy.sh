@@ -22,7 +22,7 @@ fi
 # Edits to bankbench_my/*.html used to require a manual copy into site/, which
 # silently went stale and shipped old, non-proxied pages.
 mkdir -p site/bankbench_my
-for f in factory.html factory-v1.html platform.html platform-v1.html models.js no-code-eval.html issue9-plaid-capability-report.html; do
+for f in factory.html factory-v1.html cetavals.html platform.html platform-v1.html models.js no-code-eval.html issue9-plaid-capability-report.html; do
   if [[ -f "bankbench_my/$f" ]]; then
     cp "bankbench_my/$f" "site/bankbench_my/$f"
     echo "synced site/bankbench_my/$f"
@@ -40,6 +40,13 @@ fi
 OUT=dist
 rm -rf "$OUT" && mkdir -p "$OUT"
 cp -R site/. "$OUT"/
+# Pages Functions (the /api/proxy used by seed()/run()) — copy explicitly so the
+# proxy always ships with the deploy (wrangler also looks in CWD, but copying is
+# the reliable path and avoids a silent missing-proxy "Failed to fetch").
+if [[ -d "functions" ]]; then
+  cp -R functions "$OUT/functions"
+  echo "copied functions/ -> dist/functions (api proxy)"
+fi
 mkdir -p "$OUT/eval-scorecard"
 cp eval-scorecard/unified_scorecard_dashboard.html "$OUT/eval-scorecard/"
 cp eval-scorecard/README.md "$OUT/eval-scorecard/" 2>/dev/null || true

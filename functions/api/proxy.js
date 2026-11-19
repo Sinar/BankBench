@@ -46,6 +46,15 @@ export async function onRequest(context) {
   );
   if (!allowed) return json({ error: 'Target host not allowed' }, 403);
 
+  // Server-side key injection: for Nous, prefer a secret held by the Pages
+  // project (wrangler secret put NOUS_API_KEY) so callers never paste it in the
+  // browser. If absent, the caller's own Authorization header is forwarded as-is.
+  const isNous = target.hostname === 'inference-api.nousresearch.com' || target.hostname.endsWith('.inference-api.nousresearch.com');
+  const serverNousKey = (typeof context.env !== 'undefined' && context.env) ? context.env.NOUS_API_KEY : (typeof NOUS_API_KEY !== 'undefined' ? NOUS_API_KEY : null);
+  if (isNous && serverNousKey && !request.headers.get('Authorization')) {
+    headers.set('Authorization', 'Bearer ' + serverNousKey);
+  }
+
   // Forward ONLY the headers we mean to. The old Worker spread every inbound
   // header, which leaked Host/Origin/Cookie upstream.
   const headers = new Headers();
