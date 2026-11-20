@@ -128,21 +128,21 @@ No commits. Two weeks with no activity on `main`.
 - **Issue decomposition.** #3 (Plaid + LLM agent) split into **#5 (Hermes, ongoing)** · **#6 (Box Compute / boxcompute.ai)** · **#8 (Sinar LXC container)**; added **#9 (scale the evals to every capability the payment sandboxes offer — Plaid + Stripe + Billplz catalogs)** and **#10 (the guide, closed)**. #2 updated with a pointer to all three hosting-path issues.
 - **`deploy.sh`** — syncs `no-code-eval.html` into `site/` on deploy.
 
-### Week of 19–25 Oct 2026 — quiet
+### Week of 19–25 Oct 2026 — quiet on repo; Hermes-side prep
 
-No commits on `main` between Oct 17 and Oct 29.
+No commits on `main`. In Hermes (out-of-repo): drafted the **AI safety × banking hands-on lab** event setup and began the Cetavals no-code console hardening + the SME WhatsApp / FOMCA eval designs that would land as commits on Nov 19–20. Repo stayed quiet while the drafting happened in chat.
 
-### Week of 26 Oct – 1 Nov 2026 — event landing page
+### Week of 26 Oct – 1 Nov 2026 — event landing page (Hermes → repo)
 
-- **Oct 29** — `site/events/`: draft landing page for the AI safety × banking hands-on lab → `bankbench_my/`-adjacent outreach.
+- **Oct 29** — `site/events/`: draft landing page for the AI safety × banking hands-on lab (authored in Hermes, committed to the repo this week). The event's ecosystem mapping and outreach copy were drafted alongside it (see Nov 2–8).
 
-### Week of 2–8 Nov 2026 — quiet
+### Week of 2–8 Nov 2026 — quiet on repo; event/outreach drafting
 
-No commits on `main` (gap between Oct 29 and Nov 19).
+No commits on `main` (gap between Oct 29 and Nov 19). In Hermes (out-of-repo): **event/outreach drafting for the hands-on lab** — `public/masses/events/can_small_tech_work.md`, `mapping.md`, and `ecosystem-map.html` were authored **2026-11-03** (ecosystem map + "can small tech work" framing). Also: user conversations and blog/outreach drafting for BankBench-MY continued in Telegram, none of which touches the repo.
 
 ### Week of 9–15 Nov 2026 — quiet
 
-No commits on `main`.
+No commits on `main`. Hermes-side: finalising the Cetavals hardening + inspect-eval-runner skill + SME/FOMCA eval specs ahead of the Nov 19–20 commit burst.
 
 ### Week of 16–22 Nov 2026 — Cetavals hardening, the inspect-eval-runner skill, and the FOMCA + SME evals
 
