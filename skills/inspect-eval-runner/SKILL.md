@@ -152,11 +152,24 @@ To grade a NEW suite, add a `*assessment*.json` beside it in this shape:
      "satisfied": ["..."], "gaps": ["..."], "justification": "..."}, ...}}}}
 ```
 
-**Two honesty requirements.** The paper's colour-downgrade rule (§3.1) needs the
+**Three honesty requirements.** The paper's colour-downgrade rule (§3.1) needs the
 highlight colours, which are not recoverable from the paper's markdown and have
 no structured copy — the engine reports this as an open item rather than
-inventing them. And a scorecard written by the eval's own authors is a
+inventing them. A scorecard written by the eval's own authors is a
 **self-assessment**, not a third-party grade; say so out loud when reporting it.
+And **a third-party eval must be graded from its actual source** — its dataset
+provenance, its Scorer code, published review — never from impressions of it.
+SimpleQA's grade turned on finding that the `simpleqa` task downloads OpenAI's
+*original* set while `simpleqa_verified` uses the cleaned one; those two deserve
+different Correctness scores and the difference is invisible without reading
+`dataset.py`.
+
+**One graded eval per file.** `scorecard.py` reads only the FIRST entry in
+`evals` (`next(iter(evals))`), so putting two evaluations in one assessment file
+silently grades one and ignores the other. Split them.
+
+To grade a third-party suite, the assessment file can live anywhere — point the
+registry's `assessment` field at it and the runner picks it up.
 
 ## Summarising and analysing results
 

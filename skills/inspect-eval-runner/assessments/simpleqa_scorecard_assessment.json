@@ -1,0 +1,92 @@
+{
+  "paper": "Scorecard of AI Evaluation Quality (San Joaquin, Gipiskis, Chin — Feb 2026)",
+  "paper_ref": "technical_aisafety/bankbench/3-4 LLM_scorecard/scorecard-full-paper.md",
+  "assessed_by": "CRO (Cetalabs) — THIRD-PARTY assessment, 2026-11-20. We did not build this benchmark and have no authority over it. Grounded in its shipped source (inspect_evals/simpleqa/*), its pinned dataset provenance, and published third-party review — not impressions.",
+  "evidence_read": [
+    "inspect_evals/simpleqa/dataset.py — dataset provenance (read directly)",
+    "inspect_evals/simpleqa/scorer.py + grader_templates.py — 3-way discriminator and grader prompt (read directly)",
+    "Our own runs: 25 questions, self-graded 0.44 vs independently graded 0.40 (measured)",
+    "Epoch AI independent benchmark review of the SimpleQA Verified derivative — documented defect rate and contamination finding (cited, external)",
+    "SimpleQA Verified paper, arXiv 2509.07968 — the successor benchmark's own characterisation of the original's labels (cited, external)"
+  ],
+  "scoring_note": "Each dimension scored 1 (best) to 4 (worst), following the paper. Classification is computed from Table 7: the HIGHEST category whose minimum component per dimension is met. The paper's colour-downgrade rule (§3.1) is NOT applied — the highlight colours are formatting that does not survive markdown extraction, and inventing them would fabricate the grade. Scores are assigned directly from the item lists in §3.2–3.6. IMPORTANT SCOPE NOTE: this grades the ORIGINAL 'simpleqa' task, which downloads OpenAI's original set. The 'simpleqa-verified' task in the same package uses a cleaned 1,000-question set and would grade one category better. Only the FIRST entry in 'evals' is read by scorecard.py, so each graded evaluation gets its own file.",
+  "dimensions": ["construct_validity", "internal_validity", "external_validity", "reliability", "correctness"],
+  "evals": {
+    "simpleqa_original": {
+      "display": "SimpleQA (OpenAI, original set) — as shipped in inspect_evals/simpleqa",
+      "status": "Third-party benchmark. Widely used as an industry standard. Not built by us; graded here as an outside assessment.",
+      "assessment": {
+        "construct_validity": {
+          "score": 3,
+          "satisfied": [
+            "Fixed, public, version-pinned dataset of short questions each with a single verifiable answer — the construct is at least unambiguous per item",
+            "Three-way grading (CORRECT / INCORRECT / NOT_ATTEMPTED) is a deliberate sub-component split: 'was wrong' is separated from 'did not try', which is the right distinction for a factuality claim and is exactly what the paper asks for under measuring sub-components separately",
+            "Per-item metadata (topic, answer_type, source urls) supplied, enabling stratified reporting rather than one undifferentiated number"
+          ],
+          "gaps": [
+            "The headline metric conflates knowledge with willingness to guess: abstentions are scored as incorrect, so a model that correctly declines is penalised. Epoch AI's review states this explicitly for the Verified derivative, and it applies to the original equally. The reported number is therefore not a pure knowledge measure.",
+            "The benchmark name and framing claim 'factuality', but the measured construct is recall of OBSCURE trivia from model weights with no tools. Factuality in an applied context (customer service, consumer advice, banking) is a different construct and this does not measure it.",
+            "No operational definition of what real-world harm a low score predicts. The paper requires that a construct be tied to the decision it informs; here the link from obscure-trivia recall to any deployment consequence is asserted, not specified."
+          ],
+          "justification": "The sub-component split and per-item metadata are genuinely good design, better than many benchmarks. The deduction is scope: the number is reported as a factuality score for a deployment while measuring trivia recall, and the willingness-to-guess confound is built into the metric rather than controlled."
+        },
+        "internal_validity": {
+          "score": 3,
+          "satisfied": [
+            "The shipped scorer constrains the grader through a schema tool call (response_schema) rather than free-text parsing — a real variance-reduction measure, and better practice than most model-graded benchmarks",
+            "The original string-matching scorer is retained as a selectable alternative, so the difference between a cheap marker and a model grader is at least observable",
+            "The dataset URL is pinned by SHA256 (computed 2026-04-07), so the questions cannot change silently underneath a published score — a genuine reproducibility strength"
+          ],
+          "gaps": [
+            "The Scorer is MODEL-GRADED, so the score is a property of two models and the published figure usually names only one. Measured here: the SAME 25 questions, self-graded 0.44 versus independently graded 0.40 — a 4pp swing from grader choice alone. At n=25 that is within noise, but the mechanism is real and unbounded at scale.",
+            "Grader-prompt sensitivity is untested and unreported. Two grader templates ship in the package; the effect of switching between them is not quantified.",
+            "No published human-agreement study for the grader on this dataset — the paper's core internal-validity requirement is that automated scoring be validated against human judgement."
+          ],
+          "justification": "The schema-constrained grader and the pinned dataset hash are above-average engineering. The deduction is that the marking is model-graded with no published human-agreement validation, and we measured a non-trivial grader-identity effect ourselves."
+        },
+        "external_validity": {
+          "score": 3,
+          "satisfied": [
+            "4,326 items spanning many topics, with topic and answer_type metadata that permits stratified analysis",
+            "Single-turn, closed-book, no-tools framing is at least clearly specified, so the conditions of the measurement are stated"
+          ],
+          "gaps": [
+            "No evidence of user or domain-expert involvement in item design. The paper's primary external-validity requirement is that design be informed by the people the system affects; a benchmark authored entirely in-house does not meet it.",
+            "Task space is deliberately unlike deployed use: no tools, no ambiguity, no multi-turn, no user context. Transfer to a consumer-facing or banking deployment is unjustified by this evidence, though the score is widely quoted as if it transfers.",
+            "English only.",
+            "No statistical-power guidance for the sample sizes practitioners actually run. We ran 25 questions and got a ±10pp standard error — a figure that gets quoted without that caveat."
+          ],
+          "justification": "Topical breadth and a clearly-specified closed-book framing are real strengths. The deduction is that the task space is intentionally unrepresentative of any deployment, no affected users informed the design, and no power guidance is given for partial runs."
+        },
+        "reliability": {
+          "score": 3,
+          "satisfied": [
+            "Public dataset with a pinned revision hash on the inspect_evals side — the same commit yields the same questions",
+            "Deterministic item set; temperature-0 runs are comparable across practitioners",
+            "Widely reported externally, so cross-checking a result against others is possible in principle"
+          ],
+          "gaps": [
+            "CONTAMINATION: all questions and answers have been public since October 2024 with no held-out split. Epoch AI's review calls the benchmark 'not contamination-resistant' and reports one likely contaminated model. A rising score may reflect memorisation of the answer key rather than improved capability, and this cannot be distinguished from the public data alone.",
+            "No published defect rate for THIS set. The cleaned derivative documents roughly 10% score-affecting defects in a 50-question review sample; because Verified exists specifically to fix the original's noisy labels, the original's rate is higher by an unknown margin.",
+            "Grader drift is unmonitored over time — a model-graded benchmark's numbers move when the grader is updated, independently of the system under test."
+          ],
+          "justification": "Run-to-run reproducibility is good. Reproducibility of MEANING over time is not: contamination is unaddressed and no defect rate is published for this set, so two scores from different dates are not safely comparable."
+        },
+        "correctness": {
+          "score": 4,
+          "satisfied": [
+            "Each item carries source URL metadata pointing at the reference document",
+            "A cleaned successor exists (SimpleQA Verified) with a documented verification process, which at least makes the problem addressable and gives a better option"
+          ],
+          "gaps": [
+            "Ground truth in THIS set is known to be unreliable at an unquantified rate. The successor benchmark's own paper describes the original's limitations as 'noisy and incorrect labels, topical biases, and question redundancy' (arXiv 2509.07968) — the critique comes from the authors of the replacement, and the replacement's stated purpose is to fix exactly this.",
+            "Independently verified residual error in the CLEANED derivative: an external review sampled 50 questions and found 5 (10%) with score-affecting defects, including one answer key that is outright incorrect and four that omit technically correct answers. Verified is the fixed version; the original is worse.",
+            "We hand-verified TWO answer keys from our own 25-item run (Frank Rosenblatt Award 2010 → Michio Sugeno; Jerlov Award 2018 → Annick Bricaud) and both held. That validates two items and is not evidence about the key as a whole — stated here so the spot-check is not over-read."
+          ],
+          "justification": "The paper's Correctness item requires verified ground truth. Here the ground truth is documented as defective by the authors of its own replacement, and the cleaned derivative still measures roughly 10% score-affecting defects. An unknown-rate bad answer key limits every number derived from it. This is the capping dimension: it is why the category lands where it does rather than one step higher.",
+          "disagreement_note": "A reviewer could reasonably score this 3 rather than 4 — the items do carry source URLs and a corrected variant is available. The 4 reflects that on THIS set the defect rate is not merely unverified but documented as a known flaw by the successor's authors. Using simpleqa-verified instead would move this to 3 and the whole evaluation up one category. That is the practical recommendation."
+        }
+      }
+    }
+  }
+}

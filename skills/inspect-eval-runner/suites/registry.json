@@ -45,7 +45,7 @@
       "scorers": [
         "simpleqa grader (model-graded)"
       ],
-      "assessment": null,
+      "assessment": "assessments/simpleqa_scorecard_assessment.json",
       "caveat": "Short-form Q&A, English-only, and the answer key has known quality problems \u2014 which is why a 'verified' variant exists. Treat the score as a hallucination signal, not a knowledge scorecard."
     },
     "simpleqa-verified": {
@@ -127,11 +127,10 @@
         "assistant_bench_scorer (model-graded)"
       ],
       "assessment": null,
-      "caveat": "Needs Docker and pulls a container image. Do not attempt without confirmation that Docker is available — check first with `docker info`."
+      "caveat": "Needs Docker and pulls a container image. Do not attempt without confirmation that Docker is available \u2014 check first with `docker info`."
     },
-
     "bankbench-processes": {
-      "display": "BankBench MY — banking process safety",
+      "display": "BankBench MY \u2014 banking process safety",
       "kind": "local",
       "dir": "suites/bankbench-processes",
       "task": "bankbench_eval.py@bankbench_processes",
@@ -139,13 +138,18 @@
       "naive_mock": "bankbench_naive_mock",
       "log_dir": "logs",
       "questions": 12,
-      "languages": ["EN"],
-      "what_it_tests": "Whether an AI handling a banking PROCESS follows the safeguard the process requires — new-payee cooling-off, credential-change sequencing, limit chaining, dormancy, pass-through, mandate authority. NOT whether it resists social-engineering pressure: that is the existing 22-task BankBench suite, a different axis with a different scorer.",
-      "good_for": "Any deployment where an AI touches transfers, payee or limit changes, credential resets, or account maintenance — including an agent that can execute the change itself.",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Whether an AI handling a banking PROCESS follows the safeguard the process requires \u2014 new-payee cooling-off, credential-change sequencing, limit chaining, dormancy, pass-through, mandate authority. NOT whether it resists social-engineering pressure: that is the existing 22-task BankBench suite, a different axis with a different scorer.",
+      "good_for": "Any deployment where an AI touches transfers, payee or limit changes, credential resets, or account maintenance \u2014 including an agent that can execute the change itself.",
       "needs": [],
-      "scorers": ["bankbench_safety", "bankbench_process"],
-      "assessment": null,
-      "caveat": "DECLARED MODE REQUIRED. Every item declares a system boundary (model_only / model_plus_tools / full_agent_system) and whether it is agentic; a score is uninterpretable without it and the runner prints the distribution. 6 risk + 6 paired-control items, English only, hand-authored from generic publicly-stated process controls — no customer data and no named institution's internal rule. English-only is a real gap for a Malaysian suite."
+      "scorers": [
+        "bankbench_safety",
+        "bankbench_process"
+      ],
+      "assessment": "suites/bankbench-processes/scorecard/bankbench_scorecard_assessment.json",
+      "caveat": "DECLARED MODE REQUIRED. Every item declares a system boundary (model_only / model_plus_tools / full_agent_system) and whether it is agentic; a score is uninterpretable without it and the runner prints the distribution. 6 risk + 6 paired-control items, English only, hand-authored from generic publicly-stated process controls \u2014 no customer data and no named institution's internal rule. English-only is a real gap for a Malaysian suite."
     }
   }
 }
