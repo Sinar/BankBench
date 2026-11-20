@@ -233,9 +233,51 @@ is the most common way a run silently goes wrong:
 | **Grader** | the model that does the marking *when the Scorer is model-graded* | `--grader` |
 
 So "which model are we testing?" and "which model is marking it?" are two
-separate answers. Using the same model for both is fine to start with — but say
-so deliberately, because a model marking its own answers is a real limitation
-worth knowing about when you quote the number.
+separate answers, and **the tool refuses to let one model do both** unless you
+pass `--allow-self-grade` and accept the limitation in writing. A model marking
+its own answers isn't independent evidence. It's not always flattering either —
+over 25 SimpleQA questions, self-grading gave 0.44 and independent grading gave
+0.40 — which is exactly why you can't assume the direction.
+
+### Which models can I use? (start cheap)
+
+Anything your provider offers. **Start cheap** — a cheap model tells you whether
+your questions are even discriminating before you spend on an expensive one, and
+most of the failures worth finding show up just as well.
+
+**Free (zero cost):**
+| Model | Notes |
+|---|---|
+| `stepfun/step-3.7-flash:free` | free tier |
+| `tencent/hy4-flash:free` | free tier |
+| `qwen/qwen4-max:free` | free tier |
+| `upstage/solar-mini4:free` | free tier |
+| `meituan/longcat-2.5:free` | free tier |
+
+**Cheap (fractions of a cent per question):**
+| Model | Notes |
+|---|---|
+| `deepseek/deepseek-v4.1-flash` | **default system under test** |
+| `google/gemini-3.1-flash-lite` | **default grader — different vendor** |
+| `google/gemini-3.5-flash-lite` | cheap |
+| `amazon/nova-lite-v1` | cheap |
+| `bytedance-seed/seed-2.0-lite` | cheap |
+
+**Free because it's your own hardware:** a local model over Tailscale or
+localhost — genuinely zero cost per question and nothing leaves the machine.
+See `SKILL.md` for the exact invocation.
+
+In practice you rarely type any of these. The defaults are already cheap, and
+swapping is one flag:
+
+```bash
+./scripts/run_eval.sh --suite simpleqa --limit 25 \
+  --model  openai-api/nous/stepfun/step-3.7-flash:free \
+  --grader openai-api/nous/google/gemini-3.1-flash-lite
+```
+
+**Use a different vendor for the grader where you can.** Same provider is fine;
+same *model* is the one combination the tool won't let you do quietly.
 
 ---
 

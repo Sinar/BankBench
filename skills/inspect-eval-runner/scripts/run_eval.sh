@@ -26,9 +26,16 @@ set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SUITE=""
-MODEL="${MODEL:-openai-api/nous/deepseek/deepseek-v4.1-flash}"
+# CHEAP-FIRST DEFAULTS. A cheap model tells you whether your questions are even
+# discriminating before you spend on an expensive one. The grader default is a
+# DIFFERENT model from a different vendor — the cheapest way to remove
+# self-marking bias. Override either with --model / --grader.
+CHEAP_MODEL="${CHEAP_MODEL:-openai-api/nous/deepseek/deepseek-v4.1-flash}"
+CHEAP_GRADER="${CHEAP_GRADER:-openai-api/nous/google/gemini-3.1-flash-lite}"
+MODEL="${MODEL:-$CHEAP_MODEL}"
 BASE_URL="${MODEL_BASE_URL:-https://inference-api.nousresearch.com/v1}"
 GRADER="${GRADER:-}"
+ALLOW_SELF_GRADE="${ALLOW_SELF_GRADE:-0}"
 EPOCHS=1
 PORT=7575
 SERVE=1
@@ -42,6 +49,7 @@ while [ $# -gt 0 ]; do
     --model)       MODEL="$2"; shift 2 ;;
     --base-url)    BASE_URL="$2"; shift 2 ;;
     --grader)      GRADER="$2"; shift 2 ;;
+    --allow-self-grade) ALLOW_SELF_GRADE=1; shift ;;
     --epochs)      EPOCHS="$2"; shift 2 ;;
     --limit)       LIMIT="$2"; shift 2 ;;
     --port)        PORT="$2"; shift 2 ;;
@@ -84,6 +92,37 @@ echo "   tests     : what the suite is for, not how it scores"
 if [ -n "$SUITE_NEEDS" ]; then
   echo "   needs     : $SUITE_NEEDS"
 fi
+
+# --- no silent self-grading ------------------------------------------
+# A model marking its own answers is weaker evidence, and it is the easiest way
+# to get a number that means less than it looks like. The tool refuses it by
+# default rather than quietly doing it and letting the score be quoted.
+case "$SUITE_NEEDS" in
+  *grader*)
+    if [ -z "$GRADER" ]; then
+      GRADER="$CHEAP_GRADER"
+      echo "   grader    : $GRADER  (defaulted — different vendor from the model under test)"
+    fi
+    if [ "$GRADER" = "$MODEL" ]; then
+      if [ "$ALLOW_SELF_GRADE" != "1" ]; then
+        echo
+        echo "   REFUSING TO SELF-GRADE."
+        echo "   The model under test ($MODEL)"
+        echo "   is also set as the grader. A model marking its own answers is weaker"
+        echo "   evidence, not a shortcut — and the resulting score gets quoted as though"
+        echo "   it were independent."
+        echo
+        echo "   Use a different grader, e.g.:  --grader $CHEAP_GRADER"
+        echo "   After 25 SimpleQA questions, self-grading and independent grading differed"
+        echo "   (0.44 vs 0.40) — small here, but you cannot know that in advance."
+        echo "   To accept the limitation explicitly:  --allow-self-grade"
+        exit 2
+      fi
+      echo "   !! WARNING: the model is grading its own answers (--allow-self-grade)."
+      echo "      State that limitation next to any score you report."
+    fi
+    ;;
+esac
 
 LOG_DIR="$SKILL_DIR/$SUITE_LOG_DIR"
 mkdir -p "$LOG_DIR"
