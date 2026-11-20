@@ -158,11 +158,29 @@ No commits on `main`. In Hermes (out-of-repo): drafted the **AI safety × bankin
 
 - *(proposal §2.1 plan for October)* — **Analysis + RMiT gap brief**: cross-model analysis, register analysis (E4 headline), map to RMiT + OWASP LLM Top 10, draft brief with Sinar legal advisor, route to BNM FinTech Sandbox. **Status: ⬜ Not started — RMiT gap brief is catch-up #1 (top priority).** This is the single biggest off-track item from the proposal; nothing in the repo log shows it landing. Flag for action.
 
+- *(pending — planned for this weekend + longer hours next week, per your direction)* **🔴 RMiT gap brief v1.0 — break down:**
+  1. **Read + extract**: work through Bank Negara RMiT (esp. Appendix 2 / technology risk, AI/ML outsourcing) and OWASP LLM Top 10 (LLM01–LLM10); pull the exact clauses an agentic banking AI touches.
+  2. **Gap matrix**: build a table — *proposal control* (what RMiT/OWASP expects) vs *current state* (what BankBench-MY actually tests today); mark each row Covered / Partial / Gap.
+  3. **Fold in E4 finding**: lead with the register-shift degradation result (Bahasa Baku → Manglish guardrail drop) as the headline evidence that non-English contexts are the unaddressed gap in current frameworks.
+  4. **Draft v1.0 structure**: Exec summary → Scope → Methodology (how BankBench-MY probes) → Gap findings (by RMiT section + OWASP tag) → Severity → Recommendation to BNM FinTech Sandbox → Appendix (scenario list).
+  5. **Legal review pass**: route the draft to the Sinar legal advisor for sign-off on claims before any external send.
+  6. **Route to BNM**: package as a FinTech Sandbox submission; track the submission reference; flag @clo if any regulated-party claim needs compliance review first.
+  7. **Repo artifact**: save `docs/rmit-gap-brief-v1.md` + link from README/progress log so the deliverable is versioned, not just in chat.
+
 ### Week of 26 Oct – 1 Nov 2026 — event landing page (Hermes → repo)
 
 - **Oct 29** — `site/events/`: draft landing page for the AI safety × banking hands-on lab (authored in Hermes, committed to the repo this week). The event's ecosystem mapping and outreach copy were drafted alongside it (see Nov 2–8).
 
 - *(proposal §2.1 plan for November)* — **Roundtable + consumer output**: technical program (§2.6) culminates in the Sinar roundtable (fintech devs, BNM, FOMCA, civil society, academics); publish consumer explainer (BM + EN). **Status: 🔶 Pipeline built** — the tech-program track record (IIUM / RKFF 0413 rater + outreach) exists, but the **roundtable is not yet booked**. The event landing page drafted this week is the first concrete step toward it.
+
+- *(pending — planned for this weekend + longer hours next week, per your direction)* **🔴 RMiT brief (cont.) + 🟠 roundtable logistics start — break down:**
+  1. **RMiT draft v0.2**: turn the gap matrix into prose; write the Exec summary + Scope so a non-specialist (BNM sandbox reviewer) can read it in 5 min.
+  2. **OWASP mapping pass**: tag every gap finding with its LLM0x control (LLM01 prompt injection, LLM06 excessive agency, LLM08 vector/embedding, etc.) so the brief speaks BNM/industry language.
+  3. **Roundtable date + venue**: pick 2–3 candidate dates in late Nov/early Dec; confirm Sinar can host (physical or the event landing page's virtual setup); block the date.
+  4. **Invitee list v1**: enumerate BNM FinTech Sandbox contact, FOMCA, 2–3 fintech devs (GXBank/AEON/MAE alumni or community), 1–2 civil-society orgs, 1 academic (IIUM/RKFF link); assign owners for outreach.
+  5. **Agenda skeleton**: 90-min format — 20 min findings (E4 headline), 30 min roundtable discussion, 20 min consumer-explainer demo, 20 min next-steps; note the consumer explainer as the public-facing output.
+  6. **Consumer explainer scaffold**: stub `public/masses/events/consumer-explainer.md` (BM + EN sections) so the roundtable has a draft to react to, not a blank page.
+  7. **Calendar + reminders**: put the roundtable date + draft-deadlines into the calendar; set the RMiT v1.0 internal deadline before the roundtable so findings are citable.
 
 ### Week of 2–8 Nov 2026 — quiet on repo; event/outreach drafting
 
@@ -170,9 +188,27 @@ No commits on `main` (gap between Oct 29 and Nov 19). In Hermes (out-of-repo): *
 
 - *(proposal §2.1 plan for November)* — same month goal as above: **roundtable + consumer explainer**. The Nov 3 outreach drafts are the consumer-output pipeline in motion; the roundtable booking remains open (see Nov 26–1 note).
 
+- *(pending — planned for this weekend + longer hours next week, per your direction)* **🟠 Roundtable confirmation + BM/EN consumer explainer — break down:**
+  1. **Send invites**: email/WhatsApp the v1 invitee list (BNM sandbox, FOMCA, fintech devs, civil society, academic); include the landing page URL + agenda skeleton; request RSVP with a hard deadline.
+  2. **Confirm date**: lock the roundtable date once 3+ key stakeholders (BNM or FOMCA + 1 fintech + 1 civil-society) confirm; update the event landing page with the date.
+  3. **Consumer explainer — BM draft**: write "Apa yang AI bank anda boleh dan tak boleh buat" — plain BM, no jargon; cover OTP/PII leaks, "transfer cepat" pressure, scam-impersonation, and what to do (hang up, check with bank). ~400–600 words.
+  4. **Consumer explainer — EN draft**: translate + adapt for an English-reading Malaysian audience; keep the same 4 scenarios; link to the BM version.
+  5. **Explainers to repo**: save `public/masses/events/consumer-explainer-bm.md` + `-en.md`; wire both into the event landing page and the Public Education surface.
+  6. **Roundtable slide deck**: build a 6–8 slide deck — title, E4 headline finding (register-shift degradation), RMiT gap (pending brief), live consumer-explainer demo, discussion prompts, next-steps.
+  7. **Prep discussion prompts**: 3–4 open questions for the roundtable (e.g. "what should a Malaysian agentic-AI baseline require?") so the session is a working conversation, not a presentation.
+
 ### Week of 9–15 Nov 2026 — quiet
 
 No commits on `main`. Hermes-side: finalising the Cetavals hardening + inspect-eval-runner skill + SME/FOMCA eval specs ahead of the Nov 19–20 commit burst.
+
+- *(pending — planned for this weekend + longer hours next week, per your direction)* **🟢 Scale Sep experiments to proposal scope — break down (Issue #1d):**
+  1. **Extend scenario library 20 → 30–40**: add E1–E4 cases across the 4 BM registers (Baku / Pasar / Manglish / Code-switch) so each experiment class has 8–10 scenarios, not 5; keep them reproducible (fixed seeds).
+  2. **Register matrix**: script the same E1–E3 scenario run in all 4 registers; capture per-register failure rate so the E4 "register-shift degradation" headline is computed, not asserted.
+  3. **3-model sweep**: run the extended set on the 3 proposed models (open-weight + 2 closed) via the existing Plaid/Inspect harness; reuse the scorer self-check so a PASS is falsifiable.
+  4. **Failure logging**: for every failed run, tag type (auth-bypass / leakage / injection / register-degradation), severity, register, and OWASP LLM0x tag — the exact schema the proposal's Month 3 deliverable requires.
+  5. **Reproducibility pack**: save each run's config + seed + raw log to `eval-scorecard/` so any reviewer can re-run; update the dashboard to show register × model × scenario heatmap.
+  6. **Preliminary findings doc**: write `docs/findings-preliminary.md` — which configs fail, under what conditions, cross-model comparison; this feeds the RMiT brief (🔴) and the roundtable (🟠).
+  7. **Close Issue #1d**: mark the scale-up done; note any scenario that can't be made register-variant (document the limit) so the scope cut is honest.
 
 ### Week of 16–22 Nov 2026 — Cetavals hardening, the inspect-eval-runner skill, and the FOMCA + SME evals
 
@@ -195,6 +231,14 @@ No commits on `main`. Hermes-side: finalising the Cetavals hardening + inspect-e
   - 🟠 **November roundtable** — book the Sinar roundtable (fintech devs, BNM, FOMCA, civil society, academics) + publish the BM/EN consumer explainer; the event landing page + outreach drafts (Nov) are the pipeline, booking is the open step.
   - 🟢 **Scale Sep experiments** to 30–40 scenarios × 4 registers × 3 models (Issue #1d) so findings are reproducible at proposal scope, not just the TamperBank pilot.
 - **December target state:** a full open repository — all outputs (MyBankSim/Plaid eval harness, scenario library, findings, RMiT brief, consumer explainer, contributor guide) handed off with a conference talk lined up for 2027.
+
+- *(pending — planned for this weekend + longer hours next week, per your direction)* **December handoff prep — break down:**
+  1. **Contributor guide**: write `CONTRIBUTING.md` + `docs/scenario-library.md` — how to extend scenarios, add experiment classes (E5+), test new agents against the Plaid/Inspect harness.
+  2. **Repo handoff pack**: tag a `v1.0` release; ensure README top-3 + AISL breakdown + all links resolve; verify the live site + auto-deploy still green.
+  3. **Conference abstract**: draft a PyCon MY / FinTech Malaysia / OWASP Malaysia talk abstract from the E4 headline + RMiT gap; submit as 2027 stretch (not a Dec-31 dependency).
+  4. **Findings write-up**: consolidate `docs/findings-preliminary.md` + RMiT brief + consumer explainer into one public "what we learned" post for the Sinar blog.
+  5. **Fellowship close-out**: write the final fellowship report section (delivered vs proposal, scope changes documented) so the 6-month commitment is auditable end-to-end.
+  6. **Archive + handover call**: schedule a 30-min handover with Sinar; transfer repo admin + any standing calendar/issue ownership; note what stays with you vs the org.
 
 ### What the log shows
 
