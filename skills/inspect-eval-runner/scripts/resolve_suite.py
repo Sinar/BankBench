@@ -54,7 +54,8 @@ def main():
 
     if args.format == "shell":
         # shell-safe: values are quoted, and absent values become empty strings
-        for k in ("kind", "dir", "task", "log_dir", "display", "assessment"):
+        for k in ("kind", "dir", "task", "log_dir", "display", "assessment",
+                  "oracle_mock", "naive_mock"):
             print(f"SUITE_{k.upper()}={shlex.quote(str(s.get(k) or ''))}")
         print(f"SUITE_NEEDS={shlex.quote('; '.join(s.get('needs') or []))}")
         print(f"SUITE_CAVEAT={shlex.quote(str(s.get('caveat') or ''))}")

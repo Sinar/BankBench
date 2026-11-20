@@ -91,10 +91,13 @@ mkdir -p "$LOG_DIR"
 # Make the base URL resolvable for EVERY role, including model-graded Scorers.
 # The openai-api provider reads <SERVICE>_BASE_URL for the service in the model
 # string; --model-base-url alone does NOT reach a --model-role grader.
+# NOTE: no ${VAR^^} here — macOS ships bash 3.2, which has no uppercase
+# expansion. `tr` works everywhere.
 SERVICE="$(printf '%s' "$MODEL" | cut -d/ -f2)"
+SERVICE_UC="$(printf '%s' "$SERVICE" | tr '[:lower:]-' '[:upper:]_')"
 if [ -n "$SERVICE" ] && [ "$SERVICE" != "$MODEL" ] && [ -n "$BASE_URL" ]; then
-  export "$(printf '%s_BASE_URL' "$(printf '%s' "$SERVICE" | tr '[:lower:]-' '[:upper:]_')")=$BASE_URL"
-  echo "   exported ${SERVICE^^}_BASE_URL so all roles resolve"
+  export "${SERVICE_UC}_BASE_URL=$BASE_URL"
+  echo "   exported ${SERVICE_UC}_BASE_URL so all roles resolve"
 fi
 
 if [ "$SUITE_KIND" = "inspect_evals" ]; then
@@ -110,19 +113,32 @@ if [ "$SUITE_KIND" = "local" ]; then
   [ -d "$SUITE_ABS" ] || { echo "!! suite dir missing: $SUITE_ABS"; exit 2; }
   cd "$SUITE_ABS"
 
+  # derive the eval file + task from the registry's "<file>@<task>" spec, so the
+  # runner is suite-agnostic instead of assuming the FOMCA filenames.
+  EVAL_SCRIPT="${SUITE_TASK%%@*}"
+  TASK_NAME="${SUITE_TASK##*@}"
+
   step "STEP 1/8  Building the question set from items/"
-  if [ -f build_fomca_dataset.py ]; then "$PY" build_fomca_dataset.py; else
-    echo "   no builder here — using the checked-in Dataset"; fi
+  BUILDER="$(ls build*.py 2>/dev/null | head -1 || true)"
+  if [ -n "$BUILDER" ]; then
+    "$PY" "$BUILDER"
+  else
+    echo "   no builder in this suite — using the checked-in Dataset"
+  fi
 
   step "STEP 2/8  GATE — proving the marker marks correctly"
   echo "   A scorer bug looks exactly like a model failure. The marker is checked"
   echo "   against a known-good answer BEFORE any model is called."
-  if [ -f fomca_eval.py ]; then "$PY" fomca_eval.py --selftest; fi
+  if [ -f "$EVAL_SCRIPT" ]; then "$PY" "$EVAL_SCRIPT" --selftest; fi
 
   step "STEP 3/8  GATE — same two mock agents through the real eval engine"
   echo "   These must match step 2. If they do not, the harness is broken, not the model."
-  "$INSPECT" eval fomca_eval.py@fomca_oracle_mock --model mockllm/model --log-dir "$LOG_DIR" 2>&1 | tail -5
-  "$INSPECT" eval fomca_eval.py@fomca_naive_mock  --model mockllm/model --log-dir "$LOG_DIR" 2>&1 | tail -5
+  if [ -n "$SUITE_ORACLE_MOCK" ]; then
+    "$INSPECT" eval "$EVAL_SCRIPT@$SUITE_ORACLE_MOCK" --model mockllm/model --log-dir "$LOG_DIR" 2>&1 | tail -5
+  fi
+  if [ -n "$SUITE_NAIVE_MOCK" ]; then
+    "$INSPECT" eval "$EVAL_SCRIPT@$SUITE_NAIVE_MOCK" --model mockllm/model --log-dir "$LOG_DIR" 2>&1 | tail -5
+  fi
   TASK="$SUITE_TASK"
   SUMMARY_SUITE_ARGS="--suite $SUITE_ABS"
 else
@@ -146,7 +162,7 @@ echo "   model : $MODEL   (system under test)"
 echo "   epochs: $EPOCHS"
 [ -n "$LIMIT" ] && echo "   limit : $LIMIT questions (fast first run)"
 
-KEYVAR="$(printf '%s_API_KEY' "$(printf '%s' "$SERVICE" | tr '[:lower:]-' '[:upper:]_')")"
+KEYVAR="${SERVICE_UC}_API_KEY"
 if [ ! -n "${!KEYVAR:-}" ]; then
   echo
   echo "   !! $KEYVAR is not set in this shell."
