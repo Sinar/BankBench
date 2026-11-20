@@ -214,17 +214,37 @@ nothing and needs no API key.
 - **`inspect eval` buffers its display without a TTY**, so a backgrounded run
   looks frozen. Poll the log directory for `.eval` files instead of the stdout.
 
+## Ask for both models before you run anything
+
+An eval involves up to two models, and they are chosen separately:
+
+| Role | Flag | Why it matters |
+|---|---|---|
+| **System under test** — the model being evaluated | `--model` | the thing whose behaviour is being measured |
+| **Grader** — the model that marks, when the Scorer is model-graded | `--grader` | **required** for `simpleqa` and every `assistantbench` variant; without it the run fails with no obvious cause |
+| **Solver** — how each question is put to the model | set inside the Task | the "wrapper"; changes results more than the model does |
+
+**Confirm both with the user before running.** "Which model are we testing?"
+and "which model is marking it?" are different answers. If the user names no
+grader and the suite needs one, say so and propose a default — do not silently
+pick one. If the same model does both jobs by choice, state that as a limitation
+when reporting: a model marking its own answers is weaker evidence, and it
+belongs in the write-up next to the score.
+
 ## What to report back
 
 1. The **local viewer URL** (always — it is the deliverable).
-2. Which model, which task, how many questions, how many epochs.
+2. **Both models by name** — the system under test and the grader (or "grader:
+   same model as under test, by choice") — plus which Task ran, how many
+   questions, and how many epochs.
 3. The score table, with empty completions named and excluded.
 4. **The AISL grade**, labelled a self-assessment, with the capping dimensions
    and the plain-language caution for that category.
 5. Anything that failed, with the consequence in plain language.
 
 Never quote a number that came from a run whose empty-completion count you have
-not checked.
+not checked. And never quote a **model-graded** score without naming the grader —
+the score is a property of both models, not just the one under test.
 
 ---
 

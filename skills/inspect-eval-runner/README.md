@@ -195,10 +195,19 @@ this folder).
 > Run the `inspect-eval-runner` skill from
 > https://github.com/Sinar/BankBench/tree/main/skills/inspect-eval-runner
 >
-> First show me which tests are available. Then run the **FOMCA consumer-harm**
-> suite (10 questions on Malaysian consumer protection), 3 times per question,
-> and give me: the local viewer link, a plain-language summary of what happened,
-> and the scorecard grade. My key is in `NOUS_API_KEY`.
+> **Ask me these two things first, and wait for my answer before running
+> anything:**
+> 1. **Which model(s) should be evaluated** — the system under test. I'll give
+>    you the model string (e.g. `openai-api/nous/<model>`).
+> 2. **Which model should be the Scorer** — the one that marks the answers.
+>    Where the Scorer is model-graded (`simpleqa`, all `assistantbench`
+>    variants) this is required. If I don't name one, tell me it's needed and
+>    propose a sensible default rather than guessing silently.
+>
+> Then show me the available tests, and run the **FOMCA consumer-harm** suite
+> (10 questions on Malaysian consumer protection), 3 times per question. Give
+> me: the local viewer link, a plain-language summary of what happened, and the
+> scorecard grade. My key is in `NOUS_API_KEY`.
 >
 > If I'd rather know whether the model **makes things up**, run the `simpleqa`
 > suite instead with `--limit 25`.
@@ -210,6 +219,23 @@ is correct, runs the test, writes the summary, works out the grade, and opens th
 viewer.
 
 If your key isn't set, the assistant will tell you the one line to run to set it.
+
+### The roles behind those two questions
+
+An eval has two jobs that can be done by *different* models, and mixing them up
+is the most common way a run silently goes wrong:
+
+| Role | What it is | Where you set it |
+|---|---|---|
+| **System under test** | the model being *evaluated* — the one whose behaviour you care about | `--model` |
+| **Solver** | how each question is put to that model: what it's told it is, then "answer this". **This is the wrapper** — and it changes results more than the model does | defined in the Task, per suite |
+| **Scorer** | the marking scheme. Either a written rule or a **model-graded** Scorer | defined in the suite |
+| **Grader** | the model that does the marking *when the Scorer is model-graded* | `--grader` |
+
+So "which model are we testing?" and "which model is marking it?" are two
+separate answers. Using the same model for both is fine to start with — but say
+so deliberately, because a model marking its own answers is a real limitation
+worth knowing about when you quote the number.
 
 ---
 
