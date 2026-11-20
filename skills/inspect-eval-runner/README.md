@@ -289,6 +289,7 @@ assistant to show you the options.
 | Ask for | What it tests | Size | Extra needs | Pick it when |
 |---|---|---|---|---|
 | `fomca` | Malaysian consumer protection under pressure — scams, dodgy advice, privacy | 10 questions | nothing | you're choosing a chatbot for customers, complaints, or public advice, and **BM / Manglish** matter. **Start here.** |
+| `bankbench-processes` | **Banking process safety** — does it apply the safeguard the process requires? New-payee cooling-off, credential-change sequencing, limit chaining, dormant reactivation, pass-through, joint-mandate authority | 12 questions | nothing | you're putting AI anywhere near **transfers, payee or limit changes, or credential resets** — especially an agent that can *execute* the change, not just advise. |
 | `simpleqa` | **Does it invent facts?** | thousands — use `--limit 25` | a grader model | any factual Q&A: reference answers, compliance, health, money. Best cheap signal on a new model. |
 | `simpleqa-verified` | Same, against a **cleaned answer key** | a reviewed subset | a grader model | you intend to **quote the number** or compare models head-to-head |
 | `assistantbench-closed` | Realistic multi-step web tasks, **no web access** | 214 tasks | nothing | a quick dependency-free read — but read the warning below first |
@@ -297,18 +298,42 @@ assistant to show you the options.
 
 **A sensible order for a first run:** `fomca` (finishes in about a minute, and
 the questions are the easiest to judge for yourself) → then `simpleqa --limit 25`
-if you care about factual accuracy → then an AssistantBench variant if you're
-assessing a product with web access.
+if you care about factual accuracy → `bankbench-processes` if the AI touches money
+movement or account changes → then an AssistantBench variant if you're assessing
+a product with web access.
 
-**Three honest things about the last four rows.**
+**Four honest things about these rows.**
 
 The `simpleqa` and `assistantbench` tests are **not ours**. They come from
 [`inspect_evals`](https://github.com/UKGovernmentBEIS/inspect_evals), the UK AI
 Safety Institute's public collection of evaluations. We run and report them; we
-did not write their questions or their marking. That means **no scorecard grade
-yet** — the pipeline says so out loud instead of inventing one, because grading
-someone else's evaluation is real work and a *third-party* grade, which is a
-stronger claim than the self-grade we give our own suite.
+did not write their questions or their marking.
+
+**Grades exist for three suites so far**, all **Category E (exploratory)** — two
+of them ours, one third-party:
+
+| Suite | Grade | Held back by | What that means |
+|---|---|---|---|
+| `fomca` | **E** | External Validity 4, Correctness 4 | our own v0.1, self-assessed |
+| `bankbench-processes` | **E** | External Validity 4, Correctness 4 | our own v0.1, self-assessed |
+| `simpleqa` | **E** | Correctness 4 | **graded, third-party** — its answer key is documented as noisy by the authors of its own replacement benchmark |
+| `simpleqa-verified`, all `assistantbench` | *not graded* | — | the pipeline says so out loud instead of inventing a number |
+
+`simpleqa` is graded as a **third-party assessment** — a stronger claim than the
+self-grade we give our own two suites, and still ours, not an authority's. Note
+that **the published benchmark grades no better than our hand-made v0.1 suite**:
+all three land at E. If you intend to quote a SimpleQA number, use
+**`simpleqa-verified`** — it grades one category better and the difference
+matters.
+
+**`bankbench-processes` declares what kind of system is being tested.** Every
+question is tagged `model_only`, `model_plus_tools` or `full_agent_system`, and
+flagged agentic or not. A score is uninterpretable without it — an assistant that
+can only *advise* is being tested on something different from one that can
+*execute*. Always state the mode alongside the number. It also differs from the
+existing 22-question BankBench suite in the repo, which tests resistance to
+social-engineering pressure; **these are different axes and must not be merged
+into one score.**
 
 **`assistantbench-closed` is a trap if you don't read the label.** AssistantBench
 is built to test an assistant *with* web access. The closed-book variant strips
