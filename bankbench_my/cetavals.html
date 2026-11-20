@@ -116,6 +116,19 @@
   .seed .prompt-bm{font-size:13px;background:#fbfaf2;border-left:3px solid var(--passata);padding:9px 12px;border-radius:0 8px 8px 0;color:#2a352b;margin-bottom:8px;font-style:italic}
   .seed .grade{font-size:12px;color:#5a6252;margin-bottom:8px}
   .seed .grade b{color:var(--ink)}
+  .seed .target-row{display:flex;gap:8px;align-items:center}
+  .seed .target-row .tlabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .seed .target-input{flex:1;font-size:12.5px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+  .seed .target-input:focus{outline:2px solid var(--fresh);border-color:var(--fresh)}
+  .insp-table tr.clickable{cursor:pointer;transition:background .12s}
+  .insp-table tr.clickable:hover{background:#fbfaf0}
+  .sample-detail{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fcfbf5}
+  .sample-detail .sd-head{font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .sample-detail .sd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:10px}
+  .sample-detail .sd-box{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:12.5px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+  .sample-detail > div{margin-bottom:10px}
+  .comm-sc-dataset{background:#fcfbf5;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12.5px}
+  .comm-sc-dataset .sd-box{background:#fff;border:1px solid var(--line);border-radius:6px;padding:7px 9px;margin-top:3px;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
   .seed .env{font-size:12px;color:#5a6252;margin-bottom:8px}
   .seed .env code{background:#eef0e2;padding:1px 5px;border-radius:4px;font-size:11px}
   .seed .acts{display:flex;gap:8px;align-items:center}
@@ -1149,9 +1162,11 @@ async function seed(){
   }
   // 2) streaming call
   try{
+    const seedHeaders = { 'Content-Type':'application/json' };
+    if(key) seedHeaders['Authorization'] = 'Bearer ' + key;
     const resp=await fetch(endpoint,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      headers:seedHeaders,
       body:JSON.stringify({model, temperature:0.6, stream:true,
         messages:[{role:'system',content:SYSTEM},{role:'user',content:prompt}],
         max_tokens:3000})
@@ -1238,6 +1253,10 @@ function renderSeeds(){
       ${s.env_injection?`<div class="env">📥 data agent reads: <code>${escapeHtml(s.env_injection)}</code></div>`:''}
       <div class="grade"><b>Safe:</b> ${escapeHtml(s.expected_agent_behavior||'')} &nbsp;·&nbsp; <b>${escapeHtml((s.grading||'').replace(/^Safe:\s*/i,''))}</b></div>
       <div class="meta"><span class="m-vec">OWASP: ${escapeHtml(s.owasp_tag||'?')}</span></div>
+      <div class="target-row" style="margin:6px 0 2px">
+        <label class="tlabel">Target:</label>
+        <input id="tgt_${i}" class="target-input" value="${escapeHtml(s.target||'')}" placeholder="expected safe behaviour label (e.g. block / clarify / proceed)" oninput="currentSeeds[${i}].target=this.value;renderQualityReview();" />
+      </div>
       <div class="redundant-flag" id="red_${i}">⚠ possible overlap with an existing scenario</div>
       <div class="acts" style="margin-top:10px">
         <button class="ibtn y" onclick="setStatus(${i},'approved')">✓ Approve</button>
@@ -1582,18 +1601,27 @@ function v1Endpoints(){
   const key = cleanedKey();
   const raw = (document.getElementById('baseurl').value || BASE[document.getElementById('provider').value] || '').replace(/\/+$/,'');
   const direct = raw.replace(/^\/api\/proxy\?target=/, '');
-  return { key, via:[raw + '/chat/completions', direct + '/chat/completions'] };
+  const provider = document.getElementById('provider').value;
+  return { key, provider, via:[raw + '/chat/completions', direct + '/chat/completions'] };
 }
 async function v1Chat(model, messages, maxTokens){
   const ep = v1Endpoints();
-  if (!ep.key) throw new Error('no API key — set it in ⚙ Settings');
+  // For nvidia / nous the server-side proxy injects the shared key, so an empty
+  // browser key is expected (users never paste one). Only block when a key is
+  // genuinely required (openrouter / lemonade / custom).
+  const needsBrowserKey = ['openrouter','lemonade','custom'].includes(ep.provider);
+  if (needsBrowserKey && !ep.key) throw new Error('no API key — set it in ⚙ Settings');
   // Reasoning models (e.g. Qwen3.x) emit their answer in `reasoning_content`
   // and may leave `content` empty until they finish thinking — so budget enough
   // tokens and capture reasoning_content as the answer when content is blank.
   const want = maxTokens || 500;
   const budget = (model && /qwen3|reason|deepseek|think/i.test(model)) ? Math.max(want, 1500) : want;
   const body = JSON.stringify({ model, temperature:0.2, max_tokens:budget, messages });
-  const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer ' + ep.key };
+  // Only send Authorization when a browser key exists. For nvidia/nous an empty
+  // key means "use the proxy's server-side shared key" — sending `Bearer ` would
+  // block the proxy from injecting it, so we must omit the header entirely.
+  const headers = { 'Content-Type':'application/json' };
+  if (ep.key) headers['Authorization'] = 'Bearer ' + ep.key;
   let lastErr;
   for (const url of ep.via){
     try {
@@ -1934,7 +1962,7 @@ function v1RenderSamples(){
     const safe = r.safety==null ? '—' : (r.empty ? '∅' : r.safety.toFixed(1));
     const help = r.help==null ? '—' : (r.empty ? '∅' : r.help.toFixed(1));
     const flags = [r.insideFail?'IF':null, r.overRefuse?'OR':null].filter(Boolean).join(' ');
-    html += '<tr>' +
+    html += '<tr class="clickable" onclick="v1SampleDetail(\''+escapeHtml(r.id)+'\')">' +
       '<td class="v1-mono">'+escapeHtml(r.seedId||'')+'</td>' +
       '<td class="insp-input">'+escapeHtml(String(r.seedTitle||r.seedId||'').slice(0,120))+'</td>' +
       '<td>'+escapeHtml(String(r.target||'').slice(0,14))+'</td>' +
@@ -1946,7 +1974,30 @@ function v1RenderSamples(){
       '</tr>';
   });
   html += '</tbody></table>';
+  html += '<div id="sampleDetail" class="sample-detail" style="display:none"></div>';
   host.innerHTML = html;
+}
+function v1SampleDetail(rid){
+  const r = v1Runs.find(x => x.id === rid);
+  const host = document.getElementById('sampleDetail');
+  if (!r || !host) return;
+  const safe = r.safety==null ? '—' : (r.empty ? '∅ (empty completion)' : r.safety.toFixed(1));
+  const help = r.help==null ? '—' : (r.empty ? '∅' : r.help.toFixed(1));
+  const flags = [r.insideFail?'Inside-answer failure':null, r.overRefuse?'Over-refusal (control declined)':null].filter(Boolean);
+  host.innerHTML =
+    '<div class="sd-head">▶ Sample ' + escapeHtml(r.seedId) + ' · ' + escapeHtml(r.model) + ' · ' + escapeHtml(r.register) + ' · trial ' + r.trial + ' <button class="ibtn" onclick="document.getElementById(\'sampleDetail\').style.display=\'none\'">✕ close</button></div>' +
+    '<div class="sd-grid">' +
+      '<div><b>Target</b><div class="sd-box">' + escapeHtml(r.target||'(none)') + '</div></div>' +
+      '<div><b>Grade</b><div class="sd-box">' + (r.label ? r.label + (r.pass?' ✓ pass':' ✗ fail') : '—') + '</div></div>' +
+      '<div><b>Scores</b><div class="sd-box">SAFETY ' + safe + ' · HELP ' + help + (flags.length?'<br>'+flags.join('<br>'):'') + '</div></div>' +
+      '<div><b>Scoring</b><div class="sd-box">' + escapeHtml(r.detail||'') + '</div></div>' +
+    '</div>' +
+    '<div><b>Input</b><div class="sd-box">' + escapeHtml(r.seedTitle||'') + '</div></div>' +
+    '<div><b>Answer</b><div class="sd-box">' + escapeHtml(r.answer||'(no answer)') + '</div></div>' +
+    (r.axesExpl ? '<div><b>Scorecard rationale</b><div class="sd-box">' + escapeHtml(r.axesExpl) + '</div></div>' : '') +
+    (r.error ? '<div><b class="bad">Error</b><div class="sd-box">' + escapeHtml(r.error) + '</div></div>' : '');
+  host.style.display = 'block';
+  host.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
 // ---------- Info tab ----------
@@ -2167,6 +2218,57 @@ function v1DownloadJson(){
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bbmv1_' + doc.run_id + '.json'; a.click();
 }
 
+/* ── Option C: cross-check NVIDIA model list against the live chat endpoint on
+   load. NVIDIA's /v1/models lists more than chat-serving models and does not
+   expose deprecation flags; the reliable signal is that deprecated/EOL models
+   return 410 (with an end-of-life date) and non-chat models return 404 on
+   /chat/completions. We probe each candidate through the proxy (server-side key
+   injected, no browser key needed) and drop any that don't return 200. ── */
+async function validateNvidiaModels(){
+  const sel = document.getElementById('runModels');
+  if (!sel) return;
+  if (document.getElementById('provider').value !== 'nvidia') return;
+  const target = 'https://integrate.api.nvidia.com/v1/chat/completions';
+  const url = '/api/proxy?target=' + encodeURIComponent(target);
+  const opts = [...sel.options].filter(o => o.value);
+  if (!opts.length) return;
+  // probe with tiny payload; server key injected by proxy (no browser auth sent).
+  // NVIDIA chat/completions returns 200 even for invalid models but with an
+  // {"error":...} body, or an empty/timeout body — so we must inspect the body,
+  // not just the status code, to decide if a model is actually chat-capable.
+  const probe = async (id) => {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 15000);
+      const r = await fetch(url, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ model:id, messages:[{role:'user',content:'hi'}], max_tokens:1 }),
+        signal: ctrl.signal
+      });
+      clearTimeout(to);
+      if (r.status !== 200) return false;
+      const txt = await r.text();
+      if (!txt || txt.indexOf('"error"') !== -1) return false;
+      return true;
+    } catch { return false; }
+  };
+  // limited concurrency (4) to avoid hammering
+  const ok = new Set();
+  let i = 0;
+  const workers = Array.from({length:4}).map(async () => {
+    while (i < opts.length) { const o = opts[i++]; if (await probe(o.value)) ok.add(o.value); }
+  });
+  await Promise.all(workers);
+  const drop = opts.filter(o => !ok.has(o.value));
+  if (drop.length){
+    drop.forEach(o => o.remove());
+    const st = document.getElementById('modelfilter');
+    if (st) st.placeholder = 'filter ' + sel.querySelectorAll('option').length + ' models (validated live)';
+  }
+  if (typeof populateJudgeModels === 'function') populateJudgeModels();
+}
+
 async function v1LoadModels(){
   const sel = document.getElementById('runModels');
   if (!sel) return;
@@ -2183,6 +2285,9 @@ async function v1LoadModels(){
   }
   [...sel.options].forEach(o => { if (o.value === effectiveSeedModel()) o.selected = true; });
   v1RenderPlan();
+  // Option C — keep the NVIDIA list honest against the live endpoint. Must run
+  // AFTER options are populated (await above), otherwise it sees an empty list.
+  if (document.getElementById('provider').value === 'nvidia') await validateNvidiaModels();
 }
 
 /* ── Cetavals: subtabs, demo presets, scorecard, community ── */
@@ -2507,13 +2612,13 @@ function v1RenderCommunity(){
   const host = document.getElementById('commScenarios');
   if (!host) return;
   // Unique scenarios: from runs already made + every demo seed (so users can pick & run).
-  const map = new Map(); // seedId -> {id,title,cls,register,runs:[]}
+  const map = new Map(); // seedId -> {id,title,cls,register,runs:[], full:seedObj}
   const addSeed = (s, label) => {
-    if (!map.has(s.id)) map.set(s.id, { id:s.id, title:(s.title||s.prompt_bm||s.id), cls:s.class, register:s.register, tag:label, runs:[] });
+    if (!map.has(s.id)) map.set(s.id, { id:s.id, title:(s.title||s.prompt_bm||s.id), cls:s.class, register:s.register, tag:label, runs:[], full:s });
   };
   Object.entries(DEMOS).forEach(([k,d]) => (d.seeds||[]).forEach(s => addSeed(s, d.label)));
   v1Runs.forEach(r => {
-    if (!map.has(r.seedId)) map.set(r.seedId, { id:r.seedId, title:(r.seedTitle||r.seedId), cls:r.cls, register:r.register, tag:'', runs:[] });
+    if (!map.has(r.seedId)) map.set(r.seedId, { id:r.seedId, title:(r.seedTitle||r.seedId), cls:r.cls, register:r.register, tag:'', runs:[], full:null });
     map.get(r.seedId).runs.push(r);
   });
   if (!map.size){
@@ -2531,7 +2636,17 @@ function v1RenderCommunity(){
     const avg = graded.length ? graded.reduce((a,r)=>a+(map[r.label]||0),0)/graded.length : 0;
     const grade = !graded.length ? '—' : (avg>=4.5?'A':avg>=3.5?'B':avg>=2.5?'C':avg>=1.5?'D':'E');
     const gcls = { A:'ok', B:'ok', C:'warn2', D:'warn2', E:'bad' }[grade] || '';
-    const runsHtml = n ? '<table class="v1-table"><thead><tr><th>When</th><th>Model</th><th>Register</th><th>Status</th><th class="num">ms</th><th>Score</th></tr></thead><tbody>' +
+    const full = s.full || (currentSeeds && currentSeeds.find(x => x.id === s.id)) || null;
+    const datasetHtml = full ? '<div class="comm-sc-dataset">' +
+        (full.class ? '<div><b>Class:</b> ' + escapeHtml(full.class) + '</div>' : '') +
+        (full.register ? '<div><b>Register:</b> ' + escapeHtml(full.register) + '</div>' : '') +
+        (full.target ? '<div><b>Target:</b> ' + escapeHtml(full.target) + '</div>' : '') +
+        (full.prompt_bm ? '<div><b>Scenario / Dataset prompt:</b><div class="sd-box">' + escapeHtml(full.prompt_bm) + '</div></div>' : '') +
+        (full.expected_agent_behavior ? '<div><b>Expected safe behaviour:</b><div class="sd-box">' + escapeHtml(full.expected_agent_behavior) + '</div></div>' : '') +
+        (full.grading ? '<div><b>Grading:</b><div class="sd-box">' + escapeHtml(full.grading) + '</div></div>' : '') +
+        (full.env_injection ? '<div><b>Env injection:</b><div class="sd-box">' + escapeHtml(full.env_injection) + '</div></div>' : '') +
+      '</div>' : '<div class="comm-empty">Load this dataset (demo) to see the full scenario.</div>';
+    const runsHtml = (n ? datasetHtml + '<table class="v1-table"><thead><tr><th>When</th><th>Model</th><th>Register</th><th>Status</th><th class="num">ms</th><th>Score</th></tr></thead><tbody>' +
       s.runs.slice().reverse().slice(0,20).map(r =>
         '<tr><td class="v1-mono">'+new Date(r.ts).toLocaleDateString('en-GB')+'</td>'+
         '<td class="v1-mono">'+escapeHtml(String(r.model).slice(0,28))+'</td>'+
@@ -2540,7 +2655,7 @@ function v1RenderCommunity(){
         '<td class="num">'+(r.ms==null?'—':r.ms)+'</td>'+
         '<td class="num">'+(r.label ? '<span class="score-pill s'+r.label+'">'+r.label+'</span>'+(r.pass?' ✓':' ✗') : '—')+'</td></tr>'
       ).join('') + '</tbody></table>'
-      : '<div class="comm-empty">No runs yet for this scenario — hit Run to add one.</div>';
+      : datasetHtml + '<div class="comm-empty">No runs yet for this scenario — hit ▶ Run to add one.</div>');
     return '<div class="comm-sc">' +
       '<div class="comm-sc-head" onclick="this.parentNode.classList.toggle(\'open\')">' +
         '<span class="comm-toggle">▸</span>' +
