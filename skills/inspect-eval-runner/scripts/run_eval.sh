@@ -221,6 +221,15 @@ step "STEP 5/8  Plain-language summary of what happened"
 # shellcheck disable=SC2086
 "$PY" "$SKILL_DIR/scripts/summarize.py" "$LOG_DIR" $SUMMARY_SUITE_ARGS || true
 
+# Auto-export every log in $LOG_DIR to analysis/ (HTML + Markdown + slide deck),
+# with full per-task detail. Reads the SAME logs the :7575 viewer serves.
+SUITE_DIR_FOR_EXPORT=""
+[ -n "$SUITE_DIR" ] && SUITE_DIR_FOR_EXPORT="$SKILL_DIR/$SUITE_DIR"
+echo
+echo "=== Auto-exporting analysis (HTML / MD / slides) ==="
+"$PY" "$SKILL_DIR/scripts/export_analysis.py" "$LOG_DIR" ${SUITE_DIR_FOR_EXPORT:+--suite "$SUITE_DIR_FOR_EXPORT"} 2>&1 | tail -2
+echo "Open: $SKILL_DIR/analysis/index.html"
+
 # --------------------------------------------------------- 6. scorecard
 step "STEP 6/8  AISL Scorecard — the quality grade of THIS evaluation"
 echo "   Grades the eval design, not the model. Same grade for every model."
