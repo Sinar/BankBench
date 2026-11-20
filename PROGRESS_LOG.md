@@ -32,6 +32,28 @@ Weeks with no commits are listed as quiet rather than skipped, so the gaps stay 
 | **October 2026** | v1 tabbed variants of the eval console and factory; "101 to AI evals" explainer (developer + non-tech versions, incl. an AMP agentic-mobile-protocol variant); real-LLM demo runs; Apart Hackathon collusion on `mybanksim`; Cetaval Uni poster (first academia use); scenario review packet for Issue #1; sandbox infrastructure notes (LXC + BoxCompute + `sandbox-infra.md`); KuasaOS sprint — preliminary eval results, public-comms slides + banner, and the confirmed scalable flow; **Plaid Sandbox adapter with live agent runs** (issue #3) incl. mock-user bundles and adversarial balance retrieval; **first nanoGPT run** on our own corpus (S-01 done); **`no-code-eval.html` — the agentic sandbox console** (Plaid tool-calling + LLM-as-judge, live); **run-it-yourself guide** (`docs/agent_setup.md`, 3 pathways); **issue decomposition** — #3 split into #5 (Hermes) / #6 (Box Compute) / #8 (Sinar LXC), plus #9 (catalog scaling: Plaid+Stripe+Billplz) and #10 (guide, closed) |
 | **November 2026** | Cetavals no-code console hardened (dataset upload JSON/CSV + editable sample preview, 5s seeding cutoff, Nous/OpenRouter pricing in dropdowns, Eval Log auto-clears on new dataset, responsive tables); **README slimmed to a top-3 front door** (BankBench-MY · Cetavals · AISL Scorecard breakdown, paper attributed not claimed); **FOMCA consumer-harm eval run on Nous** (3 valid models — DeepSeek/Qwen/GLM — Gemini 403 excluded) with comparison HTML; **SME WhatsApp eval suite built + run** — Amir Rental (Selangor, 10 cars, BM, concise), 20 scenarios (7 normal / 8 problem / 5 feedback), scored on `score-v1` + a 5-dimension nuance rubric (no 0/1 rounding, critical-failure override), 4 valid cheap/free solvers (upstage 400-failed); **`export_analysis.py`** auto-renders every `logs/` eval to HTML + Markdown + slide with full per-task detail, wired into `run_eval.sh`/`run_matrix.sh` + `--watch` mode |
 
+### Where we are vs the Fellowship Proposal (§2.1) — off-track flags
+
+*Plan source: the BankBench-MY Fellowship Proposal (Idea #8), §2.1 monthly timeline. ✅ done · ♻️ changed · 🔶 partial · ⬜ not started.*
+
+- **July** (Pre-0 + M1) — ✅ foundations shipped (repo live, 20-task suite, no-code console, TamperBank pilot, IDFR Ch.5, IIUM poster).
+- **August** (MyBankSim v1.0) — ♻️ **Changed**: MyBankSim not built as specified; eval harness runs on Plaid Sandbox (Issue #3) + `kuasa_my` agent instead. Equivalent capability landed later.
+- **September** (run all experiments) — 🔶 **Partial**: TamperBank pilot done (3 models, 20 scenarios); still needs repeat + scale to 30–40 tasks × 4 registers (Issue #1d).
+- **October** (RMiT gap brief) — 🔴 **⬜ Not started — catch-up #1, top priority.** Nothing in the repo shows the brief landing. Blocks the "analysis" pillar.
+- **November** (roundtable + consumer explainer) — 🔶 **Pipeline built** (IIUM/RKFF 0413 track record + event landing page + outreach drafts) but **roundtable not yet booked**; consumer explainer not yet published.
+- **December** (presentation + handoff) — ⬜ **Not started**, depends on the Oct brief + Nov roundtable. See the Dec 1–7 look-ahead below.
+
+### Week of 1–7 Jul 2026 — Pre-0 + Month 1 start (proposal §2.1, pre-repo)
+
+*Tracked from the Fellowship Proposal (Idea #8, §2.1 + §2.1.2 hours log) — this predates the first repo commit (Aug 5), so it is recorded here from the proposal, not from `main`.*
+
+- **Pre-0 (Jun 16 – Jul 15)** — prototype + pivot: Alamak Lab bank sandbox, VendSafe Vending-Bench extension, first Inspect AI replication (Make Me Pay), BankBench-MY 20-task suite v1.0–1.2. Status: ✅ Done (5 completed eval runs, working dashboard).
+- **Jul 1–5 (W1)** — Substrate v1→v3 iteration, L1 claims schema + audit store; AIS Research Companion skill scaffold; metaeval-toolkit scaffold from reading list + protocol docs. ~14 hrs (slightly under 15–20 target).
+- **Jul 6–12 (W2)** — reading/protocol work carried from W1; Sinar fellowship proposal drafting begins. ~12 hrs (lighter week).
+- **Jul 13–19 (W3)** — Make Me Pay eval setup (4 backends: NVIDIA/Gemini/Together/Cloudflare); `bankbench_my` Inspect AI task built + 20-task dataset written; 5 eval runs (Jul 14–15) + `dashboard.html` v1.0–1.2; adaptation-compatible dataset export. ~19 hrs (on target).
+- **Jul 20–23 (W4, partial)** — BlueDot slide deck; Sinar proposal HTML→MD, Gantt charts, scope reassessment (§2.4), compute-status audit. ~9 hrs (partial week).
+- *Total logged Jul 1–23: ~54 hrs / ~3.3 weeks ≈ 16.4 hrs/week — inside the 15–20 band. Fellowship clock officially running from July 2026.*
+
 ### Week of 3–9 Aug 2026 — the repo cut
 
 - **Aug 5** — first migration cut: `bankbench_my/` eval core (`bankbench_eval.py`, `scenarios/bankbench-20-tasks.json`) and the `training-loop/` S-01→S-05 sprint scaffolding.
@@ -61,6 +83,8 @@ Weeks with no commits are listed as quiet rather than skipped, so the gaps stay 
 ### Weeks of 17–30 Aug 2026 — quiet
 
 No commits. Two weeks with no activity on `main`.
+
+- *(proposal §2.1 plan for August)* — Month 2 was scoped as **MyBankSim v1.0 build** (account state engine on CF Workers + KV, tool-callable action API, bilingual conversation interface, Inspect AI agent loop, open-source release). **Status: ♻️ Changed** — MyBankSim was not built as specified; instead the eval harness runs on the **Plaid Sandbox (Issue #3)** + `kuasa_my` agent (evidenced by the Oct KuasaOS + Plaid Sandbox adapter work that landed). The Aug quiet weeks are where the pivot was decided; the build equivalent shipped later via Plaid.
 
 ### Week of 31 Aug – 6 Sep 2026 — TamperBank
 
@@ -132,13 +156,19 @@ No commits. Two weeks with no activity on `main`.
 
 No commits on `main`. In Hermes (out-of-repo): drafted the **AI safety × banking hands-on lab** event setup and began the Cetavals no-code console hardening + the SME WhatsApp / FOMCA eval designs that would land as commits on Nov 19–20. Repo stayed quiet while the drafting happened in chat.
 
+- *(proposal §2.1 plan for October)* — **Analysis + RMiT gap brief**: cross-model analysis, register analysis (E4 headline), map to RMiT + OWASP LLM Top 10, draft brief with Sinar legal advisor, route to BNM FinTech Sandbox. **Status: ⬜ Not started — RMiT gap brief is catch-up #1 (top priority).** This is the single biggest off-track item from the proposal; nothing in the repo log shows it landing. Flag for action.
+
 ### Week of 26 Oct – 1 Nov 2026 — event landing page (Hermes → repo)
 
 - **Oct 29** — `site/events/`: draft landing page for the AI safety × banking hands-on lab (authored in Hermes, committed to the repo this week). The event's ecosystem mapping and outreach copy were drafted alongside it (see Nov 2–8).
 
+- *(proposal §2.1 plan for November)* — **Roundtable + consumer output**: technical program (§2.6) culminates in the Sinar roundtable (fintech devs, BNM, FOMCA, civil society, academics); publish consumer explainer (BM + EN). **Status: 🔶 Pipeline built** — the tech-program track record (IIUM / RKFF 0413 rater + outreach) exists, but the **roundtable is not yet booked**. The event landing page drafted this week is the first concrete step toward it.
+
 ### Week of 2–8 Nov 2026 — quiet on repo; event/outreach drafting
 
 No commits on `main` (gap between Oct 29 and Nov 19). In Hermes (out-of-repo): **event/outreach drafting for the hands-on lab** — `public/masses/events/can_small_tech_work.md`, `mapping.md`, and `ecosystem-map.html` were authored **2026-11-03** (ecosystem map + "can small tech work" framing). Also: user conversations and blog/outreach drafting for BankBench-MY continued in Telegram, none of which touches the repo.
+
+- *(proposal §2.1 plan for November)* — same month goal as above: **roundtable + consumer explainer**. The Nov 3 outreach drafts are the consumer-output pipeline in motion; the roundtable booking remains open (see Nov 26–1 note).
 
 ### Week of 9–15 Nov 2026 — quiet
 
@@ -154,6 +184,17 @@ No commits on `main`. Hermes-side: finalising the Cetavals hardening + inspect-e
 - **Nov 20 — `bankbench_my/scorers/score-v1.md`** added — the 0.0–1.0 grading rubric with 0.1-granular anchors and a critical-failure override, used as the backbone for the SME WhatsApp eval.
 - **Nov 20 — README slimmed to a top-3 front door.** Cut from ~207 to ~70 lines; leads with the three things the repo does — **BankBench-MY** (the eval), **Cetavals** (no-code eval console + the `skills/inspect-eval-runner` eval-agents), and the **AISL Scorecard breakdown** (the eval-quality grading framework, attributed to San Joaquin, Gipiskis & Chin, Feb 2026 — *paper not ours; cited, not claimed*). The long directory tree and monthly tables became hyperlinks to sub-MDs; the diagram was retained; `PROGRESS_LOG.md` kept as its own file. Pushed `f09e7b3`.
 - **Nov 20 — this progress log** brought up to date (October + November), and the whole `skills/inspect-eval-runner` (incl. the SME suite and the exporter) synced into this repo and versioned (commit `2266bd6`).
+
+### Week of 1–7 Dec 2026 — look-ahead (proposal §2.1, Month 6)
+
+*Planned, not yet done — included because you asked for a week ahead of December. Sourced from the Fellowship Proposal §2.1 Month 6.*
+
+- **Presentation + handoff** — contributor guide, full repo handoff; conference presentation (PyCon MY / FinTech Malaysia / OWASP Malaysia) treated as a **2027 stretch**, not a Dec 31 dependency. **Status: ⬜ Not started — depends on #5 (Nov roundtable + consumer explainer) + the Oct RMiT gap brief (#1 catch-up).**
+- **Pre-conditions to clear first** (so December stays on track):
+  - 🔴 **RMiT gap brief v1.0** (Oct deliverable, still ⬜) — top priority catch-up; blocks the "analysis" pillar of the fellowship.
+  - 🟠 **November roundtable** — book the Sinar roundtable (fintech devs, BNM, FOMCA, civil society, academics) + publish the BM/EN consumer explainer; the event landing page + outreach drafts (Nov) are the pipeline, booking is the open step.
+  - 🟢 **Scale Sep experiments** to 30–40 scenarios × 4 registers × 3 models (Issue #1d) so findings are reproducible at proposal scope, not just the TamperBank pilot.
+- **December target state:** a full open repository — all outputs (MyBankSim/Plaid eval harness, scenario library, findings, RMiT brief, consumer explainer, contributor guide) handed off with a conference talk lined up for 2027.
 
 ### What the log shows
 
