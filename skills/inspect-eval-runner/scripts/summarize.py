@@ -30,7 +30,7 @@ import argparse
 import glob
 import json
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from inspect_ai.log import read_eval_log
@@ -84,15 +84,42 @@ def summarise(log_path, item_meta):
                 continue
             v = s.scores[name].value
             if isinstance(v, bool) or not isinstance(v, (int, float)):
-                # A LABEL score (e.g. the grade, value "Category E"). Never
-                # averaged and never reported as a failure: coercing a string
-                # score to 0.00 invents a model failure out of a grade.
+                # A LABEL score — e.g. the grade, or SimpleQA's 'C'/'I'.
+                # Never averaged here and never reported as a failure: coercing
+                # a label to 0.00 invents a model failure. Suites with label
+                # scores report their aggregate metrics instead (see below).
                 labels[name].append(str(v))
                 continue
             n = float(v)
             per_item[s.id][name].append((n, blank))
             if not blank:
                 per_scorer[name].append(n)
+
+    # Aggregate metrics Inspect already recorded (accuracy, stderr, ...). This is
+    # the ONLY correct source for suites whose scorer emits labels: inspect_evals
+    # computes 0.44 from 'C'/'I', and we must read that rather than average the
+    # strings ourselves. `results.metrics` is deprecated; prefer `results.scores`.
+    aggregates = {}
+    res = getattr(lg, "results", None)
+    if res is not None:
+        try:
+            for entry in (getattr(res, "scores", None) or []):
+                nm = getattr(entry, "name", None) or getattr(entry, "scorer", None)
+                metrics = getattr(entry, "metrics", None) or {}
+                vals = {}
+                for mk, mv in metrics.items():
+                    v = getattr(mv, "value", mv)
+                    if isinstance(v, (int, float)):
+                        vals[mk] = float(v)
+                if nm and vals:
+                    aggregates[nm] = vals
+        except Exception:
+            pass
+    if not aggregates:
+        for mk, mv in (getattr(res, "metrics", None) or {}).items():
+            v = getattr(mv, "value", mv)
+            if isinstance(v, (int, float)):
+                aggregates.setdefault("__all__", {})[mk] = float(v)
 
     return {
         "file": Path(log_path).name,
@@ -104,6 +131,8 @@ def summarise(log_path, item_meta):
         "n_empty": empty,
         "means": {k: (sum(v) / len(v) if v else float("nan")) for k, v in per_scorer.items()},
         "labels": {k: sorted(set(v)) for k, v in labels.items()},
+        "label_counts": {k: dict(sorted(Counter(v).items())) for k, v in labels.items()},
+        "aggregates": aggregates,
         "per_item": {i: {k: v for k, v in d.items()} for i, d in per_item.items()},
         "status": str(getattr(lg, "status", "")),
     }
@@ -122,10 +151,22 @@ def print_run(r, item_meta):
     print("  HOW IT SCORED  (0.0 = worst, 1.0 = best)")
     for name, m in r["means"].items():
         bar = "#" * int(round(m * 20))
-        print(f"    {name:<22} {m:.3f}  {bar}")
+        print(f"    {name:<24} {m:.3f}  {bar}")
+    agg = r.get("aggregates") or {}
+    # Suites whose scorer emits labels ('C'/'I', "Category E") have no per-sample
+    # number to average. Report the aggregate metric Inspect computed instead of
+    # inventing one — and show the raw label counts so the split is visible.
     for name, vals in r.get("labels", {}).items():
-        print(f"    {name:<22} {', '.join(vals)}   (label, not a number — "
-              f"the grade of the eval, not of the model)")
+        counts = r.get("label_counts", {}).get(name, {})
+        dist = "  ".join(f"{k}={v}" for k, v in counts.items())
+        print(f"    {name:<24} label scores  {dist}")
+        for mk, mv in (agg.get(name) or {}).items():
+            print(f"      {mk:<22} {mv:.3f}")
+    for name, vals in agg.items():
+        if name == "__all__" or name in r.get("labels", {}):
+            continue
+        line = "  ".join(f"{mk}={mv:.3f}" for mk, mv in vals.items())
+        print(f"    {name:<24} {line}")
     print()
 
     # item-level: anything not perfect on any scorer, worst first
@@ -155,11 +196,21 @@ def print_run(r, item_meta):
             if md.get("harm_if_failed"):
                 print(f"        consequence: {md['harm_if_failed'][:180]}")
         print()
-    else:
+    elif r["means"]:
         print("  Every question scored full marks on every scorer.\n")
         print("  Read that with suspicion rather than relief: a set that passes")
         print("  everything is not discriminating. Re-run with --epochs 3 and read")
         print("  a few answers by hand before believing it.\n")
+    else:
+        # Label-scored suite: `per_item` is empty because there is no per-sample
+        # number, so the "everything passed" branch above must NOT be reachable.
+        # It previously was, and cheerfully reported full marks for a run where
+        # 14 of 25 answers were wrong.
+        print("  This suite marks with LABELS, not numbers, so there is no")
+        print("  per-question number to average. The split under HOW IT SCORED")
+        print("  above IS the result — and it is emphatically not an all-pass.")
+        print("  Open the viewer to read the individual answers and why each was")
+        print("  marked the way it was.\n")
 
 
 def main():
@@ -193,9 +244,13 @@ def main():
 
     print(f"\n{'RUN':<44} {'MODEL':<38} {'Q':>4} {'EMPTY':>6}  SCORES")
     for r in sorted(runs, key=lambda x: x["created"]):
-        sc = "  ".join(f"{k}={v:.2f}" for k, v in r["means"].items())
+        parts = [f"{k}={v:.2f}" for k, v in r["means"].items()]
+        if not parts:
+            # label-scored suite: show the aggregate metric instead of nothing
+            for _nm, vals in (r.get("aggregates") or {}).items():
+                parts += [f"{mk}={mv:.2f}" for mk, mv in vals.items()]
         print(f"{r['task'][:44]:<44} {r['model'][:38]:<38} {r['n_scored']:>4} "
-              f"{r['n_empty']:>6}  {sc}")
+              f"{r['n_empty']:>6}  {'  '.join(parts)}")
 
     for r in runs:
         print_run(r, item_meta)

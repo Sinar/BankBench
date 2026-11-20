@@ -1,0 +1,98 @@
+{
+  "paper": "Scorecard of AI Evaluation Quality (San Joaquin, Gipiskis, Chin — Feb 2026)",
+  "paper_ref": "technical_aisafety/bankbench/3-4 LLM_scorecard/scorecard-full-paper.md",
+  "assessed_by": "CRO (Cetalabs) — SELF-assessment, 2026-11-20. We authored this suite, so this is the weakest possible form of grading. It has no standing against a third-party assessment of the same suite.",
+  "evidence_read": [
+    "suites/bankbench-processes/items.json — 12 items, paired controls, per-item mode declaration (authored by us)",
+    "suites/bankbench-processes/bankbench_eval.py — two Scorers, negation-guarded leak matcher (authored, then debugged against real output)",
+    "Measured run: 12 items x 3 epochs, Nous deepseek-v4.1-flash, safety 1.000 / process 0.931",
+    "The defect log from our own build: EIGHT false results produced by the marker this session, all traced and fixed"
+  ],
+  "scoring_note": "Each dimension scored 1 (best) to 4 (worst), following the paper. Classification is computed from Table 7: the HIGHEST category whose minimum component per dimension is met. The paper's colour-downgrade rule (§3.1) is NOT applied — the highlight colours do not survive markdown extraction and inventing them would fabricate the grade. Scores are assigned directly from the item lists in §3.2–3.6. SELF-assessment: read the grade as an internal quality signal, not as external validation.",
+  "dimensions": ["construct_validity", "internal_validity", "external_validity", "reliability", "correctness"],
+  "evals": {
+    "bankbench_processes": {
+      "display": "BankBench MY — banking process safety v0.1",
+      "status": "v0.1, hand-authored, English only. Deliberately a different axis from the existing 22-task BankBench social-engineering suite; the two must not be merged into one score.",
+      "assessment": {
+        "construct_validity": {
+          "score": 3,
+          "satisfied": [
+            "Two-number rubric (PROCESS_SAFETY / PROCESS_ADHERENCE) is a deliberate sub-component split — 'avoided the unsafe act' and 'did the required correct step' are scored separately, which is what the paper asks for under measuring sub-components separately. A system can be safe and useless (blocks everything) or helpful and unsafe.",
+            "Six paired controls are the construct's control condition: for every risky scenario a clean counterpart that MUST be allowed (BBP-06 vs BBP-12, BBP-01 vs BBP-07/BBP-10, BBP-02 vs BBP-09, BBP-04 vs BBP-11, BBP-05 vs BBP-08). No blanket policy can pass both halves, so 'refuse everything' is caught rather than rewarded — this is the strongest part of the design.",
+            "Per-item operational definition (expected_behaviour, process_control, what_it_catches) written BEFORE any model was run",
+            "SYSTEM BOUNDARY DECLARED per item: mode (model_only / model_plus_tools / full_agent_system) and an agentic flag, so a score cannot be read without knowing what kind of system produced it",
+            "Scope stated per item, plus known_limits stating plainly what 'unbiased' does and does not mean"
+          ],
+          "gaps": [
+            "MODE IS DECLARED, NOT ENFORCED. Nothing verifies that a full_agent_system item was run against a system that can actually execute. A text-only model can be scored on items it could not technically fail in the executing sense, which inflates the meaning of a pass.",
+            "The balance check is mechanical (build fails if the split is unequal or a pair is missing) but 'balanced' is not the same as 'unbiased'. The design claim is a set of four properties, not a proven absence of bias.",
+            "n=12 is far too small for a stable construct claim, and no sampling justification or statistical power is reported.",
+            "English only, which is a real scope failure for a suite about Malaysian banking."
+          ],
+          "justification": "The paired-control design and the declared system boundary are genuinely strong for a v0.1 and are the reason this is not a 4. The deductions are that the declared mode is unenforced, and that 12 hand-authored items cannot support a broad construct claim."
+        },
+        "internal_validity": {
+          "score": 3,
+          "satisfied": [
+            "The Scorer is checked against a known-good answer before any model is called (selftest gate), and the same mocks are re-run through the real eval engine so a wiring mismatch cannot hide",
+            "Oracle reads 1.000/1.000 and the naive baseline is separated (0.500/0.667) — the separation is demonstrated, not assumed",
+            "Deterministic scoring; the leak matcher is now explicitly guarded against its own negation, and the asymmetry between risk items (a leak is unsafe compliance) and control items (a leak is over-refusal) is handled explicitly rather than by accident"
+          ],
+          "gaps": [
+            "THE MARKER'S OWN ERROR LOG IS THE DEDUCTION. This scorer produced EIGHT false results during development, every one of them attributable to the marker and none to a model. Two were severe: a forbidden topic word ('split into') fired on a correct refusal that necessarily contained it, and a marker ('cooling-off period applies') matched its own negation in a correct control answer.",
+            "The first reported numbers for this suite (safety 0.917 / process 0.833) were artefacts. The true figures are 1.000 / 0.931. Anyone who had run this once and quoted the output would have published a false result — that is a live, demonstrated internal-validity failure, not a hypothetical one.",
+            "Output parsing is not validated against human judgement. The paper requires proving the automated scorer correlates with expert marking; no such study exists here and the eight-error log is direct evidence the correlation is imperfect.",
+            "One known residual: BBP-07 still scores 0.67 on one of three epochs — a marker remains sensitive to phrasing. Unfixed."
+          ],
+          "justification": "The gate discipline and the demonstrated oracle/naive separation are real, and the negation guard is a genuine fix rather than a patch. But the eight-false-result log is a measured, specific internal-validity failure of exactly the kind the paper asks about, and it happened on this suite. Scoring this better would be self-flattery."
+        },
+        "external_validity": {
+          "score": 4,
+          "satisfied": [
+            "Scenarios are grounded in generic, publicly-stated banking process controls (new-payee cooling-off, dormant reactivation, credential-change sequencing, mandate authority, pass-through reporting) rather than invented risks",
+            "The design declares what it is NOT: hand-authored, no customer data, no live incident data, no named institution's internal procedure — and states that where an institution's real rule differs from the generic control, the institution's rule wins"
+          ],
+          "gaps": [
+            "NO USER OR DOMAIN-EXPERT REVIEW. The paper's first external-validity requirement is that design be informed by the people the system affects. This suite was authored entirely by the evaluating party, with no input from a bank's compliance function, no consumer-body review, and no affected-user input. This is the primary capping dimension.",
+            "Hand-authored rather than sampled from real complaint or incident data, so it represents the pattern of process controls, not their real-world frequency. A scenario that never occurs in practice scores the same as a common one.",
+            "English only. For a Malaysian banking suite this is a substantive representativeness failure: no BM or Manglish items, so results do not transfer to BM-language deployments.",
+            "No mapping from item categories to actual loss events or regulatory findings, so scores cannot be weighted by consequence.",
+            "Process controls are stated generically and unverified against any specific institution's published procedure."
+          ],
+          "justification": "Grounding the scenarios in real published controls is genuine, and the suite is unusually explicit about its own limits. But the absence of any external review means the item set reflects one author's model of banking process and has never been checked against the practitioners it describes. That is a 4 by the paper's own item list."
+        },
+        "reliability": {
+          "score": 2,
+          "satisfied": [
+            "Deterministic: the same completion always produces the same score — no sampling, no model in the loop",
+            "The item set is version-controlled and changes are reviewable in the diff; the builder re-emits all three dataset formats from one source of truth",
+            "Run at 3 epochs, so per-item instability is visible rather than averaged away, and the epoch spread was inspected (notably how BBP-07's residual sensitivity surfaced)",
+            "Fully offline re-scoring is available: stored Eval Logs can be re-graded with a corrected marker at zero API cost, which is how the erroneous 0.917/0.833 figures were corrected to 1.000/0.931"
+          ],
+          "gaps": [
+            "One demonstrated fragility: the builder must be re-run after editing items.json, because the eval reads the BUILT tasks file. During development this caused a stale marker to be applied and produced a wrong number. A real trap, now documented, but it is a sharp edge.",
+            "No inter-rater reliability study. The score is one deterministic marker, unvalidated against a second marker or a human.",
+            "The epoch spread on BBP-07 shows item-level phrasing sensitivity that a single-epoch run would have hidden."
+          ],
+          "justification": "Determinism, version control, epoch inspection and free offline re-scoring make this the strongest dimension, and it is materially better than the third-party suites on reproducibility. The deduction is the unvalidated single marker and the stale-build trap that actually produced a wrong number."
+        },
+        "correctness": {
+          "score": 4,
+          "satisfied": [
+            "Expected verdicts are pre-specified per item and the risk/control balance is checked at build time, so the answer key cannot drift silently",
+            "Six of twelve items carry placeholder_notice: true and name their unverified statutory reference explicitly rather than asserting one"
+          ],
+          "gaps": [
+            "GROUND TRUTH IS UNVERIFIED AND SINGLE-AUTHORED. Every expected verdict reflects one author's judgement of correct banking process. No second rater, no compliance-function sign-off, no inter-rater agreement figure.",
+            "Six items cite a statutory or regulatory basis that is explicitly bracketed as unverified ([PLACEHOLDER — verify live]). The correct answers to those items depend on a rule nobody has yet confirmed against a primary source.",
+            "Expected verdicts are coarse (block / escalate / allow) with no severity grading, so 'escalate' and 'block' are treated as equally safe on high-harm items where they are not equally protective.",
+            "One known wrong-scoring path: BBP-07's marker still mis-scores one epoch in three. A residual error in the marking is a correctness defect in the result it produces.",
+            "No adversarial validation of the answer key — nobody has tried to construct an answer that is genuinely correct but scored wrong, beyond the two cases we stumbled into."
+          ],
+          "justification": "Pre-specified verdicts and honest placeholder flagging are real, and better than asserting unverified law. But the ground truth is a single author's opinion with no independent check, half the items hang on an unverified statutory basis, and a known marker defect remains. This is the second capping dimension alongside External Validity."
+        }
+      }
+    }
+  }
+}

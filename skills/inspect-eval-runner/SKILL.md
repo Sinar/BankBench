@@ -55,6 +55,46 @@ What the 8 steps are, and why each exists:
 | 7 | AISL scorecard | grades the **evaluation**, not the model |
 | 8 | serve viewer + print URL | the thing humans actually read |
 
+## Suites — `suites/registry.json` is the single source of truth
+
+```bash
+./scripts/run_eval.sh --list          # every suite + what it needs
+python3 scripts/resolve_suite.py --suite fomca --format json
+```
+
+Two kinds of suite, and the distinction changes what you may claim:
+
+| kind | What it means | Counts as |
+|---|---|---|
+| **`local`** | we wrote the Samples, Solver and Scorers; the **gate** applies | a **self-assessed** grade |
+| **`inspect_evals`** | supplied by the installed `inspect_evals` package (UK AISI). We run and report it; we own nothing | a **third-party** suite — grade it as a third-party assessment, or leave it ungraded |
+
+Shipped:
+
+| key | tests |
+|---|---|
+| `fomca` | Malaysian consumer protection under pressure (10 questions, EN/BM/Manglish) |
+| `simpleqa` | factuality / hallucination — model-graded Scorer |
+| `simpleqa-verified` | same, cleaned answer key |
+| `assistantbench-closed` | realistic web tasks, **no** web access (degenerate — see caveat) |
+| `assistantbench-search` | realistic web tasks, model given search |
+| `assistantbench-browser` | full browsing agent — **needs Docker** |
+
+Rules when adding a suite:
+
+- **One log dir for everything** (`logs/`). Per-suite log dirs hide results from
+  each other in the viewer. Do not create a second log dir.
+- **Never let an ungraded suite borrow another suite's assessment.** `SUITE_DIR`
+  is empty for `inspect_evals` suites, so a path built from it can resolve to the
+  wrong directory and grade the wrong eval. Use `scorecard.py --ungraded <name>`.
+- **State the caveat.** Each registry entry carries a `caveat` the runner prints
+  before it shows the result. Keep it accurate — `assistantbench-closed`'s
+  caveat exists because a low score there means *"cannot do this from memory"*,
+  which is not *"cannot do this"*.
+- **Model-graded Scorers need `--grader`.** If the Scorer is model-graded
+  (`simpleqa`, all `assistantbench` variants), pass `--grader <model>` or the
+  run fails with no obvious cause.
+
 ## Running against different models
 
 OpenAI-compatible servers need the generic provider and a **service prefix**:
@@ -62,17 +102,23 @@ OpenAI-compatible servers need the generic provider and a **service prefix**:
 ```bash
 # Nous Portal
 export NOUS_API_KEY=...
-./scripts/run_eval.sh --model openai-api/nous/deepseek/deepseek-v4.1-flash \
-  --base-url https://inference-api.nousresearch.com/v1
+export NOUS_BASE_URL=https://inference-api.nousresearch.com/v1
+./scripts/run_eval.sh --model openai-api/nous/deepseek/deepseek-v4.1-flash
 
 # local llama.cpp / Lemonade over Tailscale
 export LEMONADE_API_KEY=local-no-key
-./scripts/run_eval.sh --model openai-api/lemonade/Gemma-4-26B-A4B-it-GGUF \
-  --base-url http://100.64.0.10:13305/v1
+export LEMONADE_BASE_URL=http://100.64.0.10:13305/v1
+./scripts/run_eval.sh --model openai-api/lemonade/Gemma-4-26B-A4B-it-GGUF
 ```
 
-The key env var is derived from the service segment: service `nous` →
-`NOUS_API_KEY`, service `lemonade` → `LEMONADE_API_KEY`.
+The key and base URL env vars are derived from the service segment: service
+`nous` → `NOUS_API_KEY` + `NOUS_BASE_URL`.
+
+**Set BOTH.** `--model-base-url` reaches the system under test but **not** a
+`--model-role grader` model. The provider builds the env var name as an f-string
+(`<SERVICE>_BASE_URL`), so you cannot grep for it — you get
+`Unable to initialise <service> client / No <SERVICE>_BASE_URL defined`. Setting
+`<SERVICE>_BASE_URL` makes every role resolve.
 
 **Do NOT use the plain `openai` provider against a non-OpenAI endpoint.** It
 calls the Responses API (`/responses`) and 404s against anything that only
@@ -106,11 +152,24 @@ To grade a NEW suite, add a `*assessment*.json` beside it in this shape:
      "satisfied": ["..."], "gaps": ["..."], "justification": "..."}, ...}}}}
 ```
 
-**Two honesty requirements.** The paper's colour-downgrade rule (§3.1) needs the
+**Three honesty requirements.** The paper's colour-downgrade rule (§3.1) needs the
 highlight colours, which are not recoverable from the paper's markdown and have
 no structured copy — the engine reports this as an open item rather than
-inventing them. And a scorecard written by the eval's own authors is a
+inventing them. A scorecard written by the eval's own authors is a
 **self-assessment**, not a third-party grade; say so out loud when reporting it.
+And **a third-party eval must be graded from its actual source** — its dataset
+provenance, its Scorer code, published review — never from impressions of it.
+SimpleQA's grade turned on finding that the `simpleqa` task downloads OpenAI's
+*original* set while `simpleqa_verified` uses the cleaned one; those two deserve
+different Correctness scores and the difference is invisible without reading
+`dataset.py`.
+
+**One graded eval per file.** `scorecard.py` reads only the FIRST entry in
+`evals` (`next(iter(evals))`), so putting two evaluations in one assessment file
+silently grades one and ignores the other. Split them.
+
+To grade a third-party suite, the assessment file can live anywhere — point the
+registry's `assessment` field at it and the runner picks it up.
 
 ## Summarising and analysing results
 
@@ -168,17 +227,37 @@ nothing and needs no API key.
 - **`inspect eval` buffers its display without a TTY**, so a backgrounded run
   looks frozen. Poll the log directory for `.eval` files instead of the stdout.
 
+## Ask for both models before you run anything
+
+An eval involves up to two models, and they are chosen separately:
+
+| Role | Flag | Why it matters |
+|---|---|---|
+| **System under test** — the model being evaluated | `--model` | the thing whose behaviour is being measured |
+| **Grader** — the model that marks, when the Scorer is model-graded | `--grader` | **required** for `simpleqa` and every `assistantbench` variant; without it the run fails with no obvious cause |
+| **Solver** — how each question is put to the model | set inside the Task | the "wrapper"; changes results more than the model does |
+
+**Confirm both with the user before running.** "Which model are we testing?"
+and "which model is marking it?" are different answers. If the user names no
+grader and the suite needs one, say so and propose a default — do not silently
+pick one. If the same model does both jobs by choice, state that as a limitation
+when reporting: a model marking its own answers is weaker evidence, and it
+belongs in the write-up next to the score.
+
 ## What to report back
 
 1. The **local viewer URL** (always — it is the deliverable).
-2. Which model, which task, how many questions, how many epochs.
+2. **Both models by name** — the system under test and the grader (or "grader:
+   same model as under test, by choice") — plus which Task ran, how many
+   questions, and how many epochs.
 3. The score table, with empty completions named and excluded.
 4. **The AISL grade**, labelled a self-assessment, with the capping dimensions
    and the plain-language caution for that category.
 5. Anything that failed, with the consequence in plain language.
 
 Never quote a number that came from a run whose empty-completion count you have
-not checked.
+not checked. And never quote a **model-graded** score without naming the grader —
+the score is a property of both models, not just the one under test.
 
 ---
 

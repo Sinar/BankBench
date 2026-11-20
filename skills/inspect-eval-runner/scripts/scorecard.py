@@ -193,20 +193,73 @@ def render_markdown(g: dict, entry: dict) -> str:
     return "\n".join(L)
 
 
+UNGRADED_TEXT = """\
+{o}
+{o}
+  AISL SCORECARD — {suite}
+{o}
+
+  GRADE: not yet assigned.
+
+  Why: grading an evaluation means reading its Dataset, Solver and Scorer and
+  judging them against the five dimensions (Construct Validity, Internal
+  Validity, External Validity, Reliability, Correctness). For a third-party
+  suite we do not own, that is a real piece of work — and it is a THIRD-PARTY
+  assessment, which is a stronger form of evidence than the self-assessment we
+  ship for our own suite. Inventing a number here would be worse than useless.
+
+  Note the structural difference: for our own suite there is a GATE — the
+  marker is proven against a known-good answer before any model runs. We cannot
+  run that gate for someone else's Scorer. So a score from this suite carries
+  one more unverified layer than a score from ours.
+
+  To grade it, write an assessment file and pass it in:
+
+    scripts/scorecard.py <suite-assessment>.json
+
+  Shape (same schema as suites/fomca-consumer-eval/scorecard/):
+
+    {{"paper": "Scorecard of AI Evaluation Quality (Feb 2026)",
+     "assessed_by": "third-party assessment — <who, when>",
+     "dimensions": ["construct_validity", "internal_validity",
+                    "external_validity", "reliability", "correctness"],
+     "evals": {{"<key>": {{"display": "{suite}",
+       "assessment": {{
+         "construct_validity":  {{"score": 0, "satisfied": [], "gaps": [], "justification": ""}},
+         "internal_validity":   {{"score": 0, "satisfied": [], "gaps": [], "justification": ""}},
+         "external_validity":   {{"score": 0, "satisfied": [], "gaps": [], "justification": ""}},
+         "reliability":         {{"score": 0, "satisfied": [], "gaps": [], "justification": ""}},
+         "correctness":         {{"score": 0, "satisfied": [], "gaps": [], "justification": ""}}}}}}}}}}
+
+  Score each dimension 1 (best) to 4 (worst), then the engine assigns the
+  category from the paper's Table 7. Cite what you actually read — the eval's
+  paper, its Scorer source, its Dataset card — not impressions.
+"""
+
+
+def render_ungraded(suite: str) -> str:
+    return UNGRADED_TEXT.format(o="=" * 74, suite=suite)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("assessment", nargs="?", help="path to an *assessment*.json")
     ap.add_argument("--suite", help="suite dir; auto-discovers the assessment file")
+    ap.add_argument("--ungraded", metavar="SUITE", help="print why a suite is not graded yet")
     ap.add_argument("--json", action="store_true", help="machine-readable grade")
     ap.add_argument("--write", action="store_true", help="also write .md next to it")
     args = ap.parse_args()
+
+    if args.ungraded:
+        print(render_ungraded(args.ungraded))
+        sys.exit(0)
 
     if args.suite:
         path = find_assessment(Path(args.suite))
     elif args.assessment:
         path = Path(args.assessment)
     else:
-        ap.error("give an assessment file or --suite <dir>")
+        ap.error("give an assessment file, --suite <dir>, or --ungraded <name>")
 
     g, entry = load(path)
     if args.json:

@@ -195,9 +195,22 @@ this folder).
 > Run the `inspect-eval-runner` skill from
 > https://github.com/Sinar/BankBench/tree/main/skills/inspect-eval-runner
 >
-> Use the FOMCA consumer-harm suite, run it 3 times per question, and give me:
-> the local viewer link, a plain-language summary of what happened, and the
+> **Ask me these two things first, and wait for my answer before running
+> anything:**
+> 1. **Which model(s) should be evaluated** — the system under test. I'll give
+>    you the model string (e.g. `openai-api/nous/<model>`).
+> 2. **Which model should be the Scorer** — the one that marks the answers.
+>    Where the Scorer is model-graded (`simpleqa`, all `assistantbench`
+>    variants) this is required. If I don't name one, tell me it's needed and
+>    propose a sensible default rather than guessing silently.
+>
+> Then show me the available tests, and run the **FOMCA consumer-harm** suite
+> (10 questions on Malaysian consumer protection), 3 times per question. Give
+> me: the local viewer link, a plain-language summary of what happened, and the
 > scorecard grade. My key is in `NOUS_API_KEY`.
+>
+> If I'd rather know whether the model **makes things up**, run the `simpleqa`
+> suite instead with `--limit 25`.
 
 **3. Click the link it gives you.** It looks like `http://127.0.0.1:7575/`.
 
@@ -206,6 +219,104 @@ is correct, runs the test, writes the summary, works out the grade, and opens th
 viewer.
 
 If your key isn't set, the assistant will tell you the one line to run to set it.
+
+### The roles behind those two questions
+
+An eval has two jobs that can be done by *different* models, and mixing them up
+is the most common way a run silently goes wrong:
+
+| Role | What it is | Where you set it |
+|---|---|---|
+| **System under test** | the model being *evaluated* — the one whose behaviour you care about | `--model` |
+| **Solver** | how each question is put to that model: what it's told it is, then "answer this". **This is the wrapper** — and it changes results more than the model does | defined in the Task, per suite |
+| **Scorer** | the marking scheme. Either a written rule or a **model-graded** Scorer | defined in the suite |
+| **Grader** | the model that does the marking *when the Scorer is model-graded* | `--grader` |
+
+So "which model are we testing?" and "which model is marking it?" are two
+separate answers, and **the tool refuses to let one model do both** unless you
+pass `--allow-self-grade` and accept the limitation in writing. A model marking
+its own answers isn't independent evidence. It's not always flattering either —
+over 25 SimpleQA questions, self-grading gave 0.44 and independent grading gave
+0.40 — which is exactly why you can't assume the direction.
+
+### Which models can I use? (start cheap)
+
+Anything your provider offers. **Start cheap** — a cheap model tells you whether
+your questions are even discriminating before you spend on an expensive one, and
+most of the failures worth finding show up just as well.
+
+**Free (zero cost):**
+| Model | Notes |
+|---|---|
+| `stepfun/step-3.7-flash:free` | free tier |
+| `tencent/hy4-flash:free` | free tier |
+| `qwen/qwen4-max:free` | free tier |
+| `upstage/solar-mini4:free` | free tier |
+| `meituan/longcat-2.5:free` | free tier |
+
+**Cheap (fractions of a cent per question):**
+| Model | Notes |
+|---|---|
+| `deepseek/deepseek-v4.1-flash` | **default system under test** |
+| `google/gemini-3.1-flash-lite` | **default grader — different vendor** |
+| `google/gemini-3.5-flash-lite` | cheap |
+| `amazon/nova-lite-v1` | cheap |
+| `bytedance-seed/seed-2.0-lite` | cheap |
+
+**Free because it's your own hardware:** a local model over Tailscale or
+localhost — genuinely zero cost per question and nothing leaves the machine.
+See `SKILL.md` for the exact invocation.
+
+In practice you rarely type any of these. The defaults are already cheap, and
+swapping is one flag:
+
+```bash
+./scripts/run_eval.sh --suite simpleqa --limit 25 \
+  --model  openai-api/nous/stepfun/step-3.7-flash:free \
+  --grader openai-api/nous/google/gemini-3.1-flash-lite
+```
+
+**Use a different vendor for the grader where you can.** Same provider is fine;
+same *model* is the one combination the tool won't let you do quietly.
+
+---
+
+## The tests available (and which one to pick)
+
+Run `./scripts/run_eval.sh --list` to see this list any time. Or just ask your
+assistant to show you the options.
+
+| Ask for | What it tests | Size | Extra needs | Pick it when |
+|---|---|---|---|---|
+| `fomca` | Malaysian consumer protection under pressure — scams, dodgy advice, privacy | 10 questions | nothing | you're choosing a chatbot for customers, complaints, or public advice, and **BM / Manglish** matter. **Start here.** |
+| `simpleqa` | **Does it invent facts?** | thousands — use `--limit 25` | a grader model | any factual Q&A: reference answers, compliance, health, money. Best cheap signal on a new model. |
+| `simpleqa-verified` | Same, against a **cleaned answer key** | a reviewed subset | a grader model | you intend to **quote the number** or compare models head-to-head |
+| `assistantbench-closed` | Realistic multi-step web tasks, **no web access** | 214 tasks | nothing | a quick dependency-free read — but read the warning below first |
+| `assistantbench-search` | Realistic web tasks, model **given search** | 214 tasks | a model that can use tools | evaluating a **deployed assistant product** — closest to what a user gets |
+| `assistantbench-browser` | Full **browsing agent** | 214 tasks | **Docker** | testing an agent that genuinely browses. Most faithful, heaviest setup. |
+
+**A sensible order for a first run:** `fomca` (finishes in about a minute, and
+the questions are the easiest to judge for yourself) → then `simpleqa --limit 25`
+if you care about factual accuracy → then an AssistantBench variant if you're
+assessing a product with web access.
+
+**Three honest things about the last four rows.**
+
+The `simpleqa` and `assistantbench` tests are **not ours**. They come from
+[`inspect_evals`](https://github.com/UKGovernmentBEIS/inspect_evals), the UK AI
+Safety Institute's public collection of evaluations. We run and report them; we
+did not write their questions or their marking. That means **no scorecard grade
+yet** — the pipeline says so out loud instead of inventing one, because grading
+someone else's evaluation is real work and a *third-party* grade, which is a
+stronger claim than the self-grade we give our own suite.
+
+**`assistantbench-closed` is a trap if you don't read the label.** AssistantBench
+is built to test an assistant *with* web access. The closed-book variant strips
+that away, so a low score means *"can't do this from memory"* — which is not the
+same as *"can't do this"*. Use a web variant for the intended test.
+
+**`assistantbench-browser` needs Docker.** It pulls a browser container on first
+run. Check `docker info` works before asking for it.
 
 ---
 
@@ -323,33 +434,46 @@ inspect-eval-runner/
 ```bash
 cd skills/inspect-eval-runner
 export NOUS_API_KEY=...
+export NOUS_BASE_URL=https://inference-api.nousresearch.com/v1
 
-./scripts/run_eval.sh                      # everything, then prints the URL
-./scripts/run_eval.sh --epochs 3           # ask each question 3x
+./scripts/run_eval.sh --list                # which tests can I run?
+./scripts/run_eval.sh                       # default: FOMCA, then prints the URL
+./scripts/run_eval.sh --epochs 3            # ask each question 3x
+
+./scripts/run_eval.sh --suite simpleqa --limit 25 \
+  --grader openai-api/nous/deepseek/deepseek-v4.1-flash   # hallucination probe
 
 # or step by step
-./scripts/run_eval.sh --no-serve           # run without opening the viewer
+./scripts/run_eval.sh --suite fomca --no-serve   # run without opening the viewer
 ./.venv/bin/inspect view --log-dir logs --port 7575
 python3 scripts/summarize.py logs/ --suite suites/fomca-consumer-eval
-python3 scripts/scorecard.py --suite suites/fomca-consumer-eval
+python3 scripts/scorecard.py suites/fomca-consumer-eval/scorecard/fomca_scorecard_assessment.json
 ```
 
 Settings you can change:
 
 | Flag | What it does |
 |---|---|
-| `--model` | which AI to test (see `SKILL.md` for the exact format) |
-| `--base-url` | where that AI lives |
-| `--api-key-var` | name of the environment variable holding your key |
+| `--list` | print every available test and what it needs |
+| `--suite` | which test to run (see the table above); defaults to `fomca` |
+| `--model` | which AI to test (system under test) |
+| `--base-url` | where that AI lives — also exported as `<SERVICE>_BASE_URL` so **model-graded Scorers** resolve |
+| `--grader` | which model marks the answers, for suites whose Scorer is model-graded (e.g. `simpleqa`) |
 | `--epochs` | how many times to ask each question (3 = check it's stable) |
+| `--limit` | only run the first N questions — essential for the big suites |
 | `--port` | which port to serve the viewer on |
 | `--no-serve` | don't start the viewer |
 
 Two rules for anyone editing the tests:
 
 1. **Never trust a score until the marker has been shown to mark a known-good
-   answer correctly.** The pipeline checks this before every run — leave it in.
+   answer correctly.** The pipeline checks this before every run of our own
+   suites — leave it in.
 2. **An empty answer is a tool fault, not an AI fault.** Keep it out of the rates.
+
+Adding your own suite: drop it in `suites/`, add an entry to
+`suites/registry.json`, and the runner picks it up with no script changes.
+`suites/fomca-consumer-eval/` is a complete worked example.
 
 ---
 
