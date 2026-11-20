@@ -152,7 +152,7 @@
       "caveat": "DECLARED MODE REQUIRED. Every item declares a system boundary (model_only / model_plus_tools / full_agent_system) and whether it is agentic; a score is uninterpretable without it and the runner prints the distribution. 6 risk + 6 paired-control items, English only, hand-authored from generic publicly-stated process controls \u2014 no customer data and no named institution's internal rule. English-only is a real gap for a Malaysian suite."
     },
     "sme-whatsapp": {
-      "display": "SME WhatsApp Reply Agent \u2014 Malaysian car rental (Seri Mutiara)",
+      "display": "SME WhatsApp Reply Agent — Malaysian car rental (Amir Rental, Selangor)",
       "kind": "local",
       "dir": "suites/sme-whatsapp",
       "task": "sme_eval.py@sme_whatsapp",
@@ -161,22 +161,24 @@
       "log_dir": "logs",
       "questions": 20,
       "languages": [
+        "BM",
         "EN",
         "Manglish"
       ],
-      "what_it_tests": "Whether an LLM agent replying on a Malaysian SME WhatsApp line handles real customer messages with the right safety (no invented or unauthorised business commitment), helpfulness (correctly advances the customer objective) and customer support (register, proportion, language fit). Three scores named per the score-v1 rubric.",
-      "good_for": "Any SME considering an AI drafting or sending WhatsApp replies \u2014 especially where an agent could promise a refund, discount or waiver the owner never authorised.",
+      "what_it_tests": "Whether an LLM agent replying on a Malaysian SME WhatsApp line (Amir Rental, 10 cars, Selangor) handles real customer messages with the right safety (no invented/unauthorised commitment), helpfulness (advances the customer's objective), customer support (register, proportion, language fit) AND a 5-dimension NUANCE breakdown (contextual accuracy, tone/empathy, policy adherence, escalation judgment, language fit). All replies forced to Bahasa Melayu, concise. Scores named per score-v1 with a critical-failure override — no 0/1 rounding.",
+      "good_for": "Any SME considering an AI drafting or sending WhatsApp replies — especially where an agent could promise a refund, discount or waiver the owner never authorised.",
       "needs": [
         "NOUS_API_KEY (five cheap/free solvers, see run_matrix.sh)",
-        "a grader model OUTSIDE the solver set \u2014 customer_support is model-graded"
+        "a grader model OUTSIDE the solver set — customer_support and nuance are model-graded"
       ],
       "scorers": [
         "sme_safety",
         "sme_helpfulness",
-        "sme_customer_support"
+        "sme_customer_support",
+        "sme_nuance"
       ],
       "assessment": "suites/sme-whatsapp/scorecard/sme_scorecard_assessment.json",
-      "caveat": "20 scenarios across 7 normal enquiries, 8 problems and 5 feedback messages, for one constructed SME persona (10-car rental, Sungai Buloh). The case context is supplied to the agent verbatim and IS the source of truth \u2014 inventing policy is the primary failure mode. Customer support is model-graded by a model outside the five solvers, asserted in code. NO PURE-BM ITEMS yet (5 Manglish, 15 EN): a real gap for a Malaysian suite. Grade D, with C one documented SME review away."
+      "caveat": "20 scenarios across 7 normal enquiries, 8 problems and 5 feedback messages, for one constructed SME persona (Amir Rental, 10-car rental, Sungai Buloh, Selangor). Agent replies are forced to Bahasa Melayu and concise. The case context is supplied verbatim and IS the source of truth — inventing policy is the primary failure mode. Customer support + nuance are model-graded by a model outside the five solvers, asserted in code. Grade D, with C one documented SME review away."
     }
   }
 }
