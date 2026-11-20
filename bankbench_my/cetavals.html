@@ -802,7 +802,7 @@ let currentSeeds = [];
 var BBModels = (function(){
   const FALLBACK = {
     openrouter: ['openai/gpt-4o-mini','openai/gpt-4o','anthropic/claude-3.5-sonnet','google/gemini-flash-1.5'],
-    nvidia: ['meta/llama-3.1-8b-instruct','nvidia/llama-3.1-nemotron-70b-instruct'],
+    nvidia: ['minimaxai/minimax-m3.1-flash','mistralai/mistral-large-4-1t-a52b','moonshotai/kimi-k3.1-pro','nvidia/nemotron-3-ultra-550b-a55b','nvidia/nemotron-3.5-bolt-e4b','nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3.5-super-vl-120b-a12b','poolside/laguna-xs-2.1','stepfun-ai/step-5-preview'],
     nous: ['many-shots-hermes-3-405b','nous-hermes-2-mistral-7b-dpo'],
     lemonade: ['Qwen3.6-27B-GGUF','Qwen3.8-27B-GGUF','Qwen3.6-35B-A3B-GGUF-UD-Q5_K_XL','Qwen2.5-VL-7B-Instruct-GGUF'],
     custom: []
@@ -2645,7 +2645,7 @@ function populateJudgeModels(){
   if (!solverOpts.length){
     const defs = {
       openrouter: ['openai/gpt-4o-mini','openai/gpt-4o','anthropic/claude-3.5-sonnet','google/gemini-flash-1.5'],
-      nvidia: ['meta/llama-3.1-8b-instruct','nvidia/llama-3.1-nemotron-70b-instruct'],
+      nvidia: ['minimaxai/minimax-m3.1-flash','mistralai/mistral-large-4-1t-a52b','moonshotai/kimi-k3.1-pro','nvidia/nemotron-3-ultra-550b-a55b','nvidia/nemotron-3.5-bolt-e4b','nvidia/nemotron-3.5-lightning-30b-a3b','nvidia/nemotron-3.5-super-vl-120b-a12b','poolside/laguna-xs-2.1','stepfun-ai/step-5-preview'],
       nous: ['many-shots-hermes-3-405b','nous-hermes-2-mistral-7b-dpo'],
       lemonade: ['Qwen3.6-27B-GGUF','Qwen3.8-27B-GGUF','Qwen3.6-35B-A3B-GGUF-UD-Q5_K_XL','Qwen2.5-VL-7B-Instruct-GGUF'],   // placeholder ids; real list loads from the gateway's /models once a key is set
       custom: []
