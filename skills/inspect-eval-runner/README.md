@@ -1,9 +1,10 @@
 # Run an AI safety test in 5 minutes — no coding needed
 
-This folder lets you **check whether an AI is safe to hand to the public**, using
-a real, repeatable test instead of vibes.
+This folder lets you **check whether an AI is actually safe and actually useful
+before you depend on it** — using a real, repeatable test instead of a vendor's
+demo.
 
-You don't write code. You open your AI assistant, say one sentence, and it does
+You don't write code. You open your AI assistant, paste one sentence, and it does
 the rest — then hands you a link to look at the results yourself, plus a written
 summary in plain language.
 
@@ -19,6 +20,105 @@ summary in plain language.
 
 ---
 
+## What is an "eval"?
+
+An **eval** is just a **test for an AI**. You already trust tests: a driving test,
+a food-safety inspection, a mock exam. An eval is the same idea pointed at an AI.
+
+Think of it as **a set of exam questions, plus a marking scheme, plus a report
+card.**
+
+| Piece | In plain terms | Here |
+|---|---|---|
+| **Questions** | Real tasks, written down so everyone is asked the same thing | 10 real Malaysian consumer situations |
+| **The rules** | How the AI gets asked, and what it's told it is | a consumer-help assistant |
+| **The marking scheme** | What counts as a good answer — written **before** seeing any answers | two marks per question (below) |
+| **The report card** | The scores, and a grade for how good the test itself is | summary + grade |
+
+The important part: **the marking scheme is written down first.** That's what
+makes it a test rather than a conversation. If you decide what "good" means after
+you've seen the answers, you'll unconsciously grade towards whatever the vendor
+showed you.
+
+### The framework underneath: Inspect
+
+This runs on **[Inspect](https://inspect.aisi.org.uk)**, an open-source
+evaluation framework built by the **UK AI Safety Institute** — a government body.
+It's the same tool frontier labs and public-sector evaluators use, so results
+produced here are in a format other researchers can read, re-run and check.
+
+What that buys you, practically:
+
+- **Repeatability.** Anyone can re-run the same 10 questions and compare. A demo
+  can't be re-run; a test can.
+- **Evidence.** Every answer and every mark is saved to a file, with the exact
+  question, the exact answer, and the reason for each mark. You can show it to a
+  colleague, a boss, a supplier, or an auditor.
+- **Honesty by design.** The scoring is done by a written rule, not by someone's
+  impression — so it can be checked and corrected. (It *was* corrected: building
+  this suite turned up **five scoring mistakes** that each made a perfectly good
+  AI answer look like a failure. Every test needs this discipline.)
+- **No lock-in, no upload.** It runs on your own computer. Your key stays with
+  you, and your results live in a folder you can read.
+
+---
+
+## Why run an eval — even if you're not an AI safety researcher
+
+You don't need to care about "AI safety" as a field to need this. You need it
+whenever an AI is about to cost you money, time, or someone's trust.
+
+**Before you subscribe or buy.**
+You're about to pay monthly for an AI tool. Does it correctly answer *your*
+questions — not the ones on its marketing page? One run of this costs a few
+cents and tells you. Cancelling after three months of "it's not quite right" is
+more expensive than testing first.
+
+**Before you procure, or sign.**
+Software contracts get signed on demos. A demo is a performance: the vendor picks
+their five best answers, on the easiest questions, in the friendliest language.
+An eval asks the awkward questions too — and the awkward ones are where your
+staff, students, customers or citizens will actually live.
+
+**Before you put it in front of real people.**
+The moment an AI answers your customers, you own what it says. This test is
+designed around **real consumer harms**: someone losing their savings to a scam
+the AI reassured them about, or a diabetic patient being told a supplement cures
+them. If your AI can produce those answers, you want to know before your
+customers do.
+
+**Because "it works in English" is not evidence.**
+Malaysians write in Bahasa Malaysia, and in the mixed **Manglish** we actually
+type. An AI that scores well in English can behave very differently in BM. This
+suite deliberately includes all three — and the answers come back very
+differently depending on the language.
+
+**Because the vendor's configuration matters more than the model.**
+This is the finding that should change how anyone buys AI: the *same* model,
+given the *same* 10 questions, behaves differently when you change only the
+instructions it's given internally. In our tests, a system prompt that pressured
+the AI to "always resolve the customer's request quickly" **lowered safety** —
+and the failures appeared exactly on the questions where refusing is the whole
+point.
+
+So you are not buying a model. You are buying **someone's wrapper around a
+model** — and an eval is the only way to see the wrapper.
+
+**Because you'll be asked to show your working.**
+Regulators are moving (the EU AI Act is already in force for major AI providers).
+"In the vendor's demo it looked fine" is not a defensible answer. "We tested it on
+10 documented scenarios, here are the transcripts" is.
+
+**Because it's cheap now.**
+Five minutes and a few cents. The alternative is finding out after deployment.
+
+> **Important:** this suite is graded **Category E (exploratory)** — a prototype,
+> self-assessed by the same team that built it. Use it to *learn and to build
+> your own tests*, not as a final verdict on any vendor. The summary tells you
+> this every time, and it's not a formality.
+
+---
+
 ## Before you start
 
 You need one of these:
@@ -30,7 +130,8 @@ You need one of these:
 
 An API key is a password that lets the test talk to the AI. It usually looks like
 `sk-...` or a long string of letters. **Treat it like a password.** The test sends
-it only to the AI service you choose. Nothing is saved.
+it only to the AI service you choose. Nothing is saved, and nothing is uploaded
+anywhere else.
 
 ---
 
@@ -39,22 +140,26 @@ it only to the AI service you choose. Nothing is saved.
 **0. Make the skill available to your agent (once).**
 
 ```bash
-# from inside this repo
-cp -r skills/inspect-eval-runner ~/.hermes/skills/
+git clone https://github.com/Sinar/BankBench.git
+cp -r BankBench/skills/inspect-eval-runner ~/.hermes/skills/
 ```
 
 (Any agent that loads skills from a folder works the same way — point it at
-`inspect-eval-runner/`. The folder is self-contained: it carries its own
-scripts and an example test set.)
+`inspect-eval-runner/`. The folder is self-contained: it carries its own scripts
+and a working example test.)
 
 **1. Open your AI assistant** (Hermes, or any assistant that can use skills from
 this folder).
 
 **2. Paste this:**
 
-> Run the `inspect-eval-runner` skill. Use the FOMCA consumer-harm suite, run it
-> 3 times per question, and give me: the local viewer link, a plain-language
-> summary of what happened, and the scorecard grade. My key is in `NOUS_API_KEY`.
+> Run the `inspect-eval-runner` skill from
+> https://github.com/Sinar/BankBench/tree/main/skills/inspect-eval-runner
+>
+> Use the FOMCA consumer-harm suite, run it 3 times per question, and give me:
+> the local viewer link, a plain-language summary of what happened, and the
+> scorecard grade. My key is in `NOUS_API_KEY`.
+
 **3. Click the link it gives you.** It looks like `http://127.0.0.1:7575/`.
 
 That's it. The assistant walks the whole thing: sets up, checks its own marking
@@ -89,8 +194,8 @@ answer looks like, the grade, and the Safety and Help marks.
 
 ## The grade letters
 
-The test itself gets a grade — because a bad test gives you bad answers, and
-you deserve to know which one you're holding.
+The test itself gets a grade — because a bad test gives you bad answers, and you
+deserve to know which one you're holding.
 
 | Grade | Trust it for | Don't use it for |
 |---|---|---|
@@ -121,6 +226,11 @@ questions.
 
 **How long does it take?**
 About 5 minutes the first time (it sets itself up), then around a minute.
+
+**Can I use this to compare two AI providers?**
+Yes — that's one of its best uses. Run the same 10 questions against each and
+compare the summary tables side by side. Run with `--epochs 3` so you're
+comparing stable behaviour, not one lucky answer.
 
 **It said some answers were empty. What happened?**
 That's a technical hiccup, not the AI failing. The summary counts those
@@ -197,8 +307,8 @@ Two rules for anyone editing the tests:
 ## Where this came from
 
 Adapted and simplified from
-[`meridianlabs-ai/inspect-skills`](https://github.com/meridianlabs-ai/inspect-skills)
-(`analyzing-logs`), built on [Inspect AI](https://inspect.aisi.org.uk) from the
+[`meridianlabs-ai/inspect-skills` → `analyzing-logs`](https://github.com/meridianlabs-ai/inspect-skills/blob/main/plugins/inspect-skills/skills/analyzing-logs/SKILL.md),
+built on [Inspect AI](https://inspect.aisi.org.uk) from the
 UK AI Safety Institute, and graded with the **Scorecard of AI Evaluation Quality**
 (San Joaquin, Gipiskis & Chin, Feb 2026).
 
