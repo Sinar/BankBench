@@ -10,3 +10,4 @@ __pycache__/
 suites/*/fomca_tasks.json
 suites/*/fomca_tasks.jsonl
 suites/*/fomca_tasks.csv
+smokes/

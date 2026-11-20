@@ -1,0 +1,131 @@
+{
+  "note": "Suite registry \u2014 the single source of truth for what this skill can run. `kind: local` suites live in this folder and carry their own Samples, Solver and Scorers. `kind: inspect_evals` suites are supplied by the installed `inspect_evals` package (UK AI Safety Institute) and are referenced by task path, so we own no part of their Dataset or Scorer \u2014 we only run and report them. All suites deliberately share ONE log directory (`logs/`) so a single Inspect View shows every run side by side \u2014 per-suite log dirs would hide results from each other.",
+  "default": "fomca",
+  "suites": {
+    "fomca": {
+      "display": "FOMCA consumer-harm \u2014 Malaysian consumer protection",
+      "kind": "local",
+      "dir": "suites/fomca-consumer-eval",
+      "task": "fomca_eval.py@fomca_phase_a",
+      "log_dir": "logs",
+      "questions": 10,
+      "languages": [
+        "EN",
+        "BM",
+        "Manglish"
+      ],
+      "what_it_tests": "Whether a consumer-facing assistant protects a Malaysian consumer under pressure \u2014 or helps the scam, leaks the payload, or gives confidently wrong advice.",
+      "good_for": "Choosing a chatbot for customer service, complaints, or public-facing advice. Procurement before you let an AI answer your customers.",
+      "needs": [],
+      "scorers": [
+        "fomca_safety",
+        "fomca_help",
+        "fomca_grade"
+      ],
+      "assessment": "suites/fomca-consumer-eval/scorecard/fomca_scorecard_assessment.json",
+      "caveat": "Demo fixtures; Category E (exploratory); 8 of 10 items cite an unverified statute and are flagged placeholder."
+    },
+    "simpleqa": {
+      "display": "SimpleQA \u2014 factuality / hallucination probe",
+      "kind": "inspect_evals",
+      "task": "inspect_evals/simpleqa",
+      "log_dir": "logs",
+      "questions": "thousands of short factual questions",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Whether the model admits it does not know, instead of inventing a confident wrong fact. Scored by a model grader into correct / incorrect / not-attempted.",
+      "good_for": "Any deployment where a confidently wrong fact costs you \u2014 reference answers, compliance, health, finance. Cheapest useful signal on a new model.",
+      "needs": [
+        "a grader model (the Scorer is model-graded)",
+        "network access to download the Dataset"
+      ],
+      "scorers": [
+        "simpleqa grader (model-graded)"
+      ],
+      "assessment": null,
+      "caveat": "Short-form Q&A, English-only, and the answer key has known quality problems \u2014 which is why a 'verified' variant exists. Treat the score as a hallucination signal, not a knowledge scorecard."
+    },
+    "simpleqa-verified": {
+      "display": "SimpleQA Verified \u2014 factuality, cleaned answer key",
+      "kind": "inspect_evals",
+      "task": "inspect_evals/simpleqa_verified",
+      "log_dir": "logs",
+      "questions": "a filtered, corrected subset",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Same as SimpleQA, against an answer key that has been reviewed for correctness and ambiguity.",
+      "good_for": "Preferred over plain SimpleQA when you intend to quote the number or compare models. Same cost, fewer wrong answers in the key.",
+      "needs": [
+        "a grader model",
+        "network access to download the Dataset"
+      ],
+      "scorers": [
+        "simpleqa verified grader (model-graded)"
+      ],
+      "assessment": null,
+      "caveat": "Still English-only, still short-form. A low score means 'hallucinates on trivia', not 'unsafe'."
+    },
+    "assistantbench-closed": {
+      "display": "AssistantBench closed-book \u2014 realistic web tasks, no web access",
+      "kind": "inspect_evals",
+      "task": "inspect_evals/assistant_bench_closed_book_zero_shot",
+      "log_dir": "logs",
+      "questions": "214 realistic multi-step tasks",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Whether the model can answer realistic, research-heavy web tasks from memory alone.",
+      "good_for": "A quick, dependency-free read on a model. NOT the intended use of this benchmark.",
+      "needs": [],
+      "scorers": [
+        "assistant_bench_scorer (model-graded)"
+      ],
+      "assessment": null,
+      "caveat": "READ THIS BEFORE QUOTING THE RESULT. AssistantBench is designed to test an assistant WITH web access. Closed-book strips that away, so the eval degenerates into a knowledge quiz and a low score means 'cannot do this from memory', which is not the same as 'cannot do this'. Run a web-search variant for the intended test."
+    },
+    "assistantbench-search": {
+      "display": "AssistantBench + web search \u2014 realistic web tasks, model given search",
+      "kind": "inspect_evals",
+      "task": "inspect_evals/assistant_bench_web_search_zero_shot",
+      "log_dir": "logs",
+      "questions": "214 realistic multi-step tasks",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Whether an assistant with a search tool can complete realistic multi-step research tasks and report the right answer.",
+      "good_for": "Evaluating a deployed assistant product \u2014 the closest runnable match to what a user actually experiences.",
+      "needs": [
+        "a model that supports tool calls",
+        "a provider that supplies web search, or Inspect's own web_search tool"
+      ],
+      "scorers": [
+        "assistant_bench_scorer (model-graded)"
+      ],
+      "assessment": null,
+      "caveat": "The result depends on the model AND the search tool together. Do not quote it as a model-only number."
+    },
+    "assistantbench-browser": {
+      "display": "AssistantBench browser agent \u2014 full browsing sandbox",
+      "kind": "inspect_evals",
+      "task": "inspect_evals/assistant_bench_web_browser",
+      "log_dir": "logs",
+      "questions": "214 realistic multi-step tasks",
+      "languages": [
+        "EN"
+      ],
+      "what_it_tests": "Whether a full browsing agent can carry out realistic web tasks end to end.",
+      "good_for": "Testing an agent that genuinely browses. The most faithful AssistantBench setting.",
+      "needs": [
+        "Docker running locally",
+        "the browser sandbox image (pulled on first run, can be large)"
+      ],
+      "scorers": [
+        "assistant_bench_scorer (model-graded)"
+      ],
+      "assessment": null,
+      "caveat": "Needs Docker and pulls a container image. Do not attempt without confirmation that Docker is available \u2014 check first with `docker info`."
+    }
+  }
+}

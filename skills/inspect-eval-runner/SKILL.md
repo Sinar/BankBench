@@ -55,6 +55,46 @@ What the 8 steps are, and why each exists:
 | 7 | AISL scorecard | grades the **evaluation**, not the model |
 | 8 | serve viewer + print URL | the thing humans actually read |
 
+## Suites — `suites/registry.json` is the single source of truth
+
+```bash
+./scripts/run_eval.sh --list          # every suite + what it needs
+python3 scripts/resolve_suite.py --suite fomca --format json
+```
+
+Two kinds of suite, and the distinction changes what you may claim:
+
+| kind | What it means | Counts as |
+|---|---|---|
+| **`local`** | we wrote the Samples, Solver and Scorers; the **gate** applies | a **self-assessed** grade |
+| **`inspect_evals`** | supplied by the installed `inspect_evals` package (UK AISI). We run and report it; we own nothing | a **third-party** suite — grade it as a third-party assessment, or leave it ungraded |
+
+Shipped:
+
+| key | tests |
+|---|---|
+| `fomca` | Malaysian consumer protection under pressure (10 questions, EN/BM/Manglish) |
+| `simpleqa` | factuality / hallucination — model-graded Scorer |
+| `simpleqa-verified` | same, cleaned answer key |
+| `assistantbench-closed` | realistic web tasks, **no** web access (degenerate — see caveat) |
+| `assistantbench-search` | realistic web tasks, model given search |
+| `assistantbench-browser` | full browsing agent — **needs Docker** |
+
+Rules when adding a suite:
+
+- **One log dir for everything** (`logs/`). Per-suite log dirs hide results from
+  each other in the viewer. Do not create a second log dir.
+- **Never let an ungraded suite borrow another suite's assessment.** `SUITE_DIR`
+  is empty for `inspect_evals` suites, so a path built from it can resolve to the
+  wrong directory and grade the wrong eval. Use `scorecard.py --ungraded <name>`.
+- **State the caveat.** Each registry entry carries a `caveat` the runner prints
+  before it shows the result. Keep it accurate — `assistantbench-closed`'s
+  caveat exists because a low score there means *"cannot do this from memory"*,
+  which is not *"cannot do this"*.
+- **Model-graded Scorers need `--grader`.** If the Scorer is model-graded
+  (`simpleqa`, all `assistantbench` variants), pass `--grader <model>` or the
+  run fails with no obvious cause.
+
 ## Running against different models
 
 OpenAI-compatible servers need the generic provider and a **service prefix**:
@@ -62,17 +102,23 @@ OpenAI-compatible servers need the generic provider and a **service prefix**:
 ```bash
 # Nous Portal
 export NOUS_API_KEY=...
-./scripts/run_eval.sh --model openai-api/nous/deepseek/deepseek-v4.1-flash \
-  --base-url https://inference-api.nousresearch.com/v1
+export NOUS_BASE_URL=https://inference-api.nousresearch.com/v1
+./scripts/run_eval.sh --model openai-api/nous/deepseek/deepseek-v4.1-flash
 
 # local llama.cpp / Lemonade over Tailscale
 export LEMONADE_API_KEY=local-no-key
-./scripts/run_eval.sh --model openai-api/lemonade/Gemma-4-26B-A4B-it-GGUF \
-  --base-url http://100.64.0.10:13305/v1
+export LEMONADE_BASE_URL=http://100.64.0.10:13305/v1
+./scripts/run_eval.sh --model openai-api/lemonade/Gemma-4-26B-A4B-it-GGUF
 ```
 
-The key env var is derived from the service segment: service `nous` →
-`NOUS_API_KEY`, service `lemonade` → `LEMONADE_API_KEY`.
+The key and base URL env vars are derived from the service segment: service
+`nous` → `NOUS_API_KEY` + `NOUS_BASE_URL`.
+
+**Set BOTH.** `--model-base-url` reaches the system under test but **not** a
+`--model-role grader` model. The provider builds the env var name as an f-string
+(`<SERVICE>_BASE_URL`), so you cannot grep for it — you get
+`Unable to initialise <service> client / No <SERVICE>_BASE_URL defined`. Setting
+`<SERVICE>_BASE_URL` makes every role resolve.
 
 **Do NOT use the plain `openai` provider against a non-OpenAI endpoint.** It
 calls the Responses API (`/responses`) and 404s against anything that only
