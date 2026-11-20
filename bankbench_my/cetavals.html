@@ -834,10 +834,21 @@ var BBModels = (function(){
     const r = await fetch(url, { headers });
     if (!r.ok) throw new Error('models ' + r.status);
     const j = await r.json();
-    let ids = [];
-    if (Array.isArray(j.data)) ids = j.data.map(m => m.id || m.name).filter(Boolean);
-    else if (Array.isArray(j.models)) ids = j.models.map(m => m.id || m.name).filter(Boolean);
-    return ids;
+    let raw = [];
+    if (Array.isArray(j.data)) raw = j.data;
+    else if (Array.isArray(j.models)) raw = j.models;
+    // Pricing: OpenRouter & Nous expose per-token USD under .pricing
+    // (prompt/completion). Convert to $/M tokens for display.
+    const priceOf = (m) => {
+      const p = m && m.pricing;
+      if (!p) return null;
+      const pt = parseFloat(p.prompt != null ? p.prompt : p.input);
+      const ct = parseFloat(p.completion != null ? p.completion : p.output);
+      if (isNaN(pt) && isNaN(ct)) return null;
+      const avg = ((isNaN(pt)?0:pt) + (isNaN(ct)?0:ct)) / 2;
+      return avg > 0 ? +(avg * 1e6).toFixed(2) : null; // $/M tokens (avg of in+out)
+    };
+    return raw.map(m => ({ id: m.id || m.name, price: priceOf(m) })).filter(x => x.id);
   }
   return {
     state: function(provider){ return _state[provider] || 'fallback'; },
@@ -851,17 +862,20 @@ var BBModels = (function(){
       try { ids = await fetchModels(provider, key); } catch(e){ ids = null; }
       if (!ids || !ids.length){ ids = fb; _state[provider] = 'fallback'; }
       else { _state[provider] = 'live'; }
+      // normalise to {id, price}
+      const norm = ids.map(function(x){ return (typeof x === 'string') ? { id:x, price:null } : { id:x.id, price:x.price != null ? x.price : null }; });
       let html = '<option value="">— choose model —</option>';
-      ids.forEach(function(id){ html += '<option value="'+id+'">'+id+'</option>'; });
+      norm.forEach(function(o){ html += '<option value="'+o.id+'">'+o.id+(o.price!=null?'  ($'+o.price+'/M)':'')+'</option>'; });
       sel.innerHTML = html;
       const wanted = (opts && opts.current) || '';
-      if (wanted && ids.indexOf(wanted) >= 0) sel.value = wanted;
+      if (wanted && norm.some(function(o){ return o.id === wanted; })) sel.value = wanted;
     },
     detailed: async function(provider, key){
       let ids = null;
       try { ids = await fetchModels(provider, key); } catch(e){ ids = null; }
       if (!ids || !ids.length) ids = FALLBACK[provider] || [];
-      return ids.map(function(id){ return { id: id, price: null }; });
+      // ids may be strings (fallback) or {id, price} objects (live)
+      return ids.map(function(x){ return (typeof x === 'string') ? { id:x, price:null } : { id:x.id, price:x.price != null ? x.price : null }; });
     },
     bindFilter: function(input, sel){
       if (!input || !sel) return;
@@ -1099,6 +1113,9 @@ function status(msg, err){
 async function seed(){
   const prompt=document.getElementById('prompt').value.trim();
   if(!prompt){ status('Type a scenario category first.', true); return; }
+  // A new seed prompt means a new dataset → empty the Eval Log so stale runs
+  // from a previous dataset don't linger in Samples/Community/Explorer.
+  v1Runs = []; v1saveRuns();
   const key=cleanedKey();
   const provider=document.getElementById('provider').value;
   let baseUrl=(document.getElementById('baseurl').value||BASE[provider]||'').replace(/\/+$/,'');
@@ -1147,6 +1164,9 @@ async function seed(){
   const demoCard = document.getElementById('demoCard'); if (demoCard) demoCard.style.display='none';
   // start fresh — do NOT append to any previously loaded demo/seeds
   currentSeeds = []; renderSeeds();
+  // a new seed prompt means a new dataset → empty the Eval Log so stale runs
+  // from a previous dataset don't linger in Samples/Community/Explorer.
+  v1Runs = []; v1saveRuns();
 
   // incremental JSON-object extractor (handles SSE streamed fragments)
   function extractObjects(buf){
@@ -1160,13 +1180,20 @@ async function seed(){
     }
     return { objs, rest: buf.slice(lastEnd) };
   }
-  // 2) streaming call
+  // 2) streaming call — with a hard 5s-per-seed cutoff.
+  // If the model hasn't produced a complete scenario object within 5s we abort
+  // and tell the user to switch to a faster model, rather than hanging.
+  const SEED_TIMEOUT = 5000;
+  const ac = new AbortController();
+  const tooSlow = (got) => !got && Date.now() > seedStart + SEED_TIMEOUT;
+  let seedStart = Date.now(), gotAny = false;
   try{
     const seedHeaders = { 'Content-Type':'application/json' };
     if(key) seedHeaders['Authorization'] = 'Bearer ' + key;
     const resp=await fetch(endpoint,{
       method:'POST',
       headers:seedHeaders,
+      signal: ac.signal,
       body:JSON.stringify({model, temperature:0.6, stream:true,
         messages:[{role:'system',content:SYSTEM},{role:'user',content:prompt}],
         max_tokens:3000})
@@ -1175,7 +1202,7 @@ async function seed(){
       const t=await resp.text();
       let msg='HTTP '+resp.status+' '+t.slice(0,200);
       if(resp.status===401 && t.indexOf('Missing Authentication header')!==-1){
-        msg += '  \u2014  the key was sent but the provider could not read it.'
+        msg += '  —  the key was sent but the provider could not read it.'
              + ' Open Settings and re-paste JUST the key (no "Bearer", no quotes).';
       }
       throw new Error(msg);
@@ -1183,6 +1210,11 @@ async function seed(){
     const reader=resp.body.getReader(); const decoder=new TextDecoder();
     let buffer='', seeded=0; const seedIds=new Set(d.hits.map(h=>h.id));
     while(true){
+      // cutoff: no scenario produced within 5s → abort + prompt to switch models
+      if (tooSlow(gotAny)){
+        ac.abort();
+        throw new Error('TIMEOUT: model "'+model+'" took >5s to generate a scenario. Switch to a faster model (e.g. Qwen3.6-27B-GGUF / Qwen3.8-27B-GGUF on Lemonade, or a smaller NVIDIA model) and re-seed.');
+      }
       const {done,value}=await reader.read();
       if(done) break;
       buffer += decoder.decode(value,{stream:true});
@@ -1190,6 +1222,7 @@ async function seed(){
       const cleaned = buffer.replace(/^data:\s*/gm,'').replace(/\[DONE\]/g,'');
       const { objs, rest } = extractObjects(cleaned);
       if(objs.length){
+        gotAny = true;
         objs.forEach(o=>{
           o.redundant = seedIds.has(o.id) || (o.threat_vector && d.hits.some(h=>h.cat && h.cat.split('/')[0]===String(o.threat_vector).split('/')[0]));
           o.status='draft';
@@ -2556,7 +2589,7 @@ function setChips(containerId, attr, values){
   const c = document.getElementById(containerId); if (!c) return;
   c.querySelectorAll('.v1-chip').forEach(ch => ch.classList.toggle('on', values.indexOf(ch.dataset.v) !== -1));
 }
-function loadDemo(key){
+function loadDemo(key, clearLog){
   const d = DEMOS[key]; if (!d) return;
   document.getElementById('prompt').value = d.prompt;
   if (document.getElementById('runRegs')) [...document.getElementById('runRegs').options].forEach(o => o.selected = d.regs.indexOf(o.value) !== -1);
@@ -2565,12 +2598,17 @@ function loadDemo(key){
   V1S.modes = d.modes.slice(); V1S.boundary = d.boundary; V1S.regs = d.regs.slice(); v1save();
   const tag = document.getElementById('datasetTag');
   if (tag) tag.innerHTML = '<b>'+escapeHtml(d.tag)+'</b> — prompt, registers, solver + scorer pre-filled.';
+  // Loading a fresh dataset means the previous Eval Log no longer belongs to it —
+  // empty it (unless caller is just re-loading for a single-scenario run).
+  if (clearLog !== false){ v1Runs = []; v1saveRuns(); }
   // Load demo scenarios into the editable Scenarios list on the PROMPT tab.
   // Each scenario is pre-approved so the Run view is immediately usable; the
   // user can edit, add, or reject them here before running.
   currentSeeds = (d.seeds || []).map(s => { const c = Object.assign({ status:'approved' }, s); delete c.quality; delete c.overrides; return c; });
   qualityRan = false; qualityReviewed = false;
   if (typeof renderSeeds === 'function'){ renderSeeds(); renderQualityReview(); }
+  // refresh any open Eval Log / Community views so the cleared state shows
+  if (typeof v1RenderLive === 'function'){ v1RenderLive(); v1RenderSamples(); v1RenderCommunity(); }
   // Stay on the Prompt tab so scenarios are visible / editable / addable.
   v1View('factory');
   status('Loaded demo: '+escapeHtml(d.label)+'. '+currentSeeds.length+' scenario(s) pre-loaded and approved — edit or add more below, then go to Run.', false);
@@ -2680,7 +2718,7 @@ function runScenarioById(id){
   for (const [k,d] of Object.entries(DEMOS)){ const f = (d.seeds||[]).find(s => s.id === id); if (f){ seed = f; demoKey = k; break; } }
   if (!seed) seed = currentSeeds.find(s => s.id === id);
   if (!seed){ status('Scenario '+id+' not found in current seeds — load its dataset first.', true); return; }
-  if (demoKey) loadDemo(demoKey);
+  if (demoKey) loadDemo(demoKey, false); // don't wipe the Eval Log — this is a single-scenario run
   currentSeeds = [ Object.assign({ status:'approved' }, seed) ];
   if (typeof renderSeeds === 'function'){ renderSeeds(); renderQualityReview(); }
   v1View('factory'); // ensure Prompt has it; user can jump to Run
