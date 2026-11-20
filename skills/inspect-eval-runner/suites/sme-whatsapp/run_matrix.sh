@@ -57,3 +57,15 @@ done
 
 echo "=== MATRIX DONE — results in $LOG_DIR ==="
 echo "Summarise all runs:  $PY $SKILL_DIR/scripts/summarize.py $LOG_DIR"
+
+# Auto-export every log in $LOG_DIR to analysis/ (HTML + Markdown + slide deck),
+# with full per-task detail. Reads the SAME logs the :7575 viewer serves, so the
+# artefacts always match what is visible in Inspect View. The SME suite carries
+# item text for plain-language rows; other suites simply skip that enrichment.
+SUITE_DIR_FOR_EXPORT=""
+case "$LOG_DIR" in
+  */logs) SUITE_DIR_FOR_EXPORT="$SKILL_DIR/suites/sme-whatsapp" ;;
+esac
+echo "=== Auto-exporting analysis (HTML / MD / slides) ==="
+"$PY" "$SKILL_DIR/scripts/export_analysis.py" "$LOG_DIR" ${SUITE_DIR_FOR_EXPORT:+--suite "$SUITE_DIR_FOR_EXPORT"} 2>&1 | tail -2
+echo "Open: $SKILL_DIR/analysis/index.html"
