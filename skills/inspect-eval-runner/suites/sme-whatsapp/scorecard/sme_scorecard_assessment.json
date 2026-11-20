@@ -1,0 +1,117 @@
+{
+  "paper": "Scorecard of AI Evaluation Quality (San Joaquin, Gipiskis, Chin — Feb 2026)",
+  "paper_ref": "technical_aisafety/bankbench/3-4 LLM_scorecard/scorecard-full-paper.md",
+  "assessed_by": "CRO (Cetalabs) — SELF-assessment, 2026-11-20. We authored this suite, so this is the weakest form of grading and has no standing against a third-party assessment of the same work.",
+  "evidence_read": [
+    "suites/sme-whatsapp/persona.json — the case context supplied to the agent (authored)",
+    "suites/sme-whatsapp/items.json — 20 scenarios, each with pre-written expected behaviour and a policy_field anchor (authored)",
+    "suites/sme-whatsapp/sme_eval.py — the three scorers, the lazy grader, the solver/grader independence assert (authored, then debugged against real failures)",
+    "Measured gate: oracle safety 0.900 / helpfulness 1.000; naive safety 0.000 / helpfulness 0.315; critical-failure flags oracle 0/20, naive 20/20",
+    "Mechanical check: all 20 items' policy_fields resolve against persona.json — 0 dangling references"
+  ],
+  "scoring_note": "Each dimension scored 1 (best) to 4 (worst). Classification from Table 7: the HIGHEST category whose minimum component per dimension is met. The paper's colour-downgrade rule (§3.1) is NOT applied — highlight colours do not survive markdown extraction and inventing them would fabricate the grade. Scores are assigned from the §3.2–3.6 item lists.",
+
+  "headline_for_the_requester": {
+    "requested": "Make the dataset Grade C or Grade B.",
+    "actually_graded": "D. And it cannot honestly be graded C yet, for one specific reason.",
+    "why": "Table 7 requires External Validity <= 1 for BOTH B and C. External Validity 1 requires that the design be informed by the people the system affects. This suite was authored entirely by the evaluating party. No car-rental operator has reviewed the 20 scenarios, the persona, the expected verdicts, or the harm severities. That requirement is not a formality and I will not assert it.",
+    "what_this_means": "The suite is BUILT to the C standard — every other dimension is at 2, which satisfies C and nearly satisfies B. Only the external review is missing. One documented review session with an SME operator moves this to C, and SME_REVIEW_SHEET.md in this directory exists to make that a checkable step rather than a promise.",
+    "distance_to_C": "One review. Not a redesign."
+  },
+
+  "dimensions": ["construct_validity", "internal_validity", "external_validity", "reliability", "correctness"],
+  "evals": {
+    "sme_whatsapp_reply_agent": {
+      "display": "SME WhatsApp Reply Agent — Malaysian car rental v1.0",
+      "status": "v1.0. Grade D, capped solely by External Validity. Built to the C standard; C is one documented SME review away.",
+      "assessment": {
+        "construct_validity": {
+          "score": 2,
+          "satisfied": [
+            "THREE sub-components scored separately and deliberately, named per the score-v1 rubric: safety (no unauthorised or invented business commitment), helpfulness (advances the customer's legitimate objective), customer support (register, proportional empathy, language fit). A single 'good reply' number could not separate 'polite but promised a refund the owner never authorised' from 'correct but reads like a bank chatbot'.",
+            "Per-item operational definition written BEFORE any model ran: expected_reply, the policy field that makes it correct (grounding_anchor), and harm_if_failed with a severity.",
+            "Balance across three inquiry types — 7 normal, 8 problems, 5 feedback — plus 8 high-harm, 10 medium, 2 low. A happy-path-only suite cannot be mistaken for coverage.",
+            "Escalation is a SCORED outcome rather than a failure: 10 items require referring the decision to the owner, so 'the agent invents policy' cannot score well.",
+            "Anti-collapse controls in the other direction: 2 items (W13 breakdown, W16 praise) are deliberately NOT escalation cases, so 'escalate everything' cannot score well either. This is the control condition.",
+            "Within-fleet exception included (Hilux: manual, CDW unavailable, highest excess) — a reply can get this wrong without any other item noticing.",
+            "The case is a fully specified policy document, so every item is answerable from context and none depends on outside knowledge."
+          ],
+          "gaps": [
+            "n=20 is small. No sampling justification, no statistical power, no claim that 20 scenarios represent the SME WhatsApp task space.",
+            "The sub-component boundaries were drawn by one author with no second opinion on whether 'customer support' and 'helpfulness' are genuinely separable in practice — they correlate by construction on some items.",
+            "Only one business type is covered. Nothing here transfers to a clinic, a tuition centre or a restaurant, though the enquiry types do.",
+            "No pure-BM items. 5 Manglish, 15 English. For a Malaysian suite this is a substantive scope failure and it means results do not transfer to a BM-language deployment."
+          ],
+          "justification": "Three separated sub-components, pre-specified pass rules, a declared escalation rule, and controls pushing in BOTH directions (invent-nothing vs escalate-nothing) is strong design and materially better than the single-score suites in this repo. Not a 1 because n=20 is unjustified and English-only limits the construct."
+        },
+        "internal_validity": {
+          "score": 2,
+          "satisfied": [
+            "TWO of the three scores are computed by deterministic code with no model anywhere in the loop, so they carry no grader-identity effect at all — a stronger guarantee than picking an independent grader model.",
+            "The third (customer support) is model-graded by a model asserted OUTSIDE the five-solver set, and run_matrix.sh independently re-checks that the grader is not in the solver list before starting. The independence requirement is enforced twice.",
+            "A pre-run selftest proves the safety and helpfulness markers, and the measured result separates cleanly: oracle safety 0.900 / helpfulness 1.000 against naive safety 0.000 / helpfulness 0.315.",
+            "The fabrication detector is validated in the strong direction: it raised the critical-failure flag on 20 of 20 naive replies AND on 0 of 20 oracle replies. Catching every fabrication while never firing on a correct answer is precisely the property that was missing in the sibling suites, where markers repeatedly fired on correct answers.",
+            "Promises and invented terms are matched with a negation guard, so a correct reply that says 'we do NOT waive that' cannot be read as promising a waiver. This bug class produced false results eight times elsewhere in this repo; here it is guarded from the outset.",
+            "The critical-failure override is implemented per score-v1 §2 rather than folded into the continuous scale."
+          ],
+          "gaps": [
+            "customer_support is model-graded, so one of the three scores is a property of two models. A grader swap would move it. The suite declares the grader explicitly rather than leaving it implicit, but the sensitivity is real and unmeasured.",
+            "No human-agreement study. The paper's central internal-validity requirement is that automated scoring be validated against human judgement on the SAME items. The selftest validates against author-written oracle text, which is weaker: it proves the marker matches its author, not that it matches a competent reviewer.",
+            "A recorded near-miss counts against this dimension: the first full matrix run produced 20/20 empty completions and status=error on ALL FIVE models, caused by passing raw JSON to system_message() (its template engine reads every brace as a substitution). It was caught by reading the logs rather than the console, but it is direct evidence that the harness — not the model — is the dominant failure source on a new suite.",
+            "The selftest does not cover customer_support at all (it is proven by the mock task pair instead), so no single command validates all three scorers."
+          ],
+          "justification": "Deterministic marking for two of three scores, double-enforced grader independence, and a fabrication detector validated in both directions (20/20 caught, 0/20 false) is genuinely strong and is the reason this is a 2. Not a 1 because there is no human-agreement study on the actual items, and the harness produced a total failure on the first attempt."
+        },
+        "external_validity": {
+          "score": 2,
+          "satisfied": [
+            "The scenario mix is grounded in documented recurring themes of Malaysian SME customer service rather than invented: deposit-refund chasing, unexpected insurance excess, handover-staff complaints, peak-date pricing surprises, late-return waiver requests, and discount asks buried in positive feedback.",
+            "The persona is a CONSTRUCTED COMPOSITE with a fully specified policy document, so every item is answerable from the case and none depends on knowing a real business. This is a deliberate methodological choice, not an accident.",
+            "The suite declares what it does not cover, in the items file and the registry caveat, rather than leaving the gaps to be discovered.",
+            "SME_REVIEW_SHEET.md ships alongside, turning the missing requirement into a concrete, checkable artefact."
+          ],
+          "gaps": [
+            "NO USER OR DOMAIN-EXPERT REVIEW HAS TAKEN PLACE. The paper's primary external-validity requirement is that design be informed by the people affected. Every scenario, verdict, harm severity and register judgement reflects one author's model of how a Malaysian rental operator writes and decides. Zero car-rental operators, zero SME owners, zero consumer representatives have seen it.",
+            "The persona's policy figures (rates, deposit, excess, surcharges) are plausible and internally consistent but are not taken from any real business's published terms. A real operator might find the whole term structure unfamiliar.",
+            "The harm severities are author-assigned with no operator input on which failures would actually cost the business most. W11 (deposit delay) is scored high volume-harm partly on my reasoning, not an operator's.",
+            "English and Manglish only; no BM. A BM-language deployment is not represented.",
+            "The register targets ('warm but not groveling', 'casual Manglish') are an outsider's model of Malaysian SME WhatsApp tone, which is exactly the kind of judgement a domain expert would most likely correct."
+          ],
+          "justification": "The inquiry mix is grounded in documented real patterns and the case is fully specified, which is more than most hand-authored suites manage. But no affected user has reviewed it, and the paper makes that the first requirement of this dimension. A 2 is the honest score; a 1 would be a claim I cannot support. THIS IS THE CAPPING DIMENSION and the only thing standing between this suite and Category C."
+        },
+        "reliability": {
+          "score": 2,
+          "satisfied": [
+            "Deterministic for safety and helpfulness — identical input yields identical output, with no sampling or model involvement.",
+            "The item set and persona are version-controlled, so every change to a verdict or a policy figure is visible in the diff.",
+            "Stored Eval Logs can be re-scored offline at zero API cost after any marker change, which is how the sibling suites' erroneous first numbers were corrected.",
+            "The five-solver matrix reads its model list from the eval module, so the shell script cannot silently diverge from what the eval actually scores.",
+            "Empty completions are detected and excluded rather than read as failures — the failure mode that produced a false 'catastrophic' result in a sibling suite."
+          ],
+          "gaps": [
+            "customer_support depends on a grader model that will drift as the provider updates it; the same replies may score differently in six months with no change to the suite. Nothing monitors this.",
+            "No inter-rater or test-retest study, and no repeated run to check score stability across identical conditions.",
+            "The maker/checker is one person, and the marker's own author wrote the oracle text it is validated against."
+          ],
+          "justification": "Deterministic core scoring, version control, free offline re-scoring and empty-completion handling make this reproducible run-to-run. Not a 1 because one of three scores rides on an externally-drifting grader and no stability study exists."
+        },
+        "correctness": {
+          "score": 2,
+          "satisfied": [
+            "Every item's answer key is MECHANICALLY TRACEABLE to the case document: each declares policy_fields, and all 20 resolve against persona.json with zero dangling references. This was verified by script, not by memory, and it is checked for the whole set at once.",
+            "Because the persona IS the ground truth, there is no external fact in the answer key at all — no statute, no market price from a named competitor, no regulator reference. The unverified-statutory-placeholder problem that burdens a sibling suite is absent by construction.",
+            "The case document is supplied to the agent verbatim, so the evaluated model and the answer key read the same source. Disagreement is therefore about reasoning, not about missing information.",
+            "The policy contains deliberate internal exceptions (weekly = 6 days' price, +40% peak, CDW unavailable on the Hilux, two separate foreign-customer rules) so the key cannot be satisfied by a model guessing a plausible default."
+          ],
+          "gaps": [
+            "SINGLE-AUTHORED GROUND TRUTH. Every expected verdict is one person's judgement of correct small-business practice. No second rater, no operator sign-off, no inter-rater agreement figure.",
+            "The expected replies are plausible rather than authoritative: a real operator might legitimately handle several items differently — for example, choosing to escalate W13 (breakdown) for insurance reasons, which the key treats as a non-escalation item.",
+            "The scoring bands are mapped from the score-v1 rubric by one author; the mapping from 'warm but not groveling' to a 0.8-versus-1.0 distinction is a judgement that has never been calibrated against a second reader.",
+            "The grader model's own output has not been audited against the anchors on the actual replies — the model-graded dimension could be systematically generous or harsh and nothing would currently reveal it."
+          ],
+          "justification": "A fully traceable, internally consistent, externally-fact-free answer key of 20 items is a real strength and better than the sibling suites, where answer-key defects needed external research to establish. Not a 1 because the key remains one author's opinion with no independent check, and the model-graded dimension's calibration is unaudited."
+        }
+      }
+    }
+  }
+}
