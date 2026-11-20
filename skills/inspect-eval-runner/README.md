@@ -26,14 +26,25 @@ An **eval** is just a **test for an AI**. You already trust tests: a driving tes
 a food-safety inspection, a mock exam. An eval is the same idea pointed at an AI.
 
 Think of it as **a set of exam questions, plus a marking scheme, plus a report
-card.**
+card.** Here is the same thing in the vocabulary AI evaluators actually use,
+mapped to the files in this folder:
 
-| Piece | In plain terms | Here |
+| The proper name | In plain terms | Where it is here |
 |---|---|---|
-| **Questions** | Real tasks, written down so everyone is asked the same thing | 10 real Malaysian consumer situations |
-| **The rules** | How the AI gets asked, and what it's told it is | a consumer-help assistant |
-| **The marking scheme** | What counts as a good answer — written **before** seeing any answers | two marks per question (below) |
-| **The report card** | The scores, and a grade for how good the test itself is | summary + grade |
+| **Task** | the whole test — everything below, bundled into one unit | `fomca_phase_a` in `fomca_eval.py` |
+| **Dataset** (a set of **Samples**) | the question paper: real tasks, written down so every AI is asked exactly the same thing | the 10 items in `suites/fomca-consumer-eval/items/` |
+| **Solver** | how each question is put to the AI — what it's told it is, then "answer this" | `system_message(...)` → `generate()` |
+| **Scorer** | the marking scheme: what counts as a good answer, written **before** anyone sees any answers | `fomca_safety`, `fomca_help`, `fomca_grade` |
+| **Metrics** + **Eval Log** | the report card totals, and the permanent record of every answer | `mean` / `stderr`; the `logs/*.eval` files |
+
+That trio — **Dataset, Solver, Scorer** — is the standard vocabulary, and it's
+worth knowing because it maps onto the three questions you should ask about *any*
+eval you're shown:
+
+> **Which questions?** (Dataset) · **Asked how?** (Solver) · **Marked how?** (Scorer)
+
+An eval that doesn't answer all three isn't evidence yet. Most vendor
+"benchmarks" never show you the dataset, and almost none show you the scorer.
 
 The important part: **the marking scheme is written down first.** That's what
 makes it a test rather than a conversation. If you decide what "good" means after
@@ -60,6 +71,29 @@ What that buys you, practically:
   AI answer look like a failure. Every test needs this discipline.)
 - **No lock-in, no upload.** It runs on your own computer. Your key stays with
   you, and your results live in a folder you can read.
+
+### The words people use (a glossary)
+
+You don't need these to use the tool. You need them the moment you talk to a
+vendor, an auditor, or a researcher — so you can tell *which part* of their claim
+they're actually making. "The model is safe" and "this Scorer on this Dataset
+gave it 0.9" are very different statements.
+
+| Term | What it means |
+|---|---|
+| **Eval** | one run of a Task against a Model. Also the whole field ("we ran an eval"). |
+| **Task** | the bundle: a Dataset + a Solver + a Scorer. This is what you run. |
+| **Dataset** | the question set. A Dataset is made of **Samples**. |
+| **Sample** | one question. It carries an `input` (what's asked), a `target` (what a correct answer looks like), and `metadata` (extra facts — here, how bad a failure would be, and in what language). |
+| **Solver** | the steps that turn a Sample into a model call: set the instructions, then generate. **This is the "wrapper"** — and it changes results more than the model does. |
+| **Scorer** | marks one answer. Produces a `value` (usually 0–1) **and an explanation of why** — so a mark can be argued with and corrected. |
+| **Metric** | adds Scorers up across Samples: the average, the margin of error, the pass rate. |
+| **Epoch** | how many times each Sample is run. `--epochs 3` asks every question three times, so you can see whether the answer is *stable* or just lucky. |
+| **System under test** | whatever you're evaluating — a model, or a whole agent with tools. |
+| **Transcript** | the full back-and-forth for one Sample, including anything the AI did before answering. This is where you find out *why* it failed. |
+| **Eval Log** | the `.eval` file: the permanent record holding the Task, the Model, every Sample, every Transcript, every Score with its reason, and token counts. Nothing is reconstructed after the fact — this is the evidence. |
+| **Inspect View** | the viewer that reads Eval Logs. It's the page you get the link to. |
+| **Ground truth / target** | the answer you compare against. If this is wrong, the whole eval is wrong — which is why ours is flagged as unverified. |
 
 ---
 
@@ -101,8 +135,13 @@ the AI to "always resolve the customer's request quickly" **lowered safety** —
 and the failures appeared exactly on the questions where refusing is the whole
 point.
 
+In Inspect's vocabulary: **the Dataset and the Scorers were identical. Only the
+Solver changed.** That's the whole experiment — one file's worth of difference
+between a tool that refuses a phishing request and one that doesn't.
+
 So you are not buying a model. You are buying **someone's wrapper around a
-model** — and an eval is the only way to see the wrapper.
+model** — and an eval is the only way to see the wrapper. When you read an eval
+result, the Solver is the part that tells you what was actually shipped.
 
 **Because you'll be asked to show your working.**
 Regulators are moving (the EU AI Act is already in force for major AI providers).
@@ -182,6 +221,10 @@ things:
 
 **1.00 = perfect. 0.00 = worst.**
 
+These are two separate **Scorers** — `fomca_safety` and `fomca_help` — run on
+every Sample, plus a third, `fomca_grade`, which isn't a mark for the AI at all:
+it's the grade of the *test*. Three Scorers, one Dataset, one Task.
+
 Why two marks and not one? Because a chatbot that refuses *everything* scores
 100% safe and is completely worthless. The test has a deliberate trap question —
 a perfectly normal consumer question that **must** be answered. If an AI refuses
@@ -256,15 +299,21 @@ hasn't been set.
 
 ```
 inspect-eval-runner/
-├── SKILL.md                  instructions your AI assistant follows
-├── README.md                 this file
+├── SKILL.md                        instructions your AI assistant follows
+├── README.md                       this file
 ├── scripts/
-│   ├── run_eval.sh           does all 8 steps, prints the link
-│   ├── summarize.py          writes the plain-language summary
-│   ├── scorecard.py          works out the grade
+│   ├── run_eval.sh                 runs all 8 steps, prints the link
+│   ├── summarize.py                reads Eval Logs → plain-language summary
+│   ├── scorecard.py                AISL grade for the evaluation itself
 │   └── ...
 └── suites/
-    └── fomca-consumer-eval/  the 10 consumer questions + their grades
+    └── fomca-consumer-eval/
+        ├── items/*.json            10 Samples (input + target + metadata)
+        ├── build_fomca_dataset.py  items/ → the Dataset files (json/jsonl/csv)
+        ├── fomca_eval.py           the Task, its Solver and its Scorers
+        ├── fomca_scoring.py        the marking rules, as plain functions
+        ├── scorecard/              the AISL assessment + Table 7 grading
+        └── logs/*.eval             Eval Logs — created when you run it
 ```
 
 ---
